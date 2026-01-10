@@ -1,0 +1,58 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+LICENSE
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+main
+*.test
+*.out
+
+# Test coverage
+coverage.txt
+*.coverprofile
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Environment files (should be passed via docker-compose)
+.env
+.env.*
+
+# Dependencies (will be downloaded in container)
+vendor/
+
+# Database files
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

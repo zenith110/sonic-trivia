@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: sonic-trivia-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonic_trivia
+      POSTGRES_PASSWORD: sonic_trivia_pass
+      POSTGRES_DB: sonic_trivia
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonic_trivia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sonic-trivia-network
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sonic-trivia-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database Configuration
+      DATABASE_URL: postgresql://sonic_trivia:sonic_trivia_pass@postgres:5432/sonic_trivia?sslmode=disable
+
+      # JWT Configuration
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+
+      # Server Configuration
+      GRPC_PORT: 8080
+
+      # Cloudflare R2 Storage (Optional - uncomment and fill in if using)
+      # R2_ACCOUNT_ID: your-account-id
+      # R2_ACCESS_KEY_ID: your-access-key
+      # R2_SECRET_ACCESS_KEY: your-secret-key
+      # R2_BUCKET_NAME: sonic-trivia-assets
+    ports:
+      - "8080:8080"
+    networks:
+      - sonic-trivia-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # pgAdmin (Optional - Database Management UI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sonic-trivia-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@sonictrivia.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - sonic-trivia-network
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  sonic-trivia-network:
+    driver: bridge
