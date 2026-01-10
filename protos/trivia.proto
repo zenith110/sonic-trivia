@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "sonic-trivia/backend/protos";
+message Answer {
+  string id = 1;
+  string text = 2;
+  bool is_correct = 3;
+}
+
+message AnswerOptions {
+  repeated Answer answers = 1;
+}
+
+message Hint {
+  string id = 1;
+  string text = 2;
+}
+message Question {
+  string id = 1;
+  string text = 2;
+  string category = 3;
+  string difficulty = 4;
+  AnswerOptions answer_options = 5;
+  int32 points = 6;
+  repeated Hint hints = 7;
+  string picture_for_question = 8;
+  optional string picture_url = 9;
+  string created_by = 10;
+}
+
+service TriviaService {
+  rpc GetQuestion(GetQuestionRequest) returns (GetQuestionResponse) {}
+  rpc GetRandomQuestion(GetRandomQuestionRequest) returns (GetQuestionResponse) {}
+  rpc GetRandomQuestions(GetRandomQuestionsRequest) returns (GetRandomQuestionsResponse) {}
+  rpc UpdateQuestion(UpdateQuestionRequest) returns (UpdateQuestionResponse) {}
+  rpc DeleteQuestion(DeleteQuestionRequest) returns (DeleteQuestionResponse) {}
+  rpc CreateQuestion(CreateQuestionRequest) returns (CreateQuestionResponse) {}
+  rpc GetAnsweredQuestions(GetAnsweredQuestionsRequest) returns (GetAnsweredQuestionsResponse) {}
+  rpc CheckAnswer(CheckAnswerRequest) returns (CheckAnswerResponse) {}
+}
+
+message GetRandomQuestionsRequest {
+  string category = 1;
+  int32 how_many_rounds = 2;
+  string difficulty = 3;
+}
+
+message GetRandomQuestionsResponse {
+  repeated Question questions = 1;
+}
+
+message CheckAnswerRequest {
+  string question_id = 1;
+  string answer_id = 2;
+}
+
+message CheckAnswerResponse {
+  bool is_correct = 1;
+}
+
+message UpdateQuestionRequest {
+  string id = 1;
+  string text = 2;
+  string category = 3;
+  string difficulty = 4;
+  AnswerOptions answer_options = 5;
+  int32 points = 6;
+  repeated Hint hints = 7;
+  optional bytes picture_file = 8;
+}
+
+message UpdateQuestionResponse {
+  Question question = 1;
+}
+
+message DeleteQuestionRequest {
+  string id = 1;
+}
+
+message DeleteQuestionResponse {
+  bool success = 1;
+}
+
+message CreateQuestionRequest {
+  Question question = 1;
+}
+
+message CreateQuestionResponse {
+  Question question = 1;
+}
+
+message GetAnsweredQuestionsRequest {
+  string user_id = 1;
+}
+
+message GetAnsweredQuestionsResponse {
+  repeated Question questions = 1;
+}
+
+message GetRandomQuestionRequest {}
+
+message GetQuestionRequest {
+  string id = 1;
+}
+
+message GetQuestionResponse {
+  Question question = 1;
+}

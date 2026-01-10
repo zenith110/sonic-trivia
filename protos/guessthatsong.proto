@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "sonic-trivia/backend/protos";
+
+message SongHint {
+  string id = 1;
+  string text = 2;
+}
+
+message Song {
+  string id = 1;
+  string song_title = 2;
+  string artist = 3;
+  string album = 4;
+  string release_year = 5;
+  string category = 6;
+  string difficulty = 7;
+  int32 plays_per_round = 8;
+  int32 clip_duration = 9;
+  string audio_url = 10;
+  repeated SongHint hints = 11;
+  optional string picture_url = 12;
+}
+
+service GuessThatSongService {
+  rpc CreateSong(CreateSongRequest) returns (CreateSongResponse) {}
+  rpc GetSong(GetSongRequest) returns (GetSongResponse) {}
+  rpc GetRandomSong(GetRandomSongRequest) returns (GetRandomSongResponse) {}
+  rpc GetRandomSongs(GetRandomSongsRequest) returns (GetRandomSongsResponse) {}
+  rpc UpdateSong(UpdateSongRequest) returns (UpdateSongResponse) {}
+  rpc DeleteSong(DeleteSongRequest) returns (DeleteSongResponse) {}
+  rpc SearchSong(SearchSongRequest) returns (SearchSongResponse) {}
+}
+
+message GetRandomSongsRequest {
+  string category = 1;
+  int32 how_many_rounds = 2;
+  string difficulty = 3;
+}
+
+message GetRandomSongsResponse {
+  repeated Song songs = 1;
+}
+
+message CreateSongRequest {
+  Song song = 1;
+}
+
+message CreateSongResponse {
+  Song song = 1;
+}
+
+message GetSongRequest {
+  string id = 1;
+}
+
+message GetSongResponse {
+  Song song = 1;
+}
+
+message GetRandomSongRequest {
+  string category = 1;
+}
+
+message GetRandomSongResponse {
+  Song song = 1;
+}
+
+message UpdateSongRequest {
+  Song song = 1;
+}
+
+message UpdateSongResponse {
+  Song song = 1;
+}
+
+message DeleteSongRequest {
+  string id = 1;
+}
+
+message DeleteSongResponse {
+  bool success = 1;
+}
+
+message SearchSongRequest {
+  string query = 1;
+}
+
+message SearchSongResponse {
+  repeated Song songs = 1;
+}

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package protos;
+
+import "gamemodes.proto";
+import "google/protobuf/timestamp.proto";
+import "leaderboard.proto";
+import "player.proto";
+
+option go_package = "sonic-trivia/backend/protos";
+
+message RoomData {
+  string name = 1;
+  repeated Player players = 2;
+  google.protobuf.Timestamp last_updated = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string description = 5;
+  string code = 6;
+  IndividualGameModes mode = 7;
+  oneof value {
+    TriviaCategories trivia_category = 8;
+    GuessThatSongCategories guess_that_song_category = 9;
+  }
+  RoomLeaderboard leaderboard = 10;
+  int64 max_room_size = 11;
+  int64 amount_of_rounds = 12;
+  bool read_only = 13;
+  bool is_private = 14;
+}

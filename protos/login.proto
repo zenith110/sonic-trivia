@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "sonic-trivia/backend/protos";
+service LoginService {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc SocialMediaLogin(SocialMediaLoginRequest) returns (SocialMediaLoginResponse) {}
+  rpc SignUpUsernameOrEmail(SignUpUsernameOrEmailRequest) returns (SignUpUsernameOrEmailResponse) {}
+}
+
+message SignUpUsernameOrEmailRequest {
+  oneof value {
+    string username = 1;
+    string email = 2;
+  }
+  string password = 3;
+}
+
+message SignUpUsernameOrEmailResponse {
+  oneof value {
+    string token = 1;
+  }
+  string error = 2;
+}
+message LoginResponseError {
+  string error = 1;
+}
+message SocialMediaLoginRequest {
+  string token = 1;
+  string provider = 2;
+}
+
+message SocialUserInfo {
+  string email = 1;
+  string display_name = 2;
+  string provider = 3;
+}
+
+message SocialMediaLoginResponse {
+  oneof value {
+    string validated_token = 1;
+  }
+  string error = 2;
+}
+
+message LoginRequest {
+  oneof value {
+    string username = 1;
+    string email = 2;
+    string social_media_provider = 3;
+  }
+  string password = 4;
+}
+
+message LoginResponse {
+  oneof value {
+    string token = 1;
+    string validated_email_or_username_login = 2;
+  }
+  string error = 3;
+}

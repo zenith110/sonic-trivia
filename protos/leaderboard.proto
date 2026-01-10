@@ -1,0 +1,78 @@
+syntax = "proto3";
+package protos;
+
+option go_package = "sonic-trivia/backend/protos";
+message LeaderboardPlayer {
+  string name = 1;
+  int32 score = 2;
+  repeated LeaderboardHistoryPlayer place_in_leader_board_for_each_round = 3;
+}
+message LeaderboardHistoryPlayer {
+  string place_in_leader_board_for_each_round = 1;
+  string event = 2;
+}
+
+message RoomLeaderboard {
+  string name = 1;
+  repeated LeaderboardPlayer players = 2;
+}
+
+service LeaderboardService {
+  rpc UpdateRoomLeaderboard(UpdateRoomLeaderboardRequest) returns (UpdateRoomLeaderboardResponse) {}
+  rpc PaginateRoomLeaderboard(PaginateRoomLeaderboardRequest) returns (PaginateRoomLeaderboardResponse) {}
+  rpc UpdateGlobalLeaderboard(UpdateGlobalLeaderboardRequest) returns (UpdateGlobalLeaderboardResponse) {}
+  rpc PaginateGlobalLeaderboard(PaginateGlobalLeaderboardRequest) returns (PaginateGlobalLeaderboardResponse) {}
+}
+
+message UpdateRoomLeaderboardRequest {
+  oneof value {
+    string email = 1;
+    string username = 2;
+  }
+  int64 score = 3;
+  string place_in_leader_board = 4;
+}
+message UpdateRoomLeaderboardResponse {
+  oneof value {
+    string email = 1;
+    string username = 2;
+  }
+  int64 score = 3;
+  string place_in_leader_board = 4;
+}
+
+message UpdateGlobalLeaderboardRequest {
+  oneof value {
+    string email = 1;
+    string username = 2;
+  }
+  int64 score = 3;
+  string place_in_leader_board = 4;
+}
+
+message PaginateRoomLeaderboardRequest {
+  string room_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message PaginateRoomLeaderboardResponse {
+  repeated RoomLeaderboard leaderboards = 1;
+}
+
+message UpdateGlobalLeaderboardResponse {
+  oneof value {
+    int64 total_points = 1;
+  }
+
+  string error = 2;
+}
+
+message PaginateGlobalLeaderboardRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message PaginateGlobalLeaderboardResponse {
+  repeated LeaderboardPlayer players = 1;
+}

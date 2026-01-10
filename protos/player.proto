@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package protos;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "sonic-trivia/backend/protos";
+
+message SonicCharacter {
+  string name = 1;
+  string description = 2;
+  string profile_picture = 3;
+  string special_ability = 4;
+  google.protobuf.Timestamp last_used = 5;
+}
+message Player {
+  string name = 1;
+  string email = 3;
+  string socials_linked = 4;
+  repeated SonicCharacter sonic_character = 5;
+  int64 total_points = 6;
+  int64 total_successful_answers = 7;
+  int64 total_answers = 8;
+}
