@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CheckAnswerRequest, CheckAnswerResponse, CreateQuestionRequest, CreateQuestionResponse, DeleteQuestionRequest, DeleteQuestionResponse, GetAnsweredQuestionsRequest, GetAnsweredQuestionsResponse, GetQuestionRequest, GetQuestionResponse, GetRandomQuestionRequest, GetRandomQuestionsRequest, GetRandomQuestionsResponse, UpdateQuestionRequest, UpdateQuestionResponse } from "./trivia_pb.js";
+import { CheckAnswerRequest, CheckAnswerResponse, CreateQuestionRequest, CreateQuestionResponse, DeleteQuestionRequest, DeleteQuestionResponse, GetAnsweredQuestionsRequest, GetAnsweredQuestionsResponse, GetQuestionRequest, GetQuestionResponse, GetRandomQuestionsRequest, GetRandomQuestionsResponse, UpdateQuestionRequest, UpdateQuestionResponse } from "./trivia_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -18,15 +18,6 @@ export const TriviaService = {
     getQuestion: {
       name: "GetQuestion",
       I: GetQuestionRequest,
-      O: GetQuestionResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc protos.TriviaService.GetRandomQuestion
-     */
-    getRandomQuestion: {
-      name: "GetRandomQuestion",
-      I: GetRandomQuestionRequest,
       O: GetQuestionResponse,
       kind: MethodKind.Unary,
     },

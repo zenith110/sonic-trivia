@@ -75,22 +75,78 @@ type SongHint struct {
 	UpdatedAt time.Time
 }
 
+// SonicCharacter represents a Sonic character that players can unlock
+type SonicCharacter struct {
+	ID             string             `gorm:"primaryKey;type:varchar(100)"` // e.g., "sonic", "tails", "knuckles"
+	Name           string             `gorm:"not null;type:varchar(100)"`
+	Description    string             `gorm:"type:text"`
+	ProfilePicture string             `gorm:"type:text"`
+	Speed          int32              `gorm:"not null;default:0"`
+	Power          int32              `gorm:"not null;default:0"`
+	Technique      int32              `gorm:"not null;default:0"`
+	Rarity         string             `gorm:"not null;type:varchar(50)"` // "common", "rare", "epic", "legendary"
+	Game           string             `gorm:"type:varchar(255)"`
+	Quote          string             `gorm:"type:text"`
+	Color          string             `gorm:"type:varchar(50)"`
+	Abilities      []CharacterAbility `gorm:"foreignKey:CharacterID;constraint:OnDelete:CASCADE"`
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
+
+// CharacterAbility represents an ability for a Sonic character
+type CharacterAbility struct {
+	ID          string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	CharacterID string `gorm:"not null;type:varchar(100);index"`
+	Name        string `gorm:"not null;type:varchar(255)"`
+	Description string `gorm:"type:text"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
 // Player represents a player in the system
 type Player struct {
-	ID                string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	Username          string `gorm:"uniqueIndex;not null;type:varchar(100)"`
-	Email             string `gorm:"uniqueIndex;not null;type:varchar(255)"`
-	PasswordHash      string `gorm:"not null;type:text"`
-	DisplayName       string `gorm:"type:varchar(100)"`
-	Role              string `gorm:"not null;default:'player';type:varchar(50)"` // Role: "admin", "player", etc.
-	TotalScore        int64  `gorm:"not null;default:0"`
-	GamesPlayed       int64  `gorm:"not null;default:0"`
-	QuestionsAnswered int64  `gorm:"not null;default:0"`
-	CorrectAnswers    int64  `gorm:"not null;default:0"`
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt `gorm:"index"`
-	AnsweredQuestions []PlayerAnswer `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	ID                  string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Username            string `gorm:"uniqueIndex;not null;type:varchar(100)"`
+	Email               string `gorm:"uniqueIndex;not null;type:varchar(255)"`
+	PasswordHash        string `gorm:"not null;type:text"`
+	DisplayName         string `gorm:"type:varchar(100)"`
+	Role                string `gorm:"not null;default:'player';type:varchar(50)"` // Role: "admin", "player", etc.
+	SelectedCharacterID string `gorm:"type:varchar(100)"`                          // Currently selected Sonic character ID
+	TotalScore          int64  `gorm:"not null;default:0"`
+	TotalRings          int64  `gorm:"not null;default:0"` // Total rings collected
+	GamesPlayed         int64  `gorm:"not null;default:0"`
+	QuestionsAnswered   int64  `gorm:"not null;default:0"`
+	CorrectAnswers      int64  `gorm:"not null;default:0"`
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	DeletedAt           gorm.DeletedAt    `gorm:"index"`
+	AnsweredQuestions   []PlayerAnswer    `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	UnlockedCharacters  []PlayerCharacter `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	Friends             []Friendship      `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+}
+
+// PlayerCharacter represents a many-to-many relationship between players and characters
+type PlayerCharacter struct {
+	ID            string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	PlayerID      string         `gorm:"not null;type:uuid;index:idx_player_character,unique"`
+	CharacterID   string         `gorm:"not null;type:varchar(100);index:idx_player_character,unique"`
+	Character     SonicCharacter `gorm:"foreignKey:CharacterID;references:ID"`
+	UnlockedAt    time.Time      `gorm:"not null;default:CURRENT_TIMESTAMP"`
+	LastUsed      *time.Time
+	GamesPlayedAs int64 `gorm:"not null;default:0"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+// Friendship represents a friendship between two players
+type Friendship struct {
+	ID        string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	PlayerID  string `gorm:"not null;type:uuid;index:idx_friendship,unique"` // The player who initiated or owns this friendship record
+	FriendID  string `gorm:"not null;type:uuid;index:idx_friendship,unique"` // The friend's player ID
+	Friend    Player `gorm:"foreignKey:FriendID;references:ID"`
+	Status    string `gorm:"not null;type:varchar(50);default:'pending'"` // "pending", "accepted", "blocked"
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // PlayerAnswer represents a player's answer to a question
@@ -141,8 +197,24 @@ func (SongHint) TableName() string {
 	return "song_hints"
 }
 
+func (SonicCharacter) TableName() string {
+	return "sonic_characters"
+}
+
+func (CharacterAbility) TableName() string {
+	return "character_abilities"
+}
+
 func (Player) TableName() string {
 	return "players"
+}
+
+func (PlayerCharacter) TableName() string {
+	return "player_characters"
+}
+
+func (Friendship) TableName() string {
+	return "friendships"
 }
 
 func (PlayerAnswer) TableName() string {

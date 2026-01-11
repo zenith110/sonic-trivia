@@ -1,16 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useState, useEffect, type ReactNode } from "react";
 import { create } from "@bufbuild/protobuf";
 import { loginClient } from "@/grpc";
 import {
   LoginRequestSchema,
   SignUpUsernameOrEmailRequestSchema,
 } from "@/generated/login_pb";
+import { toNumber } from "@/lib/protobuf-utils";
 
 export interface User {
   id: string;
@@ -18,7 +14,9 @@ export interface User {
   email: string;
   displayName: string;
   role: string;
+  selectedCharacterId?: string;
   totalScore: number;
+  totalRings: number;
   gamesPlayed: number;
   questionsAnswered: number;
   correctAnswers: number;
@@ -39,7 +37,9 @@ export interface AuthContextType {
   updateUser: (user: User) => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -108,10 +108,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
             email: player.email || email,
             displayName: player.name || email.split("@")[0],
             role: player.role || "player",
-            totalScore: Number(player.totalPoints) || 0,
+            selectedCharacterId: player.selectedCharacterId || undefined,
+            totalScore: toNumber(player.totalPoints),
+            totalRings: toNumber(player.totalRings),
             gamesPlayed: 0,
-            questionsAnswered: Number(player.totalAnswers) || 0,
-            correctAnswers: Number(player.totalSuccessfulAnswers) || 0,
+            questionsAnswered: toNumber(player.totalAnswers),
+            correctAnswers: toNumber(player.totalSuccessfulAnswers),
           };
 
           setUser(userData);
@@ -170,10 +172,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
             email: player.email || email,
             displayName: player.name || username,
             role: player.role || "player",
-            totalScore: Number(player.totalPoints) || 0,
+            selectedCharacterId: player.selectedCharacterId || undefined,
+            totalScore: toNumber(player.totalPoints),
+            totalRings: toNumber(player.totalRings),
             gamesPlayed: 0,
-            questionsAnswered: Number(player.totalAnswers) || 0,
-            correctAnswers: Number(player.totalSuccessfulAnswers) || 0,
+            questionsAnswered: toNumber(player.totalAnswers),
+            correctAnswers: toNumber(player.totalSuccessfulAnswers),
           };
 
           setUser(userData);

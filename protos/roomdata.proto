@@ -8,7 +8,6 @@ import "leaderboard.proto";
 import "player.proto";
 
 option go_package = "sonic-trivia/backend/protos";
-
 message RoomData {
   string name = 1;
   repeated Player players = 2;
@@ -26,4 +25,8 @@ message RoomData {
   int64 amount_of_rounds = 12;
   bool read_only = 13;
   bool is_private = 14;
+  JukeBox jukebox = 15;
+}
+message JukeBox {
+  repeated string songs = 1;
 }

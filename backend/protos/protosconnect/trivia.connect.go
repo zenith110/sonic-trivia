@@ -36,9 +36,6 @@ const (
 	// TriviaServiceGetQuestionProcedure is the fully-qualified name of the TriviaService's GetQuestion
 	// RPC.
 	TriviaServiceGetQuestionProcedure = "/protos.TriviaService/GetQuestion"
-	// TriviaServiceGetRandomQuestionProcedure is the fully-qualified name of the TriviaService's
-	// GetRandomQuestion RPC.
-	TriviaServiceGetRandomQuestionProcedure = "/protos.TriviaService/GetRandomQuestion"
 	// TriviaServiceGetRandomQuestionsProcedure is the fully-qualified name of the TriviaService's
 	// GetRandomQuestions RPC.
 	TriviaServiceGetRandomQuestionsProcedure = "/protos.TriviaService/GetRandomQuestions"
@@ -62,7 +59,6 @@ const (
 // TriviaServiceClient is a client for the protos.TriviaService service.
 type TriviaServiceClient interface {
 	GetQuestion(context.Context, *connect.Request[protos.GetQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error)
-	GetRandomQuestion(context.Context, *connect.Request[protos.GetRandomQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error)
 	GetRandomQuestions(context.Context, *connect.Request[protos.GetRandomQuestionsRequest]) (*connect.Response[protos.GetRandomQuestionsResponse], error)
 	UpdateQuestion(context.Context, *connect.Request[protos.UpdateQuestionRequest]) (*connect.Response[protos.UpdateQuestionResponse], error)
 	DeleteQuestion(context.Context, *connect.Request[protos.DeleteQuestionRequest]) (*connect.Response[protos.DeleteQuestionResponse], error)
@@ -86,12 +82,6 @@ func NewTriviaServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			httpClient,
 			baseURL+TriviaServiceGetQuestionProcedure,
 			connect.WithSchema(triviaServiceMethods.ByName("GetQuestion")),
-			connect.WithClientOptions(opts...),
-		),
-		getRandomQuestion: connect.NewClient[protos.GetRandomQuestionRequest, protos.GetQuestionResponse](
-			httpClient,
-			baseURL+TriviaServiceGetRandomQuestionProcedure,
-			connect.WithSchema(triviaServiceMethods.ByName("GetRandomQuestion")),
 			connect.WithClientOptions(opts...),
 		),
 		getRandomQuestions: connect.NewClient[protos.GetRandomQuestionsRequest, protos.GetRandomQuestionsResponse](
@@ -136,7 +126,6 @@ func NewTriviaServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 // triviaServiceClient implements TriviaServiceClient.
 type triviaServiceClient struct {
 	getQuestion          *connect.Client[protos.GetQuestionRequest, protos.GetQuestionResponse]
-	getRandomQuestion    *connect.Client[protos.GetRandomQuestionRequest, protos.GetQuestionResponse]
 	getRandomQuestions   *connect.Client[protos.GetRandomQuestionsRequest, protos.GetRandomQuestionsResponse]
 	updateQuestion       *connect.Client[protos.UpdateQuestionRequest, protos.UpdateQuestionResponse]
 	deleteQuestion       *connect.Client[protos.DeleteQuestionRequest, protos.DeleteQuestionResponse]
@@ -148,11 +137,6 @@ type triviaServiceClient struct {
 // GetQuestion calls protos.TriviaService.GetQuestion.
 func (c *triviaServiceClient) GetQuestion(ctx context.Context, req *connect.Request[protos.GetQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error) {
 	return c.getQuestion.CallUnary(ctx, req)
-}
-
-// GetRandomQuestion calls protos.TriviaService.GetRandomQuestion.
-func (c *triviaServiceClient) GetRandomQuestion(ctx context.Context, req *connect.Request[protos.GetRandomQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error) {
-	return c.getRandomQuestion.CallUnary(ctx, req)
 }
 
 // GetRandomQuestions calls protos.TriviaService.GetRandomQuestions.
@@ -188,7 +172,6 @@ func (c *triviaServiceClient) CheckAnswer(ctx context.Context, req *connect.Requ
 // TriviaServiceHandler is an implementation of the protos.TriviaService service.
 type TriviaServiceHandler interface {
 	GetQuestion(context.Context, *connect.Request[protos.GetQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error)
-	GetRandomQuestion(context.Context, *connect.Request[protos.GetRandomQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error)
 	GetRandomQuestions(context.Context, *connect.Request[protos.GetRandomQuestionsRequest]) (*connect.Response[protos.GetRandomQuestionsResponse], error)
 	UpdateQuestion(context.Context, *connect.Request[protos.UpdateQuestionRequest]) (*connect.Response[protos.UpdateQuestionResponse], error)
 	DeleteQuestion(context.Context, *connect.Request[protos.DeleteQuestionRequest]) (*connect.Response[protos.DeleteQuestionResponse], error)
@@ -208,12 +191,6 @@ func NewTriviaServiceHandler(svc TriviaServiceHandler, opts ...connect.HandlerOp
 		TriviaServiceGetQuestionProcedure,
 		svc.GetQuestion,
 		connect.WithSchema(triviaServiceMethods.ByName("GetQuestion")),
-		connect.WithHandlerOptions(opts...),
-	)
-	triviaServiceGetRandomQuestionHandler := connect.NewUnaryHandler(
-		TriviaServiceGetRandomQuestionProcedure,
-		svc.GetRandomQuestion,
-		connect.WithSchema(triviaServiceMethods.ByName("GetRandomQuestion")),
 		connect.WithHandlerOptions(opts...),
 	)
 	triviaServiceGetRandomQuestionsHandler := connect.NewUnaryHandler(
@@ -256,8 +233,6 @@ func NewTriviaServiceHandler(svc TriviaServiceHandler, opts ...connect.HandlerOp
 		switch r.URL.Path {
 		case TriviaServiceGetQuestionProcedure:
 			triviaServiceGetQuestionHandler.ServeHTTP(w, r)
-		case TriviaServiceGetRandomQuestionProcedure:
-			triviaServiceGetRandomQuestionHandler.ServeHTTP(w, r)
 		case TriviaServiceGetRandomQuestionsProcedure:
 			triviaServiceGetRandomQuestionsHandler.ServeHTTP(w, r)
 		case TriviaServiceUpdateQuestionProcedure:
@@ -281,10 +256,6 @@ type UnimplementedTriviaServiceHandler struct{}
 
 func (UnimplementedTriviaServiceHandler) GetQuestion(context.Context, *connect.Request[protos.GetQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.TriviaService.GetQuestion is not implemented"))
-}
-
-func (UnimplementedTriviaServiceHandler) GetRandomQuestion(context.Context, *connect.Request[protos.GetRandomQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.TriviaService.GetRandomQuestion is not implemented"))
 }
 
 func (UnimplementedTriviaServiceHandler) GetRandomQuestions(context.Context, *connect.Request[protos.GetRandomQuestionsRequest]) (*connect.Response[protos.GetRandomQuestionsResponse], error) {

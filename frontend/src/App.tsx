@@ -8,6 +8,7 @@ import { UpdateSong } from "@/pages/UpdateSong";
 import { DeleteSong } from "@/pages/DeleteSong";
 import { Leaderboard } from "@/pages/Leaderboard";
 import { MainMenu } from "@/pages/MainMenu";
+import { ProfilePage } from "@/pages/ProfilePage";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import "./App.css";
 
@@ -20,7 +21,8 @@ type PageType =
   | "guess-song-create"
   | "guess-song-update"
   | "guess-song-delete"
-  | "leaderboard";
+  | "leaderboard"
+  | "profile";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("main-menu");
@@ -40,8 +42,11 @@ function App() {
           <MainMenu
             onNavigateToDashboard={() => setCurrentPage("dashboard")}
             onNavigateToLeaderboard={() => setCurrentPage("leaderboard")}
+            onNavigateToProfile={() => setCurrentPage("profile")}
           />
         );
+      case "profile":
+        return <ProfilePage onBack={() => setCurrentPage("main-menu")} />;
       case "dashboard":
         return (
           <Dashboard
@@ -59,6 +64,7 @@ function App() {
           <MainMenu
             onNavigateToDashboard={() => setCurrentPage("dashboard")}
             onNavigateToLeaderboard={() => setCurrentPage("leaderboard")}
+            onNavigateToProfile={() => setCurrentPage("profile")}
           />
         );
     }

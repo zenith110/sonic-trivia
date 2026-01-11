@@ -1,17 +1,27 @@
 import { Button } from "@/components/ui/button";
-import { Gamepad2, Trophy, Shield, LogOut, DoorOpen } from "lucide-react";
+import {
+  Gamepad2,
+  Trophy,
+  Shield,
+  LogOut,
+  DoorOpen,
+  Coins,
+  User,
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface MainMenuHeaderProps {
   onNavigateToDashboard: () => void;
   onNavigateToLeaderboard: () => void;
   onJoinRoom: () => void;
+  onNavigateToProfile?: () => void;
 }
 
 export function MainMenuHeader({
   onNavigateToDashboard,
   onNavigateToLeaderboard,
   onJoinRoom,
+  onNavigateToProfile,
 }: MainMenuHeaderProps) {
   const { user, logout } = useAuth();
 
@@ -36,21 +46,28 @@ export function MainMenuHeader({
                   <span className="text-sm font-medium text-gray-900">
                     {user.username}
                   </span>
-                  <span className="text-xs text-gray-500">
-                    Score: {user.totalScore}
-                  </span>
+                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <span>Score: {user.totalScore}</span>
+                    <span className="flex items-center gap-1">
+                      <Coins className="h-3 w-3 text-yellow-500" />
+                      {user.totalRings}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onJoinRoom}
-            >
+            <Button variant="outline" size="sm" onClick={onJoinRoom}>
               <DoorOpen className="h-4 w-4 mr-2" />
               Join Room
             </Button>
+
+            {onNavigateToProfile && (
+              <Button variant="outline" size="sm" onClick={onNavigateToProfile}>
+                <User className="h-4 w-4 mr-2" />
+                Profile
+              </Button>
+            )}
 
             <Button
               variant="outline"

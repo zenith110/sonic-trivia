@@ -41,6 +41,7 @@ type RoomData struct {
 	AmountOfRounds int64            `protobuf:"varint,12,opt,name=amount_of_rounds,json=amountOfRounds,proto3" json:"amount_of_rounds,omitempty"`
 	ReadOnly       bool             `protobuf:"varint,13,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
 	IsPrivate      bool             `protobuf:"varint,14,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
+	Jukebox        *JukeBox         `protobuf:"bytes,15,opt,name=jukebox,proto3" json:"jukebox,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -184,6 +185,13 @@ func (x *RoomData) GetIsPrivate() bool {
 	return false
 }
 
+func (x *RoomData) GetJukebox() *JukeBox {
+	if x != nil {
+		return x.Jukebox
+	}
+	return nil
+}
+
 type isRoomData_Value interface {
 	isRoomData_Value()
 }
@@ -200,11 +208,55 @@ func (*RoomData_TriviaCategory) isRoomData_Value() {}
 
 func (*RoomData_GuessThatSongCategory) isRoomData_Value() {}
 
+type JukeBox struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Songs         []string               `protobuf:"bytes,1,rep,name=songs,proto3" json:"songs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JukeBox) Reset() {
+	*x = JukeBox{}
+	mi := &file_roomdata_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JukeBox) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JukeBox) ProtoMessage() {}
+
+func (x *JukeBox) ProtoReflect() protoreflect.Message {
+	mi := &file_roomdata_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JukeBox.ProtoReflect.Descriptor instead.
+func (*JukeBox) Descriptor() ([]byte, []int) {
+	return file_roomdata_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *JukeBox) GetSongs() []string {
+	if x != nil {
+		return x.Songs
+	}
+	return nil
+}
+
 var File_roomdata_proto protoreflect.FileDescriptor
 
 const file_roomdata_proto_rawDesc = "" +
 	"\n" +
-	"\x0eroomdata.proto\x12\x06protos\x1a\x0fgamemodes.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x11leaderboard.proto\x1a\fplayer.proto\"\x98\x05\n" +
+	"\x0eroomdata.proto\x12\x06protos\x1a\x0fgamemodes.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x11leaderboard.proto\x1a\fplayer.proto\"\xc3\x05\n" +
 	"\bRoomData\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\aplayers\x18\x02 \x03(\v2\x0e.protos.PlayerR\aplayers\x12=\n" +
@@ -222,8 +274,11 @@ const file_roomdata_proto_rawDesc = "" +
 	"\x10amount_of_rounds\x18\f \x01(\x03R\x0eamountOfRounds\x12\x1b\n" +
 	"\tread_only\x18\r \x01(\bR\breadOnly\x12\x1d\n" +
 	"\n" +
-	"is_private\x18\x0e \x01(\bR\tisPrivateB\a\n" +
-	"\x05valueB\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"is_private\x18\x0e \x01(\bR\tisPrivate\x12)\n" +
+	"\ajukebox\x18\x0f \x01(\v2\x0f.protos.JukeBoxR\ajukeboxB\a\n" +
+	"\x05value\"\x1f\n" +
+	"\aJukeBox\x12\x14\n" +
+	"\x05songs\x18\x01 \x03(\tR\x05songsB\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_roomdata_proto_rawDescOnce sync.Once
@@ -237,29 +292,31 @@ func file_roomdata_proto_rawDescGZIP() []byte {
 	return file_roomdata_proto_rawDescData
 }
 
-var file_roomdata_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_roomdata_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_roomdata_proto_goTypes = []any{
 	(*RoomData)(nil),              // 0: protos.RoomData
-	(*Player)(nil),                // 1: protos.Player
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
-	(IndividualGameModes)(0),      // 3: protos.IndividualGameModes
-	(TriviaCategories)(0),         // 4: protos.TriviaCategories
-	(GuessThatSongCategories)(0),  // 5: protos.GuessThatSongCategories
-	(*RoomLeaderboard)(nil),       // 6: protos.RoomLeaderboard
+	(*JukeBox)(nil),               // 1: protos.JukeBox
+	(*Player)(nil),                // 2: protos.Player
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(IndividualGameModes)(0),      // 4: protos.IndividualGameModes
+	(TriviaCategories)(0),         // 5: protos.TriviaCategories
+	(GuessThatSongCategories)(0),  // 6: protos.GuessThatSongCategories
+	(*RoomLeaderboard)(nil),       // 7: protos.RoomLeaderboard
 }
 var file_roomdata_proto_depIdxs = []int32{
-	1, // 0: protos.RoomData.players:type_name -> protos.Player
-	2, // 1: protos.RoomData.last_updated:type_name -> google.protobuf.Timestamp
-	2, // 2: protos.RoomData.created_at:type_name -> google.protobuf.Timestamp
-	3, // 3: protos.RoomData.mode:type_name -> protos.IndividualGameModes
-	4, // 4: protos.RoomData.trivia_category:type_name -> protos.TriviaCategories
-	5, // 5: protos.RoomData.guess_that_song_category:type_name -> protos.GuessThatSongCategories
-	6, // 6: protos.RoomData.leaderboard:type_name -> protos.RoomLeaderboard
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	2, // 0: protos.RoomData.players:type_name -> protos.Player
+	3, // 1: protos.RoomData.last_updated:type_name -> google.protobuf.Timestamp
+	3, // 2: protos.RoomData.created_at:type_name -> google.protobuf.Timestamp
+	4, // 3: protos.RoomData.mode:type_name -> protos.IndividualGameModes
+	5, // 4: protos.RoomData.trivia_category:type_name -> protos.TriviaCategories
+	6, // 5: protos.RoomData.guess_that_song_category:type_name -> protos.GuessThatSongCategories
+	7, // 6: protos.RoomData.leaderboard:type_name -> protos.RoomLeaderboard
+	1, // 7: protos.RoomData.jukebox:type_name -> protos.JukeBox
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_roomdata_proto_init() }
@@ -280,7 +337,7 @@ func file_roomdata_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_roomdata_proto_rawDesc), len(file_roomdata_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

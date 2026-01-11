@@ -5,6 +5,7 @@ import { LoginService } from "./generated/login_pb";
 import { LeaderboardService } from "./generated/leaderboard_pb";
 import { TriviaService } from "./generated/trivia_pb";
 import { GuessThatSongService } from "./generated/guessthatsong_pb";
+import { PlayerService } from "./generated/player_pb";
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL; // direct api
 
@@ -31,3 +32,4 @@ export const guessThatSongClient = createClient(
   GuessThatSongService,
   transport,
 );
+export const playerClient = createClient(PlayerService, transport);

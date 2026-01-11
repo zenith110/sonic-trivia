@@ -74,7 +74,11 @@ func AutoMigrate() error {
 		&Hint{},
 		&Song{},
 		&SongHint{},
+		&SonicCharacter{},
+		&CharacterAbility{},
 		&Player{},
+		&PlayerCharacter{},
+		&Friendship{},
 		&PlayerAnswer{},
 		&LeaderboardEntry{},
 	)
