@@ -41,7 +41,8 @@ type PageType =
   | "guess-song-create"
   | "guess-song-update"
   | "guess-song-delete"
-  | "leaderboard";
+  | "leaderboard"
+  | "profile";
 
 interface DashboardProps {
   children?: React.ReactNode;

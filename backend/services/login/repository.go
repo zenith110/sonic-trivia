@@ -45,6 +45,11 @@ func (r *Repository) CreateUser(ctx context.Context, username, email, password s
 		return nil, err
 	}
 
+	// Unlock default characters for new player
+	if err := r.UnlockCharactersForNewPlayer(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to unlock characters: %w", err)
+	}
+
 	return user, nil
 }
 
@@ -146,6 +151,11 @@ func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displa
 		if err := r.db.WithContext(ctx).Create(&user).Error; err != nil {
 			return nil, err
 		}
+
+		// Unlock default characters for new social login user
+		if err := r.UnlockCharactersForNewPlayer(ctx, &user); err != nil {
+			return nil, fmt.Errorf("failed to unlock characters: %w", err)
+		}
 	} else if err != nil {
 		return nil, err
 	} else {
@@ -199,4 +209,44 @@ func (r *Repository) RecordAnswer(ctx context.Context, userID, questionID, answe
 	}
 
 	return r.db.WithContext(ctx).Create(userAnswer).Error
+}
+
+// UnlockCharactersForNewPlayer unlocks characters for a newly created player
+// Admin users get all characters, regular players get sonic, tails, and knuckles
+func (r *Repository) UnlockCharactersForNewPlayer(ctx context.Context, player *database.Player) error {
+	var charactersToUnlock []string
+
+	if player.Role == "admin" {
+		// Get all character IDs for admin users
+		var allCharacters []database.SonicCharacter
+		if err := r.db.WithContext(ctx).Select("id").Find(&allCharacters).Error; err != nil {
+			return fmt.Errorf("failed to fetch characters: %w", err)
+		}
+
+		for _, char := range allCharacters {
+			charactersToUnlock = append(charactersToUnlock, char.ID)
+		}
+	} else {
+		// Default characters for regular players
+		charactersToUnlock = []string{"sonic", "tails", "knuckles"}
+	}
+
+	// Unlock the characters
+	for _, charID := range charactersToUnlock {
+		playerChar := &database.PlayerCharacter{
+			PlayerID:    player.ID,
+			CharacterID: charID,
+		}
+		if err := r.db.WithContext(ctx).Create(playerChar).Error; err != nil {
+			return fmt.Errorf("failed to unlock character %s: %w", charID, err)
+		}
+	}
+
+	// Set Sonic as the default selected character
+	player.SelectedCharacterID = "sonic"
+	if err := r.db.WithContext(ctx).Save(player).Error; err != nil {
+		return fmt.Errorf("failed to set selected character: %w", err)
+	}
+
+	return nil
 }

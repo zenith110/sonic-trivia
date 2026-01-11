@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 // SeedDevData seeds the database with development data
@@ -205,29 +206,94 @@ func seedSonicCharacters() error {
 }
 
 // unlockDefaultCharacters unlocks Sonic, Tails, and Knuckles for all players by default
+// Admin users get all characters unlocked
 func unlockDefaultCharacters(players []Player) error {
 	log.Println("Unlocking default characters for players...")
 
-	defaultCharacters := []string{"sonic", "tails", "knuckles"}
-
 	for _, player := range players {
-		for _, charID := range defaultCharacters {
-			playerChar := PlayerCharacter{
-				PlayerID:    player.ID,
-				CharacterID: charID,
-			}
-			if err := DB.Create(&playerChar).Error; err != nil {
-				return err
-			}
-		}
-
-		// Set Sonic as the default selected character
-		player.SelectedCharacterID = "sonic"
-		if err := DB.Save(&player).Error; err != nil {
+		if err := UnlockCharactersForPlayer(DB, &player); err != nil {
 			return err
 		}
 	}
 
-	log.Println("Successfully unlocked default characters for all players")
+	log.Println("Successfully unlocked characters for all players")
+	return nil
+}
+
+// UnlockCharactersForPlayer unlocks characters for a player
+// Admin users get all characters, regular players get sonic, tails, and knuckles
+func UnlockCharactersForPlayer(db *gorm.DB, player *Player) error {
+	var charactersToUnlock []string
+
+	if player.Role == "admin" {
+		// Get all character IDs for admin users
+		var allCharacters []SonicCharacter
+		if err := db.Select("id").Find(&allCharacters).Error; err != nil {
+			return err
+		}
+
+		for _, char := range allCharacters {
+			charactersToUnlock = append(charactersToUnlock, char.ID)
+		}
+		log.Printf("Unlocking all %d characters for admin user: %s", len(charactersToUnlock), player.Username)
+	} else {
+		// Default characters for regular players
+		charactersToUnlock = []string{"sonic", "tails", "knuckles"}
+	}
+
+	// Unlock the characters
+	for _, charID := range charactersToUnlock {
+		playerChar := PlayerCharacter{
+			PlayerID:    player.ID,
+			CharacterID: charID,
+		}
+		if err := db.Create(&playerChar).Error; err != nil {
+			return err
+		}
+	}
+
+	// Set Sonic as the default selected character
+	player.SelectedCharacterID = "sonic"
+	if err := db.Save(player).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UnlockAllCharactersForPlayer unlocks all characters for a specific player (admin utility)
+func UnlockAllCharactersForPlayer(db *gorm.DB, playerID string) error {
+	// Get all character IDs
+	var allCharacters []SonicCharacter
+	if err := db.Select("id").Find(&allCharacters).Error; err != nil {
+		return err
+	}
+
+	// Get already unlocked characters
+	var unlockedChars []PlayerCharacter
+	if err := db.Where("player_id = ?", playerID).Find(&unlockedChars).Error; err != nil {
+		return err
+	}
+
+	// Create a map of already unlocked character IDs
+	unlockedMap := make(map[string]bool)
+	for _, uc := range unlockedChars {
+		unlockedMap[uc.CharacterID] = true
+	}
+
+	// Unlock any characters that aren't already unlocked
+	for _, char := range allCharacters {
+		if !unlockedMap[char.ID] {
+			playerChar := PlayerCharacter{
+				PlayerID:    playerID,
+				CharacterID: char.ID,
+			}
+			if err := db.Create(&playerChar).Error; err != nil {
+				return err
+			}
+		}
+	}
+
+	log.Printf("Successfully unlocked all characters for player: %s", playerID)
 	return nil
 }
