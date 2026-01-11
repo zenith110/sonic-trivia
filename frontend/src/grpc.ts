@@ -11,6 +11,16 @@ const apiUrl = import.meta.env.VITE_BASE_API_URL; // direct api
 // Use gRPC-web transport as the Go backend uses gRPC
 export const transport: Transport = createConnectTransport({
   baseUrl: apiUrl,
+  interceptors: [
+    (next) => async (req) => {
+      // Add authorization token if available
+      const token = localStorage.getItem("auth_token");
+      if (token) {
+        req.header.set("Authorization", `Bearer ${token}`);
+      }
+      return await next(req);
+    },
+  ],
 });
 
 // Create the client using the generated service definition and the transport

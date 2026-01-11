@@ -4,17 +4,27 @@ import (
 	"context"
 	"log"
 
+	"sonic-trivia/backend/database"
 	pb "sonic-trivia/backend/protos"
 
 	"connectrpc.com/connect"
 )
 
 // Server implements the LeaderboardService
-type Server struct{}
+type Server struct {
+	repo *Repository
+}
 
 // NewServer creates a new leaderboard service server
 func NewServer() *Server {
-	return &Server{}
+	db := database.GetDB()
+	if db == nil {
+		log.Fatal("Database not initialized")
+	}
+
+	return &Server{
+		repo: NewRepository(db),
+	}
 }
 
 // UpdateRoomLeaderboard updates a player's score in the room leaderboard
@@ -31,8 +41,8 @@ func (s *Server) UpdateRoomLeaderboard(
 	// - Store in database
 
 	res := connect.NewResponse(&pb.UpdateRoomLeaderboardResponse{
-		Score:                req.Msg.Score,
-		PlaceInLeaderBoard:   req.Msg.PlaceInLeaderBoard,
+		Score:              req.Msg.Score,
+		PlaceInLeaderBoard: req.Msg.PlaceInLeaderBoard,
 	})
 
 	return res, nil
@@ -112,30 +122,32 @@ func (s *Server) PaginateGlobalLeaderboard(
 	ctx context.Context,
 	req *connect.Request[pb.PaginateGlobalLeaderboardRequest],
 ) (*connect.Response[pb.PaginateGlobalLeaderboardResponse], error) {
-	log.Printf("PaginateGlobalLeaderboard request received, page: %d", req.Msg.Page)
+	page := int(req.Msg.Page)
+	if page < 1 {
+		page = 1
+	}
+	limit := 10 // Default page size
 
-	// TODO: Implement actual pagination logic
-	// - Query database for global leaderboard
-	// - Apply pagination (page, limit)
-	// - Fetch all players' scores
-	// - Sort by total score
-	// - Return paginated leaderboard data
+	log.Printf("PaginateGlobalLeaderboard request received, page: %d", page)
+
+	// Query database for global leaderboard
+	players, err := s.repo.GetGlobalLeaderboard(ctx, page, limit)
+	if err != nil {
+		log.Printf("Error fetching global leaderboard: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	// Convert to proto format
+	pbPlayers := make([]*pb.LeaderboardPlayer, len(players))
+	for i, player := range players {
+		pbPlayers[i] = &pb.LeaderboardPlayer{
+			Name:  player.DisplayName,
+			Score: int32(player.TotalScore),
+		}
+	}
 
 	res := connect.NewResponse(&pb.PaginateGlobalLeaderboardResponse{
-		Players: []*pb.LeaderboardPlayer{
-			{
-				Name:  "Global Player 1",
-				Score: 500,
-			},
-			{
-				Name:  "Global Player 2",
-				Score: 450,
-			},
-			{
-				Name:  "Global Player 3",
-				Score: 400,
-			},
-		},
+		Players: pbPlayers,
 	})
 
 	return res, nil

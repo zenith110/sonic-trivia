@@ -4,5 +4,7 @@ export { DeleteTrivia } from "./DeleteTrivia";
 export { CreateSong } from "./CreateSong";
 export { UpdateSong } from "./UpdateSong";
 export { DeleteSong } from "./DeleteSong";
-export { Categories } from "./Categories";
 export { Leaderboard } from "./Leaderboard";
+export { Login } from "./Login";
+export { MainMenu } from "./MainMenu";
+export { MultiplayerLobby } from "./MultiplayerLobby";

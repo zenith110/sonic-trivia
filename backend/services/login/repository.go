@@ -23,19 +23,20 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
 
-// CreateUser creates a new user in the database
-func (r *Repository) CreateUser(ctx context.Context, username, email, password string) (*database.User, error) {
+// CreateUser creates a new player in the database
+func (r *Repository) CreateUser(ctx context.Context, username, email, password string) (*database.Player, error) {
 	// Hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
-	user := &database.User{
+	user := &database.Player{
 		Username:     username,
 		Email:        email,
 		PasswordHash: string(hashedPassword),
 		DisplayName:  username,
+		Role:         "player",
 		TotalScore:   0,
 		GamesPlayed:  0,
 	}
@@ -47,9 +48,9 @@ func (r *Repository) CreateUser(ctx context.Context, username, email, password s
 	return user, nil
 }
 
-// GetUserByEmail retrieves a user by email
-func (r *Repository) GetUserByEmail(ctx context.Context, email string) (*database.User, error) {
-	var user database.User
+// GetUserByEmail retrieves a player by email
+func (r *Repository) GetUserByEmail(ctx context.Context, email string) (*database.Player, error) {
+	var user database.Player
 	err := r.db.WithContext(ctx).
 		Where("email = ?", email).
 		First(&user).Error
@@ -60,9 +61,9 @@ func (r *Repository) GetUserByEmail(ctx context.Context, email string) (*databas
 	return &user, nil
 }
 
-// GetUserByUsername retrieves a user by username
-func (r *Repository) GetUserByUsername(ctx context.Context, username string) (*database.User, error) {
-	var user database.User
+// GetUserByUsername retrieves a player by username
+func (r *Repository) GetUserByUsername(ctx context.Context, username string) (*database.Player, error) {
+	var user database.Player
 	err := r.db.WithContext(ctx).
 		Where("username = ?", username).
 		First(&user).Error
@@ -73,9 +74,9 @@ func (r *Repository) GetUserByUsername(ctx context.Context, username string) (*d
 	return &user, nil
 }
 
-// GetUserByID retrieves a user by ID
-func (r *Repository) GetUserByID(ctx context.Context, userID string) (*database.User, error) {
-	var user database.User
+// GetUserByID retrieves a player by ID
+func (r *Repository) GetUserByID(ctx context.Context, userID string) (*database.Player, error) {
+	var user database.Player
 	err := r.db.WithContext(ctx).
 		Where("id = ?", userID).
 		First(&user).Error
@@ -91,11 +92,11 @@ func (r *Repository) VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-// UserExists checks if a user exists by email or username
+// UserExists checks if a player exists by email or username
 func (r *Repository) UserExists(ctx context.Context, email, username string) (bool, error) {
 	var count int64
 	err := r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("email = ? OR username = ?", email, username).
 		Count(&count).Error
 
@@ -105,22 +106,22 @@ func (r *Repository) UserExists(ctx context.Context, email, username string) (bo
 	return count > 0, nil
 }
 
-// UpdateUser updates user information
-func (r *Repository) UpdateUser(ctx context.Context, user *database.User) error {
+// UpdateUser updates player information
+func (r *Repository) UpdateUser(ctx context.Context, user *database.Player) error {
 	return r.db.WithContext(ctx).Save(user).Error
 }
 
-// CreateOrUpdateSocialUser creates or updates a user from social media login
-func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displayName, provider string) (*database.User, error) {
-	var user database.User
+// CreateOrUpdateSocialUser creates or updates a player from social media login
+func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displayName, provider string) (*database.Player, error) {
+	var user database.Player
 
-	// Try to find existing user by email
+	// Try to find existing player by email
 	err := r.db.WithContext(ctx).
 		Where("email = ?", email).
 		First(&user).Error
 
 	if err == gorm.ErrRecordNotFound {
-		// Create new user
+		// Create new player
 		// Generate a random password hash (won't be used for social login)
 		randomBytes := make([]byte, 32)
 		if _, err := rand.Read(randomBytes); err != nil {
@@ -132,11 +133,12 @@ func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displa
 			return nil, fmt.Errorf("failed to hash password: %w", err)
 		}
 
-		user = database.User{
+		user = database.Player{
 			Username:     email, // Use email as username for social login
 			Email:        email,
 			DisplayName:  displayName,
 			PasswordHash: string(hashedPassword),
+			Role:         "player",
 			TotalScore:   0,
 			GamesPlayed:  0,
 		}
@@ -147,7 +149,7 @@ func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displa
 	} else if err != nil {
 		return nil, err
 	} else {
-		// Update existing user's display name if changed
+		// Update existing player's display name if changed
 		if user.DisplayName != displayName {
 			user.DisplayName = displayName
 			if err := r.db.WithContext(ctx).Save(&user).Error; err != nil {
@@ -159,36 +161,36 @@ func (r *Repository) CreateOrUpdateSocialUser(ctx context.Context, email, displa
 	return &user, nil
 }
 
-// UpdateLastLogin updates the user's last login timestamp
+// UpdateLastLogin updates the player's last login timestamp
 func (r *Repository) UpdateLastLogin(ctx context.Context, userID string) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Update("updated_at", time.Now()).Error
 }
 
-// IncrementGamesPlayed increments the user's games played count
+// IncrementGamesPlayed increments the player's games played count
 func (r *Repository) IncrementGamesPlayed(ctx context.Context, userID string) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Update("games_played", gorm.Expr("games_played + ?", 1)).Error
 }
 
-// UpdateUserScore updates the user's total score
+// UpdateUserScore updates the player's total score
 func (r *Repository) UpdateUserScore(ctx context.Context, userID string, scoreToAdd int64) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Updates(map[string]interface{}{
 			"total_score": gorm.Expr("total_score + ?", scoreToAdd),
 		}).Error
 }
 
-// RecordAnswer records a user's answer to a question
+// RecordAnswer records a player's answer to a question
 func (r *Repository) RecordAnswer(ctx context.Context, userID, questionID, answerID string, isCorrect bool, pointsEarned int32) error {
-	userAnswer := &database.UserAnswer{
-		UserID:       userID,
+	userAnswer := &database.PlayerAnswer{
+		PlayerID:     userID,
 		QuestionID:   questionID,
 		AnswerID:     answerID,
 		IsCorrect:    isCorrect,

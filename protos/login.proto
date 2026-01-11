@@ -2,7 +2,10 @@ syntax = "proto3";
 
 package protos;
 
+import "player.proto";
+
 option go_package = "sonic-trivia/backend/protos";
+
 service LoginService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc SocialMediaLogin(SocialMediaLoginRequest) returns (SocialMediaLoginResponse) {}
@@ -10,10 +13,8 @@ service LoginService {
 }
 
 message SignUpUsernameOrEmailRequest {
-  oneof value {
-    string username = 1;
-    string email = 2;
-  }
+  string username = 1;
+  string email = 2;
   string password = 3;
 }
 
@@ -21,11 +22,14 @@ message SignUpUsernameOrEmailResponse {
   oneof value {
     string token = 1;
   }
-  string error = 2;
+  Player player = 2;
+  string error = 3;
 }
+
 message LoginResponseError {
   string error = 1;
 }
+
 message SocialMediaLoginRequest {
   string token = 1;
   string provider = 2;
@@ -41,7 +45,8 @@ message SocialMediaLoginResponse {
   oneof value {
     string validated_token = 1;
   }
-  string error = 2;
+  Player player = 2;
+  string error = 3;
 }
 
 message LoginRequest {
@@ -58,5 +63,6 @@ message LoginResponse {
     string token = 1;
     string validated_email_or_username_login = 2;
   }
-  string error = 3;
+  Player player = 3;
+  string error = 4;
 }

@@ -22,13 +22,10 @@ const (
 )
 
 type SignUpUsernameOrEmailRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Types that are valid to be assigned to Value:
-	//
-	//	*SignUpUsernameOrEmailRequest_Username
-	//	*SignUpUsernameOrEmailRequest_Email
-	Value         isSignUpUsernameOrEmailRequest_Value `protobuf_oneof:"value"`
-	Password      string                               `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -63,27 +60,16 @@ func (*SignUpUsernameOrEmailRequest) Descriptor() ([]byte, []int) {
 	return file_login_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *SignUpUsernameOrEmailRequest) GetValue() isSignUpUsernameOrEmailRequest_Value {
-	if x != nil {
-		return x.Value
-	}
-	return nil
-}
-
 func (x *SignUpUsernameOrEmailRequest) GetUsername() string {
 	if x != nil {
-		if x, ok := x.Value.(*SignUpUsernameOrEmailRequest_Username); ok {
-			return x.Username
-		}
+		return x.Username
 	}
 	return ""
 }
 
 func (x *SignUpUsernameOrEmailRequest) GetEmail() string {
 	if x != nil {
-		if x, ok := x.Value.(*SignUpUsernameOrEmailRequest_Email); ok {
-			return x.Email
-		}
+		return x.Email
 	}
 	return ""
 }
@@ -95,29 +81,14 @@ func (x *SignUpUsernameOrEmailRequest) GetPassword() string {
 	return ""
 }
 
-type isSignUpUsernameOrEmailRequest_Value interface {
-	isSignUpUsernameOrEmailRequest_Value()
-}
-
-type SignUpUsernameOrEmailRequest_Username struct {
-	Username string `protobuf:"bytes,1,opt,name=username,proto3,oneof"`
-}
-
-type SignUpUsernameOrEmailRequest_Email struct {
-	Email string `protobuf:"bytes,2,opt,name=email,proto3,oneof"`
-}
-
-func (*SignUpUsernameOrEmailRequest_Username) isSignUpUsernameOrEmailRequest_Value() {}
-
-func (*SignUpUsernameOrEmailRequest_Email) isSignUpUsernameOrEmailRequest_Value() {}
-
 type SignUpUsernameOrEmailResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Value:
 	//
 	//	*SignUpUsernameOrEmailResponse_Token
 	Value         isSignUpUsernameOrEmailResponse_Value `protobuf_oneof:"value"`
-	Error         string                                `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	Player        *Player                               `protobuf:"bytes,2,opt,name=player,proto3" json:"player,omitempty"`
+	Error         string                                `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -166,6 +137,13 @@ func (x *SignUpUsernameOrEmailResponse) GetToken() string {
 		}
 	}
 	return ""
+}
+
+func (x *SignUpUsernameOrEmailResponse) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
 }
 
 func (x *SignUpUsernameOrEmailResponse) GetError() string {
@@ -347,7 +325,8 @@ type SocialMediaLoginResponse struct {
 	//
 	//	*SocialMediaLoginResponse_ValidatedToken
 	Value         isSocialMediaLoginResponse_Value `protobuf_oneof:"value"`
-	Error         string                           `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	Player        *Player                          `protobuf:"bytes,2,opt,name=player,proto3" json:"player,omitempty"`
+	Error         string                           `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -396,6 +375,13 @@ func (x *SocialMediaLoginResponse) GetValidatedToken() string {
 		}
 	}
 	return ""
+}
+
+func (x *SocialMediaLoginResponse) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
 }
 
 func (x *SocialMediaLoginResponse) GetError() string {
@@ -528,7 +514,8 @@ type LoginResponse struct {
 	//	*LoginResponse_Token
 	//	*LoginResponse_ValidatedEmailOrUsernameLogin
 	Value         isLoginResponse_Value `protobuf_oneof:"value"`
-	Error         string                `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
+	Player        *Player               `protobuf:"bytes,3,opt,name=player,proto3" json:"player,omitempty"`
+	Error         string                `protobuf:"bytes,4,opt,name=error,proto3" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -588,6 +575,13 @@ func (x *LoginResponse) GetValidatedEmailOrUsernameLogin() string {
 	return ""
 }
 
+func (x *LoginResponse) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
 func (x *LoginResponse) GetError() string {
 	if x != nil {
 		return x.Error
@@ -615,15 +609,15 @@ var File_login_proto protoreflect.FileDescriptor
 
 const file_login_proto_rawDesc = "" +
 	"\n" +
-	"\vlogin.proto\x12\x06protos\"y\n" +
-	"\x1cSignUpUsernameOrEmailRequest\x12\x1c\n" +
-	"\busername\x18\x01 \x01(\tH\x00R\busername\x12\x16\n" +
-	"\x05email\x18\x02 \x01(\tH\x00R\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpasswordB\a\n" +
-	"\x05value\"V\n" +
+	"\vlogin.proto\x12\x06protos\x1a\fplayer.proto\"l\n" +
+	"\x1cSignUpUsernameOrEmailRequest\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\"~\n" +
 	"\x1dSignUpUsernameOrEmailResponse\x12\x16\n" +
-	"\x05token\x18\x01 \x01(\tH\x00R\x05token\x12\x14\n" +
-	"\x05error\x18\x02 \x01(\tR\x05errorB\a\n" +
+	"\x05token\x18\x01 \x01(\tH\x00R\x05token\x12&\n" +
+	"\x06player\x18\x02 \x01(\v2\x0e.protos.PlayerR\x06player\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05errorB\a\n" +
 	"\x05value\"*\n" +
 	"\x12LoginResponseError\x12\x14\n" +
 	"\x05error\x18\x01 \x01(\tR\x05error\"K\n" +
@@ -633,21 +627,23 @@ const file_login_proto_rawDesc = "" +
 	"\x0eSocialUserInfo\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x1a\n" +
-	"\bprovider\x18\x03 \x01(\tR\bprovider\"d\n" +
+	"\bprovider\x18\x03 \x01(\tR\bprovider\"\x8c\x01\n" +
 	"\x18SocialMediaLoginResponse\x12)\n" +
-	"\x0fvalidated_token\x18\x01 \x01(\tH\x00R\x0evalidatedToken\x12\x14\n" +
-	"\x05error\x18\x02 \x01(\tR\x05errorB\a\n" +
+	"\x0fvalidated_token\x18\x01 \x01(\tH\x00R\x0evalidatedToken\x12&\n" +
+	"\x06player\x18\x02 \x01(\v2\x0e.protos.PlayerR\x06player\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05errorB\a\n" +
 	"\x05value\"\x9f\x01\n" +
 	"\fLoginRequest\x12\x1c\n" +
 	"\busername\x18\x01 \x01(\tH\x00R\busername\x12\x16\n" +
 	"\x05email\x18\x02 \x01(\tH\x00R\x05email\x124\n" +
 	"\x15social_media_provider\x18\x03 \x01(\tH\x00R\x13socialMediaProvider\x12\x1a\n" +
 	"\bpassword\x18\x04 \x01(\tR\bpasswordB\a\n" +
-	"\x05value\"\x92\x01\n" +
+	"\x05value\"\xba\x01\n" +
 	"\rLoginResponse\x12\x16\n" +
 	"\x05token\x18\x01 \x01(\tH\x00R\x05token\x12J\n" +
-	"!validated_email_or_username_login\x18\x02 \x01(\tH\x00R\x1dvalidatedEmailOrUsernameLogin\x12\x14\n" +
-	"\x05error\x18\x03 \x01(\tR\x05errorB\a\n" +
+	"!validated_email_or_username_login\x18\x02 \x01(\tH\x00R\x1dvalidatedEmailOrUsernameLogin\x12&\n" +
+	"\x06player\x18\x03 \x01(\v2\x0e.protos.PlayerR\x06player\x12\x14\n" +
+	"\x05error\x18\x04 \x01(\tR\x05errorB\a\n" +
 	"\x05value2\x87\x02\n" +
 	"\fLoginService\x126\n" +
 	"\x05Login\x12\x14.protos.LoginRequest\x1a\x15.protos.LoginResponse\"\x00\x12W\n" +
@@ -676,19 +672,23 @@ var file_login_proto_goTypes = []any{
 	(*SocialMediaLoginResponse)(nil),      // 5: protos.SocialMediaLoginResponse
 	(*LoginRequest)(nil),                  // 6: protos.LoginRequest
 	(*LoginResponse)(nil),                 // 7: protos.LoginResponse
+	(*Player)(nil),                        // 8: protos.Player
 }
 var file_login_proto_depIdxs = []int32{
-	6, // 0: protos.LoginService.Login:input_type -> protos.LoginRequest
-	3, // 1: protos.LoginService.SocialMediaLogin:input_type -> protos.SocialMediaLoginRequest
-	0, // 2: protos.LoginService.SignUpUsernameOrEmail:input_type -> protos.SignUpUsernameOrEmailRequest
-	7, // 3: protos.LoginService.Login:output_type -> protos.LoginResponse
-	5, // 4: protos.LoginService.SocialMediaLogin:output_type -> protos.SocialMediaLoginResponse
-	1, // 5: protos.LoginService.SignUpUsernameOrEmail:output_type -> protos.SignUpUsernameOrEmailResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	8, // 0: protos.SignUpUsernameOrEmailResponse.player:type_name -> protos.Player
+	8, // 1: protos.SocialMediaLoginResponse.player:type_name -> protos.Player
+	8, // 2: protos.LoginResponse.player:type_name -> protos.Player
+	6, // 3: protos.LoginService.Login:input_type -> protos.LoginRequest
+	3, // 4: protos.LoginService.SocialMediaLogin:input_type -> protos.SocialMediaLoginRequest
+	0, // 5: protos.LoginService.SignUpUsernameOrEmail:input_type -> protos.SignUpUsernameOrEmailRequest
+	7, // 6: protos.LoginService.Login:output_type -> protos.LoginResponse
+	5, // 7: protos.LoginService.SocialMediaLogin:output_type -> protos.SocialMediaLoginResponse
+	1, // 8: protos.LoginService.SignUpUsernameOrEmail:output_type -> protos.SignUpUsernameOrEmailResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_login_proto_init() }
@@ -696,10 +696,7 @@ func file_login_proto_init() {
 	if File_login_proto != nil {
 		return
 	}
-	file_login_proto_msgTypes[0].OneofWrappers = []any{
-		(*SignUpUsernameOrEmailRequest_Username)(nil),
-		(*SignUpUsernameOrEmailRequest_Email)(nil),
-	}
+	file_player_proto_init()
 	file_login_proto_msgTypes[1].OneofWrappers = []any{
 		(*SignUpUsernameOrEmailResponse_Token)(nil),
 	}

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Database
@@ -34,14 +34,25 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      # Environment Configuration
+      ENVIRONMENT: development
+
       # Database Configuration
-      DATABASE_URL: postgresql://sonic_trivia:sonic_trivia_pass@postgres:5432/sonic_trivia?sslmode=disable
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: sonic_trivia
+      DB_PASSWORD: sonic_trivia_pass
+      DB_NAME: sonic_trivia
+      DB_SSLMODE: disable
 
       # JWT Configuration
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
 
       # Server Configuration
       GRPC_PORT: 8080
+
+      # CORS Configuration
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
 
       # Cloudflare R2 Storage (Optional - uncomment and fill in if using)
       # R2_ACCOUNT_ID: your-account-id
@@ -59,28 +70,8 @@ services:
       retries: 3
       start_period: 40s
 
-  # pgAdmin (Optional - Database Management UI)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: sonic-trivia-pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@sonictrivia.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgres
-    networks:
-      - sonic-trivia-network
-
 volumes:
   postgres_data:
-    driver: local
-  pgadmin_data:
     driver: local
 
 networks:

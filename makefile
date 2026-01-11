@@ -81,7 +81,14 @@ docker-up:
 	@echo "   pgAdmin:  http://localhost:5050"
 	@echo ""
 	@echo "Use 'make docker-logs' to view logs"
-
+dev-db-reset: ## Reset database with docker-compose (remove volume and restart)
+	@echo "🐳 Resetting database with docker-compose..."
+	docker-compose down -v --remove-orphans
+	@echo "Removing database volume..."
+	docker volume rm sonic-trivia_postgres_data 2>/dev/null || echo "Volume already removed"
+	@echo "Starting fresh services..."
+	docker-compose up --build
+	@echo "✅ Database reset complete"
 # Stop all services
 docker-down:
 	@echo "Stopping services..."

@@ -7,9 +7,13 @@ import { CreateSong } from "@/pages/CreateSong";
 import { UpdateSong } from "@/pages/UpdateSong";
 import { DeleteSong } from "@/pages/DeleteSong";
 import { Leaderboard } from "@/pages/Leaderboard";
+import { MainMenu } from "@/pages/MainMenu";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import "./App.css";
 
 type PageType =
+  | "main-menu"
+  | "dashboard"
   | "trivia-create"
   | "trivia-update"
   | "trivia-delete"
@@ -19,10 +23,49 @@ type PageType =
   | "leaderboard";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>("trivia-create");
+  const [currentPage, setCurrentPage] = useState<PageType>("main-menu");
+  const [dashboardPage, setDashboardPage] =
+    useState<Exclude<PageType, "main-menu" | "dashboard">>("trivia-create");
+
+  const handleDashboardPageChange = (page: PageType) => {
+    if (page !== "main-menu" && page !== "dashboard") {
+      setDashboardPage(page);
+    }
+  };
 
   const renderPage = () => {
     switch (currentPage) {
+      case "main-menu":
+        return (
+          <MainMenu
+            onNavigateToDashboard={() => setCurrentPage("dashboard")}
+            onNavigateToLeaderboard={() => setCurrentPage("leaderboard")}
+          />
+        );
+      case "dashboard":
+        return (
+          <Dashboard
+            currentPage={dashboardPage}
+            onPageChange={handleDashboardPageChange}
+            onBackToMenu={() => setCurrentPage("main-menu")}
+          >
+            {renderDashboardPage()}
+          </Dashboard>
+        );
+      case "leaderboard":
+        return <Leaderboard onBack={() => setCurrentPage("main-menu")} />;
+      default:
+        return (
+          <MainMenu
+            onNavigateToDashboard={() => setCurrentPage("dashboard")}
+            onNavigateToLeaderboard={() => setCurrentPage("leaderboard")}
+          />
+        );
+    }
+  };
+
+  const renderDashboardPage = () => {
+    switch (dashboardPage) {
       case "trivia-create":
         return <CreateTrivia />;
       case "trivia-update":
@@ -42,11 +85,7 @@ function App() {
     }
   };
 
-  return (
-    <Dashboard currentPage={currentPage} onPageChange={setCurrentPage}>
-      {renderPage()}
-    </Dashboard>
-  );
+  return <ProtectedRoute>{renderPage()}</ProtectedRoute>;
 }
 
 export default App;

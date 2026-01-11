@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 // CORSConfig holds configuration for CORS middleware
@@ -57,16 +59,13 @@ func CORS(config CORSConfig) func(http.Handler) http.Handler {
 			// Check if origin is allowed
 			allowedOrigin := ""
 			for _, allowed := range config.AllowedOrigins {
-				if allowed == "*" || allowed == origin {
-					allowedOrigin = allowed
+				if allowed == "*" {
+					allowedOrigin = "*"
 					break
 				}
-			}
-
-			// If no specific origin matched and wildcard is allowed, use the request origin
-			if allowedOrigin == "" && len(config.AllowedOrigins) > 0 {
-				if config.AllowedOrigins[0] == "*" {
-					allowedOrigin = "*"
+				if allowed == origin {
+					allowedOrigin = origin
+					break
 				}
 			}
 
@@ -80,36 +79,15 @@ func CORS(config CORSConfig) func(http.Handler) http.Handler {
 				}
 
 				if len(config.AllowedMethods) > 0 {
-					methods := ""
-					for i, method := range config.AllowedMethods {
-						if i > 0 {
-							methods += ", "
-						}
-						methods += method
-					}
-					w.Header().Set("Access-Control-Allow-Methods", methods)
+					w.Header().Set("Access-Control-Allow-Methods", strings.Join(config.AllowedMethods, ", "))
 				}
 
 				if len(config.AllowedHeaders) > 0 {
-					headers := ""
-					for i, header := range config.AllowedHeaders {
-						if i > 0 {
-							headers += ", "
-						}
-						headers += header
-					}
-					w.Header().Set("Access-Control-Allow-Headers", headers)
+					w.Header().Set("Access-Control-Allow-Headers", strings.Join(config.AllowedHeaders, ", "))
 				}
 
 				if len(config.ExposedHeaders) > 0 {
-					exposed := ""
-					for i, header := range config.ExposedHeaders {
-						if i > 0 {
-							exposed += ", "
-						}
-						exposed += header
-					}
-					w.Header().Set("Access-Control-Expose-Headers", exposed)
+					w.Header().Set("Access-Control-Expose-Headers", strings.Join(config.ExposedHeaders, ", "))
 				}
 
 				if config.AllowCredentials {
@@ -117,7 +95,7 @@ func CORS(config CORSConfig) func(http.Handler) http.Handler {
 				}
 
 				if config.MaxAge > 0 {
-					w.Header().Set("Access-Control-Max-Age", string(rune(config.MaxAge)))
+					w.Header().Set("Access-Control-Max-Age", fmt.Sprintf("%d", config.MaxAge))
 				}
 			}
 

@@ -98,6 +98,50 @@ func (x *SonicCharacter) GetLastUsed() *timestamppb.Timestamp {
 	return nil
 }
 
+type FriendList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FriendList) Reset() {
+	*x = FriendList{}
+	mi := &file_player_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FriendList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FriendList) ProtoMessage() {}
+
+func (x *FriendList) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FriendList.ProtoReflect.Descriptor instead.
+func (*FriendList) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *FriendList) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
 type Player struct {
 	state                  protoimpl.MessageState `protogen:"open.v1"`
 	Name                   string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -107,13 +151,15 @@ type Player struct {
 	TotalPoints            int64                  `protobuf:"varint,6,opt,name=total_points,json=totalPoints,proto3" json:"total_points,omitempty"`
 	TotalSuccessfulAnswers int64                  `protobuf:"varint,7,opt,name=total_successful_answers,json=totalSuccessfulAnswers,proto3" json:"total_successful_answers,omitempty"`
 	TotalAnswers           int64                  `protobuf:"varint,8,opt,name=total_answers,json=totalAnswers,proto3" json:"total_answers,omitempty"`
+	Role                   string                 `protobuf:"bytes,9,opt,name=role,proto3" json:"role,omitempty"`
+	Friends                []*FriendList          `protobuf:"bytes,10,rep,name=friends,proto3" json:"friends,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Player) Reset() {
 	*x = Player{}
-	mi := &file_player_proto_msgTypes[1]
+	mi := &file_player_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -125,7 +171,7 @@ func (x *Player) String() string {
 func (*Player) ProtoMessage() {}
 
 func (x *Player) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[1]
+	mi := &file_player_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -138,7 +184,7 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Player.ProtoReflect.Descriptor instead.
 func (*Player) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{1}
+	return file_player_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Player) GetName() string {
@@ -190,6 +236,20 @@ func (x *Player) GetTotalAnswers() int64 {
 	return 0
 }
 
+func (x *Player) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *Player) GetFriends() []*FriendList {
+	if x != nil {
+		return x.Friends
+	}
+	return nil
+}
+
 var File_player_proto protoreflect.FileDescriptor
 
 const file_player_proto_rawDesc = "" +
@@ -200,7 +260,10 @@ const file_player_proto_rawDesc = "" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12'\n" +
 	"\x0fprofile_picture\x18\x03 \x01(\tR\x0eprofilePicture\x12'\n" +
 	"\x0fspecial_ability\x18\x04 \x01(\tR\x0especialAbility\x127\n" +
-	"\tlast_used\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\blastUsed\"\x9c\x02\n" +
+	"\tlast_used\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\blastUsed\"(\n" +
+	"\n" +
+	"FriendList\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\"\xde\x02\n" +
 	"\x06Player\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12%\n" +
@@ -208,7 +271,10 @@ const file_player_proto_rawDesc = "" +
 	"\x0fsonic_character\x18\x05 \x03(\v2\x16.protos.SonicCharacterR\x0esonicCharacter\x12!\n" +
 	"\ftotal_points\x18\x06 \x01(\x03R\vtotalPoints\x128\n" +
 	"\x18total_successful_answers\x18\a \x01(\x03R\x16totalSuccessfulAnswers\x12#\n" +
-	"\rtotal_answers\x18\b \x01(\x03R\ftotalAnswersB\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"\rtotal_answers\x18\b \x01(\x03R\ftotalAnswers\x12\x12\n" +
+	"\x04role\x18\t \x01(\tR\x04role\x12,\n" +
+	"\afriends\x18\n" +
+	" \x03(\v2\x12.protos.FriendListR\afriendsB\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_player_proto_rawDescOnce sync.Once
@@ -222,20 +288,22 @@ func file_player_proto_rawDescGZIP() []byte {
 	return file_player_proto_rawDescData
 }
 
-var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_player_proto_goTypes = []any{
 	(*SonicCharacter)(nil),        // 0: protos.SonicCharacter
-	(*Player)(nil),                // 1: protos.Player
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*FriendList)(nil),            // 1: protos.FriendList
+	(*Player)(nil),                // 2: protos.Player
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_player_proto_depIdxs = []int32{
-	2, // 0: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
+	3, // 0: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
 	0, // 1: protos.Player.sonic_character:type_name -> protos.SonicCharacter
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 2: protos.Player.friends:type_name -> protos.FriendList
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_player_proto_init() }
@@ -249,7 +317,7 @@ func file_player_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_player_proto_rawDesc), len(file_player_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

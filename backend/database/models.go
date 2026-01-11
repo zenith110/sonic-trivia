@@ -15,8 +15,8 @@ type Question struct {
 	Points             int32   `gorm:"not null;default:10"`
 	PictureForQuestion string  `gorm:"type:text"`                                         // Legacy field
 	PictureURL         *string `gorm:"type:text"`                                         // Optional picture URL
-	CreatedBy          string  `gorm:"type:uuid;index"`                                   // User ID who created the question
-	Creator            User    `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to User
+	CreatedBy          string  `gorm:"type:uuid;index"`                                   // Player ID who created the question
+	Creator            Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
@@ -57,8 +57,8 @@ type Song struct {
 	ClipDuration  int32   `gorm:"not null;default:15"` // Duration in seconds
 	AudioURL      string  `gorm:"not null;type:text"`
 	PictureURL    *string `gorm:"type:text"`                                         // Optional picture URL
-	CreatedBy     string  `gorm:"type:uuid;index"`                                   // User ID who created the song
-	Creator       User    `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to User
+	CreatedBy     string  `gorm:"type:uuid;index"`                                   // Player ID who created the song
+	Creator       Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
@@ -75,13 +75,14 @@ type SongHint struct {
 	UpdatedAt time.Time
 }
 
-// User represents a player in the system
-type User struct {
+// Player represents a player in the system
+type Player struct {
 	ID                string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	Username          string `gorm:"uniqueIndex;not null;type:varchar(100)"`
 	Email             string `gorm:"uniqueIndex;not null;type:varchar(255)"`
 	PasswordHash      string `gorm:"not null;type:text"`
 	DisplayName       string `gorm:"type:varchar(100)"`
+	Role              string `gorm:"not null;default:'player';type:varchar(50)"` // Role: "admin", "player", etc.
 	TotalScore        int64  `gorm:"not null;default:0"`
 	GamesPlayed       int64  `gorm:"not null;default:0"`
 	QuestionsAnswered int64  `gorm:"not null;default:0"`
@@ -89,13 +90,13 @@ type User struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt `gorm:"index"`
-	AnsweredQuestions []UserAnswer   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	AnsweredQuestions []PlayerAnswer `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
 }
 
-// UserAnswer represents a user's answer to a question
-type UserAnswer struct {
+// PlayerAnswer represents a player's answer to a question
+type PlayerAnswer struct {
 	ID           string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	UserID       string    `gorm:"not null;type:uuid;index"`
+	PlayerID     string    `gorm:"not null;type:uuid;index"`
 	QuestionID   string    `gorm:"not null;type:uuid;index"`
 	AnswerID     string    `gorm:"not null;type:uuid"`
 	IsCorrect    bool      `gorm:"not null"`
@@ -108,8 +109,8 @@ type UserAnswer struct {
 // LeaderboardEntry represents a leaderboard entry
 type LeaderboardEntry struct {
 	ID          string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	UserID      string    `gorm:"not null;type:uuid;index"`
-	User        User      `gorm:"foreignKey:UserID"`
+	PlayerID    string    `gorm:"not null;type:uuid;index"`
+	Player      Player    `gorm:"foreignKey:PlayerID"`
 	Score       int64     `gorm:"not null;default:0"`
 	Rank        int       `gorm:"not null;default:0"`
 	Period      string    `gorm:"not null;type:varchar(50);index"` // "daily", "weekly", "monthly", "all-time"
@@ -140,12 +141,12 @@ func (SongHint) TableName() string {
 	return "song_hints"
 }
 
-func (User) TableName() string {
-	return "users"
+func (Player) TableName() string {
+	return "players"
 }
 
-func (UserAnswer) TableName() string {
-	return "user_answers"
+func (PlayerAnswer) TableName() string {
+	return "player_answers"
 }
 
 func (LeaderboardEntry) TableName() string {

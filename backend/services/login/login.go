@@ -46,6 +46,18 @@ func NewServer() *Server {
 	}
 }
 
+// playerToProto converts a database.Player to a pb.Player proto message
+func playerToProto(player *database.Player) *pb.Player {
+	return &pb.Player{
+		Name:                   player.DisplayName,
+		Email:                  player.Email,
+		TotalPoints:            player.TotalScore,
+		TotalSuccessfulAnswers: player.CorrectAnswers,
+		TotalAnswers:           player.QuestionsAnswered,
+		Role:                   player.Role,
+	}
+}
+
 // generateJWT generates a JWT token for a user
 func (s *Server) generateJWT(userID, email string) (string, error) {
 	claims := jwt.MapClaims{
@@ -111,6 +123,7 @@ func (s *Server) Login(
 		Value: &pb.LoginResponse_Token{
 			Token: token,
 		},
+		Player: playerToProto(user),
 	})
 
 	return res, nil
@@ -169,6 +182,7 @@ func (s *Server) SocialMediaLogin(
 		Value: &pb.SocialMediaLoginResponse_ValidatedToken{
 			ValidatedToken: jwtToken,
 		},
+		Player: playerToProto(user),
 	})
 
 	return res, nil
@@ -232,6 +246,7 @@ func (s *Server) SignUpUsernameOrEmail(
 		Value: &pb.SignUpUsernameOrEmailResponse_Token{
 			Token: token,
 		},
+		Player: playerToProto(user),
 	})
 
 	return res, nil

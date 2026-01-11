@@ -9,7 +9,9 @@ import {
   Trash2,
   ListChecks,
   Music,
+  User,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +34,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 type PageType =
+  | "main-menu"
   | "trivia-create"
   | "trivia-update"
   | "trivia-delete"
@@ -44,15 +47,17 @@ interface DashboardProps {
   children?: React.ReactNode;
   currentPage?: PageType;
   onPageChange?: (page: PageType) => void;
+  onBackToMenu?: () => void;
 }
 
 export function Dashboard({
   children,
   currentPage,
   onPageChange,
+  onBackToMenu,
 }: DashboardProps) {
   const [activePage, setActivePage] = useState<PageType>(
-    currentPage || "trivia-create",
+    currentPage || "main-menu",
   );
   const [isTriviaOpen, setIsTriviaOpen] = useState(true);
   const [isGuessSongOpen, setIsGuessSongOpen] = useState(false);
@@ -64,9 +69,10 @@ export function Dashboard({
     }
   };
 
+  const { user, logout } = useAuth();
+
   const handleSignOut = () => {
-    // TODO: Implement sign out logic
-    console.log("Signing out...");
+    logout();
   };
 
   return (
@@ -74,17 +80,24 @@ export function Dashboard({
       <div className="flex min-h-screen w-full">
         <Sidebar>
           <SidebarHeader className="border-b px-6 py-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Home className="h-4 w-4" />
+            {user && (
+              <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted p-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <User className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-medium truncate">
+                    {user.displayName || user.username}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Score: {user.totalScore} • Role: {user.role}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold">Sonic Trivia</span>
-                <span className="text-xs text-muted-foreground">
-                  Admin Dashboard
-                </span>
-              </div>
-            </div>
+            )}
           </SidebarHeader>
 
           <SidebarContent>
@@ -92,6 +105,19 @@ export function Dashboard({
               <SidebarGroupLabel>Navigation</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
+                  {/* Back to Main Menu */}
+                  {onBackToMenu && (
+                    <>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton onClick={onBackToMenu}>
+                          <Home className="h-4 w-4" />
+                          <span>Back to Main Menu</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <Separator className="my-2" />
+                    </>
+                  )}
+
                   {/* Trivia Section with Collapsible */}
                   <Collapsible
                     open={isTriviaOpen}

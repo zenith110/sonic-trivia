@@ -13,6 +13,9 @@ message SonicCharacter {
   string special_ability = 4;
   google.protobuf.Timestamp last_used = 5;
 }
+message FriendList {
+  string username = 1;
+}
 message Player {
   string name = 1;
   string email = 3;
@@ -21,4 +24,6 @@ message Player {
   int64 total_points = 6;
   int64 total_successful_answers = 7;
   int64 total_answers = 8;
+  string role = 9;
+  repeated FriendList friends = 10;
 }

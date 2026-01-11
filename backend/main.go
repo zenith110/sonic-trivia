@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -34,11 +35,38 @@ func main() {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
+	// Seed development data
+	if err := database.SeedDevData(); err != nil {
+		log.Printf("Warning: Failed to seed development data: %v", err)
+	}
+
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
 		port = "8080"
 		log.Printf("GRPC_PORT not set, defaulting to %s", port)
 	}
+
+	// Configure CORS
+	corsConfig := middleware.DefaultCORSConfig()
+
+	// Allow specific origins from environment variable
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	if allowedOrigins != "" {
+		// Split by comma for multiple origins
+		corsConfig.AllowedOrigins = []string{}
+		origins := strings.Split(allowedOrigins, ",")
+		for _, origin := range origins {
+			origin = strings.TrimSpace(origin)
+			if origin != "" {
+				corsConfig.AllowedOrigins = append(corsConfig.AllowedOrigins, origin)
+			}
+		}
+		log.Printf("CORS allowed origins: %v", corsConfig.AllowedOrigins)
+	} else {
+		log.Printf("ALLOWED_ORIGINS not set, using default: %v", corsConfig.AllowedOrigins)
+	}
+
+	corsMiddleware := middleware.CORS(corsConfig)
 
 	// Create service instances
 	loginServer := login.NewServer()
@@ -91,10 +119,11 @@ func main() {
 
 	// Create HTTP server with h2c (HTTP/2 Cleartext) support
 	// This allows HTTP/2 without TLS, which Connect can use
+	// Wrap with CORS middleware
 	addr := fmt.Sprintf(":%s", port)
 	server := &http.Server{
 		Addr:    addr,
-		Handler: h2c.NewHandler(mux, &http2.Server{}),
+		Handler: corsMiddleware(h2c.NewHandler(mux, &http2.Server{})),
 	}
 
 	log.Printf("Connect RPC server listening on %s", addr)

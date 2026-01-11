@@ -4,34 +4,29 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Player } from "./player_pb";
+import { file_player } from "./player_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file login.proto.
  */
 export const file_login: GenFile = /*@__PURE__*/
-  fileDesc("Cgtsb2dpbi5wcm90bxIGcHJvdG9zIl4KHFNpZ25VcFVzZXJuYW1lT3JFbWFpbFJlcXVlc3QSEgoIdXNlcm5hbWUYASABKAlIABIPCgVlbWFpbBgCIAEoCUgAEhAKCHBhc3N3b3JkGAMgASgJQgcKBXZhbHVlIkgKHVNpZ25VcFVzZXJuYW1lT3JFbWFpbFJlc3BvbnNlEg8KBXRva2VuGAEgASgJSAASDQoFZXJyb3IYAiABKAlCBwoFdmFsdWUiIwoSTG9naW5SZXNwb25zZUVycm9yEg0KBWVycm9yGAEgASgJIjoKF1NvY2lhbE1lZGlhTG9naW5SZXF1ZXN0Eg0KBXRva2VuGAEgASgJEhAKCHByb3ZpZGVyGAIgASgJIkcKDlNvY2lhbFVzZXJJbmZvEg0KBWVtYWlsGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIQCghwcm92aWRlchgDIAEoCSJNChhTb2NpYWxNZWRpYUxvZ2luUmVzcG9uc2USGQoPdmFsaWRhdGVkX3Rva2VuGAEgASgJSAASDQoFZXJyb3IYAiABKAlCBwoFdmFsdWUibwoMTG9naW5SZXF1ZXN0EhIKCHVzZXJuYW1lGAEgASgJSAASDwoFZW1haWwYAiABKAlIABIfChVzb2NpYWxfbWVkaWFfcHJvdmlkZXIYAyABKAlIABIQCghwYXNzd29yZBgEIAEoCUIHCgV2YWx1ZSJlCg1Mb2dpblJlc3BvbnNlEg8KBXRva2VuGAEgASgJSAASKwohdmFsaWRhdGVkX2VtYWlsX29yX3VzZXJuYW1lX2xvZ2luGAIgASgJSAASDQoFZXJyb3IYAyABKAlCBwoFdmFsdWUyhwIKDExvZ2luU2VydmljZRI2CgVMb2dpbhIULnByb3Rvcy5Mb2dpblJlcXVlc3QaFS5wcm90b3MuTG9naW5SZXNwb25zZSIAElcKEFNvY2lhbE1lZGlhTG9naW4SHy5wcm90b3MuU29jaWFsTWVkaWFMb2dpblJlcXVlc3QaIC5wcm90b3MuU29jaWFsTWVkaWFMb2dpblJlc3BvbnNlIgASZgoVU2lnblVwVXNlcm5hbWVPckVtYWlsEiQucHJvdG9zLlNpZ25VcFVzZXJuYW1lT3JFbWFpbFJlcXVlc3QaJS5wcm90b3MuU2lnblVwVXNlcm5hbWVPckVtYWlsUmVzcG9uc2UiAEIdWhtzb25pYy10cml2aWEvYmFja2VuZC9wcm90b3NiBnByb3RvMw");
+  fileDesc("Cgtsb2dpbi5wcm90bxIGcHJvdG9zIlEKHFNpZ25VcFVzZXJuYW1lT3JFbWFpbFJlcXVlc3QSEAoIdXNlcm5hbWUYASABKAkSDQoFZW1haWwYAiABKAkSEAoIcGFzc3dvcmQYAyABKAkiaAodU2lnblVwVXNlcm5hbWVPckVtYWlsUmVzcG9uc2USDwoFdG9rZW4YASABKAlIABIeCgZwbGF5ZXIYAiABKAsyDi5wcm90b3MuUGxheWVyEg0KBWVycm9yGAMgASgJQgcKBXZhbHVlIiMKEkxvZ2luUmVzcG9uc2VFcnJvchINCgVlcnJvchgBIAEoCSI6ChdTb2NpYWxNZWRpYUxvZ2luUmVxdWVzdBINCgV0b2tlbhgBIAEoCRIQCghwcm92aWRlchgCIAEoCSJHCg5Tb2NpYWxVc2VySW5mbxINCgVlbWFpbBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSEAoIcHJvdmlkZXIYAyABKAkibQoYU29jaWFsTWVkaWFMb2dpblJlc3BvbnNlEhkKD3ZhbGlkYXRlZF90b2tlbhgBIAEoCUgAEh4KBnBsYXllchgCIAEoCzIOLnByb3Rvcy5QbGF5ZXISDQoFZXJyb3IYAyABKAlCBwoFdmFsdWUibwoMTG9naW5SZXF1ZXN0EhIKCHVzZXJuYW1lGAEgASgJSAASDwoFZW1haWwYAiABKAlIABIfChVzb2NpYWxfbWVkaWFfcHJvdmlkZXIYAyABKAlIABIQCghwYXNzd29yZBgEIAEoCUIHCgV2YWx1ZSKFAQoNTG9naW5SZXNwb25zZRIPCgV0b2tlbhgBIAEoCUgAEisKIXZhbGlkYXRlZF9lbWFpbF9vcl91c2VybmFtZV9sb2dpbhgCIAEoCUgAEh4KBnBsYXllchgDIAEoCzIOLnByb3Rvcy5QbGF5ZXISDQoFZXJyb3IYBCABKAlCBwoFdmFsdWUyhwIKDExvZ2luU2VydmljZRI2CgVMb2dpbhIULnByb3Rvcy5Mb2dpblJlcXVlc3QaFS5wcm90b3MuTG9naW5SZXNwb25zZSIAElcKEFNvY2lhbE1lZGlhTG9naW4SHy5wcm90b3MuU29jaWFsTWVkaWFMb2dpblJlcXVlc3QaIC5wcm90b3MuU29jaWFsTWVkaWFMb2dpblJlc3BvbnNlIgASZgoVU2lnblVwVXNlcm5hbWVPckVtYWlsEiQucHJvdG9zLlNpZ25VcFVzZXJuYW1lT3JFbWFpbFJlcXVlc3QaJS5wcm90b3MuU2lnblVwVXNlcm5hbWVPckVtYWlsUmVzcG9uc2UiAEIdWhtzb25pYy10cml2aWEvYmFja2VuZC9wcm90b3NiBnByb3RvMw", [file_player]);
 
 /**
  * @generated from message protos.SignUpUsernameOrEmailRequest
  */
 export type SignUpUsernameOrEmailRequest = Message<"protos.SignUpUsernameOrEmailRequest"> & {
   /**
-   * @generated from oneof protos.SignUpUsernameOrEmailRequest.value
+   * @generated from field: string username = 1;
    */
-  value: {
-    /**
-     * @generated from field: string username = 1;
-     */
-    value: string;
-    case: "username";
-  } | {
-    /**
-     * @generated from field: string email = 2;
-     */
-    value: string;
-    case: "email";
-  } | { case: undefined; value?: undefined };
+  username: string;
+
+  /**
+   * @generated from field: string email = 2;
+   */
+  email: string;
 
   /**
    * @generated from field: string password = 3;
@@ -62,7 +57,12 @@ export type SignUpUsernameOrEmailResponse = Message<"protos.SignUpUsernameOrEmai
   } | { case: undefined; value?: undefined };
 
   /**
-   * @generated from field: string error = 2;
+   * @generated from field: protos.Player player = 2;
+   */
+  player?: Player;
+
+  /**
+   * @generated from field: string error = 3;
    */
   error: string;
 };
@@ -156,7 +156,12 @@ export type SocialMediaLoginResponse = Message<"protos.SocialMediaLoginResponse"
   } | { case: undefined; value?: undefined };
 
   /**
-   * @generated from field: string error = 2;
+   * @generated from field: protos.Player player = 2;
+   */
+  player?: Player;
+
+  /**
+   * @generated from field: string error = 3;
    */
   error: string;
 };
@@ -230,7 +235,12 @@ export type LoginResponse = Message<"protos.LoginResponse"> & {
   } | { case: undefined; value?: undefined };
 
   /**
-   * @generated from field: string error = 3;
+   * @generated from field: protos.Player player = 3;
+   */
+  player?: Player;
+
+  /**
+   * @generated from field: string error = 4;
    */
   error: string;
 };

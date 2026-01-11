@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file player.proto.
  */
 export const file_player: GenFile = /*@__PURE__*/
-  fileDesc("CgxwbGF5ZXIucHJvdG8SBnByb3RvcyKUAQoOU29uaWNDaGFyYWN0ZXISDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIXCg9wcm9maWxlX3BpY3R1cmUYAyABKAkSFwoPc3BlY2lhbF9hYmlsaXR5GAQgASgJEi0KCWxhc3RfdXNlZBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivQEKBlBsYXllchIMCgRuYW1lGAEgASgJEg0KBWVtYWlsGAMgASgJEhYKDnNvY2lhbHNfbGlua2VkGAQgASgJEi8KD3NvbmljX2NoYXJhY3RlchgFIAMoCzIWLnByb3Rvcy5Tb25pY0NoYXJhY3RlchIUCgx0b3RhbF9wb2ludHMYBiABKAMSIAoYdG90YWxfc3VjY2Vzc2Z1bF9hbnN3ZXJzGAcgASgDEhUKDXRvdGFsX2Fuc3dlcnMYCCABKANCHVobc29uaWMtdHJpdmlhL2JhY2tlbmQvcHJvdG9zYgZwcm90bzM", [file_google_protobuf_timestamp]);
+  fileDesc("CgxwbGF5ZXIucHJvdG8SBnByb3RvcyKUAQoOU29uaWNDaGFyYWN0ZXISDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIXCg9wcm9maWxlX3BpY3R1cmUYAyABKAkSFwoPc3BlY2lhbF9hYmlsaXR5GAQgASgJEi0KCWxhc3RfdXNlZBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiHgoKRnJpZW5kTGlzdBIQCgh1c2VybmFtZRgBIAEoCSLwAQoGUGxheWVyEgwKBG5hbWUYASABKAkSDQoFZW1haWwYAyABKAkSFgoOc29jaWFsc19saW5rZWQYBCABKAkSLwoPc29uaWNfY2hhcmFjdGVyGAUgAygLMhYucHJvdG9zLlNvbmljQ2hhcmFjdGVyEhQKDHRvdGFsX3BvaW50cxgGIAEoAxIgChh0b3RhbF9zdWNjZXNzZnVsX2Fuc3dlcnMYByABKAMSFQoNdG90YWxfYW5zd2VycxgIIAEoAxIMCgRyb2xlGAkgASgJEiMKB2ZyaWVuZHMYCiADKAsyEi5wcm90b3MuRnJpZW5kTGlzdEIdWhtzb25pYy10cml2aWEvYmFja2VuZC9wcm90b3NiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message protos.SonicCharacter
@@ -52,6 +52,23 @@ export const SonicCharacterSchema: GenMessage<SonicCharacter> = /*@__PURE__*/
   messageDesc(file_player, 0);
 
 /**
+ * @generated from message protos.FriendList
+ */
+export type FriendList = Message<"protos.FriendList"> & {
+  /**
+   * @generated from field: string username = 1;
+   */
+  username: string;
+};
+
+/**
+ * Describes the message protos.FriendList.
+ * Use `create(FriendListSchema)` to create a new message.
+ */
+export const FriendListSchema: GenMessage<FriendList> = /*@__PURE__*/
+  messageDesc(file_player, 1);
+
+/**
  * @generated from message protos.Player
  */
 export type Player = Message<"protos.Player"> & {
@@ -89,6 +106,16 @@ export type Player = Message<"protos.Player"> & {
    * @generated from field: int64 total_answers = 8;
    */
   totalAnswers: bigint;
+
+  /**
+   * @generated from field: string role = 9;
+   */
+  role: string;
+
+  /**
+   * @generated from field: repeated protos.FriendList friends = 10;
+   */
+  friends: FriendList[];
 };
 
 /**
@@ -96,5 +123,5 @@ export type Player = Message<"protos.Player"> & {
  * Use `create(PlayerSchema)` to create a new message.
  */
 export const PlayerSchema: GenMessage<Player> = /*@__PURE__*/
-  messageDesc(file_player, 1);
+  messageDesc(file_player, 2);
 

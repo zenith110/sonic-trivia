@@ -28,17 +28,17 @@ type RoomLeaderboardEntry struct {
 	Rank     int
 }
 
-// UpdateUserScore updates a user's score
+// UpdateUserScore updates a player's score
 func (r *Repository) UpdateUserScore(ctx context.Context, userID string, scoreToAdd int64) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Update("total_score", gorm.Expr("total_score + ?", scoreToAdd)).Error
 }
 
 // GetGlobalLeaderboard retrieves the global leaderboard with pagination
-func (r *Repository) GetGlobalLeaderboard(ctx context.Context, page, limit int) ([]database.User, error) {
-	var users []database.User
+func (r *Repository) GetGlobalLeaderboard(ctx context.Context, page, limit int) ([]database.Player, error) {
+	var users []database.Player
 	offset := (page - 1) * limit
 
 	err := r.db.WithContext(ctx).
@@ -54,9 +54,9 @@ func (r *Repository) GetGlobalLeaderboard(ctx context.Context, page, limit int) 
 	return users, nil
 }
 
-// GetUserRank retrieves a user's rank in the global leaderboard
+// GetUserRank retrieves a player's rank in the global leaderboard
 func (r *Repository) GetUserRank(ctx context.Context, userID string) (int, error) {
-	var user database.User
+	var user database.Player
 	err := r.db.WithContext(ctx).
 		Where("id = ?", userID).
 		First(&user).Error
@@ -67,7 +67,7 @@ func (r *Repository) GetUserRank(ctx context.Context, userID string) (int, error
 
 	var rank int64
 	err = r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("total_score > ? OR (total_score = ? AND created_at < ?)",
 			user.TotalScore, user.TotalScore, user.CreatedAt).
 		Count(&rank).Error
@@ -80,8 +80,8 @@ func (r *Repository) GetUserRank(ctx context.Context, userID string) (int, error
 }
 
 // GetTopPlayers retrieves the top N players globally
-func (r *Repository) GetTopPlayers(ctx context.Context, limit int) ([]database.User, error) {
-	var users []database.User
+func (r *Repository) GetTopPlayers(ctx context.Context, limit int) ([]database.Player, error) {
+	var users []database.Player
 
 	err := r.db.WithContext(ctx).
 		Order("total_score DESC, created_at ASC").
@@ -104,7 +104,7 @@ func (r *Repository) CreateLeaderboardEntry(ctx context.Context, userID string, 
 	}
 
 	entry := &database.LeaderboardEntry{
-		UserID:      userID,
+		PlayerID:    userID,
 		Score:       score,
 		Rank:        rank,
 		Period:      period,
@@ -121,7 +121,7 @@ func (r *Repository) GetLeaderboardByPeriod(ctx context.Context, period string, 
 	offset := (page - 1) * limit
 
 	err := r.db.WithContext(ctx).
-		Preload("User").
+		Preload("Player").
 		Where("period = ? AND period_start = ? AND period_end = ?", period, periodStart, periodEnd).
 		Order("score DESC, created_at ASC").
 		Limit(limit).
@@ -184,10 +184,10 @@ func (r *Repository) GetUserLeaderboardHistory(ctx context.Context, userID strin
 	return entries, nil
 }
 
-// IncrementCorrectAnswers increments the user's correct answers count
+// IncrementCorrectAnswers increments the player's correct answers count
 func (r *Repository) IncrementCorrectAnswers(ctx context.Context, userID string) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Updates(map[string]interface{}{
 			"correct_answers":    gorm.Expr("correct_answers + ?", 1),
@@ -195,17 +195,17 @@ func (r *Repository) IncrementCorrectAnswers(ctx context.Context, userID string)
 		}).Error
 }
 
-// IncrementQuestionsAnswered increments the user's questions answered count
+// IncrementQuestionsAnswered increments the player's questions answered count
 func (r *Repository) IncrementQuestionsAnswered(ctx context.Context, userID string) error {
 	return r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Where("id = ?", userID).
 		Update("questions_answered", gorm.Expr("questions_answered + ?", 1)).Error
 }
 
-// GetUserStats retrieves a user's statistics
-func (r *Repository) GetUserStats(ctx context.Context, userID string) (*database.User, error) {
-	var user database.User
+// GetUserStats retrieves a player's statistics
+func (r *Repository) GetUserStats(ctx context.Context, userID string) (*database.Player, error) {
+	var user database.Player
 	err := r.db.WithContext(ctx).
 		Where("id = ?", userID).
 		First(&user).Error
@@ -218,20 +218,20 @@ func (r *Repository) GetUserStats(ctx context.Context, userID string) (*database
 }
 
 // GetLeaderboardForDateRange retrieves leaderboard entries within a date range
-func (r *Repository) GetLeaderboardForDateRange(ctx context.Context, startDate, endDate time.Time, page, limit int) ([]database.User, error) {
-	var users []database.User
+func (r *Repository) GetLeaderboardForDateRange(ctx context.Context, startDate, endDate time.Time, page, limit int) ([]database.Player, error) {
+	var users []database.Player
 	offset := (page - 1) * limit
 
-	// Get users who answered questions in the date range
+	// Get players who answered questions in the date range
 	subQuery := r.db.
-		Select("user_id, SUM(points_earned) as score").
-		Table("user_answers").
+		Select("player_id, SUM(points_earned) as score").
+		Table("player_answers").
 		Where("answered_at BETWEEN ? AND ?", startDate, endDate).
-		Group("user_id")
+		Group("player_id")
 
 	err := r.db.WithContext(ctx).
-		Table("users").
-		Joins("JOIN (?) as scores ON users.id = scores.user_id", subQuery).
+		Table("players").
+		Joins("JOIN (?) as scores ON players.id = scores.player_id", subQuery).
 		Order("scores.score DESC").
 		Limit(limit).
 		Offset(offset).
@@ -244,12 +244,12 @@ func (r *Repository) GetLeaderboardForDateRange(ctx context.Context, startDate, 
 	return users, nil
 }
 
-// RecordUserAnswer records a user's answer and updates statistics
+// RecordUserAnswer records a player's answer and updates statistics
 func (r *Repository) RecordUserAnswer(ctx context.Context, userID, questionID, answerID string, isCorrect bool, pointsEarned int32) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// Create user answer record
-		userAnswer := &database.UserAnswer{
-			UserID:       userID,
+		// Create player answer record
+		userAnswer := &database.PlayerAnswer{
+			PlayerID:     userID,
 			QuestionID:   questionID,
 			AnswerID:     answerID,
 			IsCorrect:    isCorrect,
@@ -261,7 +261,7 @@ func (r *Repository) RecordUserAnswer(ctx context.Context, userID, questionID, a
 			return err
 		}
 
-		// Update user statistics
+		// Update player statistics
 		updates := map[string]interface{}{
 			"questions_answered": gorm.Expr("questions_answered + ?", 1),
 		}
@@ -271,17 +271,17 @@ func (r *Repository) RecordUserAnswer(ctx context.Context, userID, questionID, a
 			updates["total_score"] = gorm.Expr("total_score + ?", pointsEarned)
 		}
 
-		return tx.Model(&database.User{}).
+		return tx.Model(&database.Player{}).
 			Where("id = ?", userID).
 			Updates(updates).Error
 	})
 }
 
-// GetTotalUserCount returns the total number of users
+// GetTotalUserCount returns the total number of players
 func (r *Repository) GetTotalUserCount(ctx context.Context) (int64, error) {
 	var count int64
 	err := r.db.WithContext(ctx).
-		Model(&database.User{}).
+		Model(&database.Player{}).
 		Count(&count).Error
 
 	return count, err
@@ -325,7 +325,7 @@ func (r *Repository) GenerateDailyLeaderboard(ctx context.Context) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		for i, user := range users {
 			entry := &database.LeaderboardEntry{
-				UserID:      user.ID,
+				PlayerID:    user.ID,
 				Score:       user.TotalScore,
 				Rank:        i + 1,
 				Period:      "daily",
