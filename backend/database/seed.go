@@ -102,9 +102,9 @@ func SeedDevData() error {
 			CorrectAnswers:    27,
 		},
 	}
-
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	// Hash password for all players (using "password123" as default)
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(adminPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
