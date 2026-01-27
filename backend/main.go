@@ -18,6 +18,7 @@ import (
 	"sonic-trivia/backend/services/guessthatsong"
 	"sonic-trivia/backend/services/leaderboard"
 	"sonic-trivia/backend/services/login"
+	"sonic-trivia/backend/services/player"
 	"sonic-trivia/backend/services/trivia"
 )
 
@@ -73,6 +74,7 @@ func main() {
 	leaderboardServer := leaderboard.NewServer()
 	triviaServer := trivia.NewServer()
 	guessThatSongServer := guessthatsong.NewServer()
+	playerServer := player.NewServer()
 
 	// Create authentication interceptor
 	authInterceptor := middleware.AuthInterceptor()
@@ -98,6 +100,10 @@ func main() {
 	mux.Handle(guessThatSongPath, guessThatSongHandler)
 	log.Printf("Registered GuessThatSongService at %s", guessThatSongPath)
 
+	playerPath, playerHandler := protosconnect.NewPlayerServiceHandler(playerServer, interceptors)
+	mux.Handle(playerPath, playerHandler)
+	log.Printf("Registered PlayerService at %s", playerPath)
+
 	// Add a health check endpoint
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -108,13 +114,6 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Sonic Trivia Connect RPC Server\n\n")
-		fmt.Fprintf(w, "Available services:\n")
-		fmt.Fprintf(w, "- %s\n", loginPath)
-		fmt.Fprintf(w, "- %s\n", leaderboardPath)
-		fmt.Fprintf(w, "- %s\n", triviaPath)
-		fmt.Fprintf(w, "- %s\n", guessThatSongPath)
-		fmt.Fprintf(w, "\nHealth check: /health\n")
 	})
 
 	// Create HTTP server with h2c (HTTP/2 Cleartext) support

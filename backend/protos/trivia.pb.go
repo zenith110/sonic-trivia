@@ -1102,10 +1102,9 @@ const file_trivia_proto_rawDesc = "" +
 	"\x12GetQuestionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"C\n" +
 	"\x13GetQuestionResponse\x12,\n" +
-	"\bquestion\x18\x01 \x01(\v2\x10.protos.QuestionR\bquestion2\xb6\x05\n" +
+	"\bquestion\x18\x01 \x01(\v2\x10.protos.QuestionR\bquestion2\xe0\x04\n" +
 	"\rTriviaService\x12H\n" +
-	"\vGetQuestion\x12\x1a.protos.GetQuestionRequest\x1a\x1b.protos.GetQuestionResponse\"\x00\x12T\n" +
-	"\x11GetRandomQuestion\x12 .protos.GetRandomQuestionRequest\x1a\x1b.protos.GetQuestionResponse\"\x00\x12]\n" +
+	"\vGetQuestion\x12\x1a.protos.GetQuestionRequest\x1a\x1b.protos.GetQuestionResponse\"\x00\x12]\n" +
 	"\x12GetRandomQuestions\x12!.protos.GetRandomQuestionsRequest\x1a\".protos.GetRandomQuestionsResponse\"\x00\x12Q\n" +
 	"\x0eUpdateQuestion\x12\x1d.protos.UpdateQuestionRequest\x1a\x1e.protos.UpdateQuestionResponse\"\x00\x12Q\n" +
 	"\x0eDeleteQuestion\x12\x1d.protos.DeleteQuestionRequest\x1a\x1e.protos.DeleteQuestionResponse\"\x00\x12Q\n" +
@@ -1160,23 +1159,21 @@ var file_trivia_proto_depIdxs = []int32{
 	3,  // 9: protos.GetAnsweredQuestionsResponse.questions:type_name -> protos.Question
 	3,  // 10: protos.GetQuestionResponse.question:type_name -> protos.Question
 	17, // 11: protos.TriviaService.GetQuestion:input_type -> protos.GetQuestionRequest
-	16, // 12: protos.TriviaService.GetRandomQuestion:input_type -> protos.GetRandomQuestionRequest
-	4,  // 13: protos.TriviaService.GetRandomQuestions:input_type -> protos.GetRandomQuestionsRequest
-	8,  // 14: protos.TriviaService.UpdateQuestion:input_type -> protos.UpdateQuestionRequest
-	10, // 15: protos.TriviaService.DeleteQuestion:input_type -> protos.DeleteQuestionRequest
-	12, // 16: protos.TriviaService.CreateQuestion:input_type -> protos.CreateQuestionRequest
-	14, // 17: protos.TriviaService.GetAnsweredQuestions:input_type -> protos.GetAnsweredQuestionsRequest
-	6,  // 18: protos.TriviaService.CheckAnswer:input_type -> protos.CheckAnswerRequest
-	18, // 19: protos.TriviaService.GetQuestion:output_type -> protos.GetQuestionResponse
-	18, // 20: protos.TriviaService.GetRandomQuestion:output_type -> protos.GetQuestionResponse
-	5,  // 21: protos.TriviaService.GetRandomQuestions:output_type -> protos.GetRandomQuestionsResponse
-	9,  // 22: protos.TriviaService.UpdateQuestion:output_type -> protos.UpdateQuestionResponse
-	11, // 23: protos.TriviaService.DeleteQuestion:output_type -> protos.DeleteQuestionResponse
-	13, // 24: protos.TriviaService.CreateQuestion:output_type -> protos.CreateQuestionResponse
-	15, // 25: protos.TriviaService.GetAnsweredQuestions:output_type -> protos.GetAnsweredQuestionsResponse
-	7,  // 26: protos.TriviaService.CheckAnswer:output_type -> protos.CheckAnswerResponse
-	19, // [19:27] is the sub-list for method output_type
-	11, // [11:19] is the sub-list for method input_type
+	4,  // 12: protos.TriviaService.GetRandomQuestions:input_type -> protos.GetRandomQuestionsRequest
+	8,  // 13: protos.TriviaService.UpdateQuestion:input_type -> protos.UpdateQuestionRequest
+	10, // 14: protos.TriviaService.DeleteQuestion:input_type -> protos.DeleteQuestionRequest
+	12, // 15: protos.TriviaService.CreateQuestion:input_type -> protos.CreateQuestionRequest
+	14, // 16: protos.TriviaService.GetAnsweredQuestions:input_type -> protos.GetAnsweredQuestionsRequest
+	6,  // 17: protos.TriviaService.CheckAnswer:input_type -> protos.CheckAnswerRequest
+	18, // 18: protos.TriviaService.GetQuestion:output_type -> protos.GetQuestionResponse
+	5,  // 19: protos.TriviaService.GetRandomQuestions:output_type -> protos.GetRandomQuestionsResponse
+	9,  // 20: protos.TriviaService.UpdateQuestion:output_type -> protos.UpdateQuestionResponse
+	11, // 21: protos.TriviaService.DeleteQuestion:output_type -> protos.DeleteQuestionResponse
+	13, // 22: protos.TriviaService.CreateQuestion:output_type -> protos.CreateQuestionResponse
+	15, // 23: protos.TriviaService.GetAnsweredQuestions:output_type -> protos.GetAnsweredQuestionsResponse
+	7,  // 24: protos.TriviaService.CheckAnswer:output_type -> protos.CheckAnswerResponse
+	18, // [18:25] is the sub-list for method output_type
+	11, // [11:18] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
 	11, // [11:11] is the sub-list for extension extendee
 	0,  // [0:11] is the sub-list for field type_name

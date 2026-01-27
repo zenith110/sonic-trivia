@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Gamepad2, Play } from "lucide-react";
+import { Gamepad2, Play, Users as UsersIcon } from "lucide-react";
 import {
   IndividualGameModes,
   TriviaCategories,
@@ -15,6 +15,8 @@ import { GuessThatSongSettings } from "@/components/GuessThatSongSettings";
 import { GameSummary } from "@/components/GameSummary";
 import { MultiplayerLobby } from "./MultiplayerLobby";
 import { JoinRoomDialog } from "@/components/JoinRoomDialog";
+import { CharacterGallery } from "@/components/CharacterGallery";
+import { usePlayer } from "@/hooks/usePlayer";
 
 type PlayerMode = "single" | "multiplayer";
 type GameType = "trivia" | "guess-that-song";
@@ -22,12 +24,21 @@ type GameType = "trivia" | "guess-that-song";
 interface MainMenuProps {
   onNavigateToDashboard: () => void;
   onNavigateToLeaderboard: () => void;
+  onNavigateToProfile?: () => void;
 }
 
 export function MainMenu({
   onNavigateToDashboard,
   onNavigateToLeaderboard,
+  onNavigateToProfile,
 }: MainMenuProps) {
+  const {
+    selectedCharacterId,
+    selectCharacter,
+    isSelectingCharacter,
+    unlockedCharacters,
+  } = usePlayer();
+
   const [playerMode, setPlayerMode] = useState<PlayerMode>("single");
   const [gameType, setGameType] = useState<GameType>("trivia");
   const [triviaCategory, setTriviaCategory] = useState<TriviaCategories>(
@@ -43,6 +54,7 @@ export function MainMenu({
   const [isLoading, setIsLoading] = useState(false);
   const [showMultiplayerLobby, setShowMultiplayerLobby] = useState(false);
   const [showJoinRoomDialog, setShowJoinRoomDialog] = useState(false);
+  const [showCharacterGallery, setShowCharacterGallery] = useState(false);
 
   const handleStartGame = async () => {
     setIsLoading(true);
@@ -97,6 +109,10 @@ export function MainMenu({
     setShowMultiplayerLobby(true);
   };
 
+  const handleSelectCharacter = async (characterId: string) => {
+    selectCharacter(characterId);
+  };
+
   // Show multiplayer lobby if user chose multiplayer
   if (showMultiplayerLobby) {
     const gameMode =
@@ -132,6 +148,7 @@ export function MainMenu({
         onNavigateToDashboard={onNavigateToDashboard}
         onNavigateToLeaderboard={onNavigateToLeaderboard}
         onJoinRoom={() => setShowJoinRoomDialog(true)}
+        onNavigateToProfile={onNavigateToProfile}
       />
 
       {/* Main Content */}
@@ -148,6 +165,26 @@ export function MainMenu({
             <p className="text-muted-foreground text-lg">
               Choose your game mode and get ready to play!
             </p>
+
+            {/* Character Selection Button */}
+            <div className="pt-4">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setShowCharacterGallery(true)}
+                className="h-12"
+              >
+                <UsersIcon className="h-5 w-5 mr-2" />
+                Select Character
+                {selectedCharacterId && (
+                  <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                    {unlockedCharacters.find(
+                      (char) => char.id === selectedCharacterId,
+                    )?.name || "Selected"}
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -251,6 +288,17 @@ export function MainMenu({
         <JoinRoomDialog
           onJoinRoom={handleJoinRoom}
           onCancel={() => setShowJoinRoomDialog(false)}
+        />
+      )}
+
+      {/* Character Gallery */}
+      {showCharacterGallery && (
+        <CharacterGallery
+          selectedCharacterId={selectedCharacterId}
+          onSelectCharacter={handleSelectCharacter}
+          onClose={() => setShowCharacterGallery(false)}
+          isSelecting={isSelectingCharacter}
+          unlockedCharacters={unlockedCharacters}
         />
       )}
     </div>

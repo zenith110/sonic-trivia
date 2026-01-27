@@ -1,16 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useState, useEffect, type ReactNode } from "react";
 import { create } from "@bufbuild/protobuf";
 import { loginClient } from "@/grpc";
 import {
   LoginRequestSchema,
   SignUpUsernameOrEmailRequestSchema,
 } from "@/generated/login_pb";
+import { toNumber } from "@/lib/protobuf-utils";
 
 export interface User {
   id: string;
@@ -18,7 +14,9 @@ export interface User {
   email: string;
   displayName: string;
   role: string;
+  selectedCharacterId?: string;
   totalScore: number;
+  totalRings: number;
   gamesPlayed: number;
   questionsAnswered: number;
   correctAnswers: number;
@@ -39,7 +37,9 @@ export interface AuthContextType {
   updateUser: (user: User) => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       const response = await loginClient.login(request);
-
+      console.log(response);
       if (response.value?.case === "token" && response.value.value) {
         const jwtToken = response.value.value;
 
@@ -98,8 +98,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const tokenParts = jwtToken.split(".");
           let userId = "";
           if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            userId = payload.user_id || "";
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              userId = payload.user_id || "";
+            } catch (error) {
+              console.error("Failed to parse JWT payload:", error);
+            }
           }
 
           const userData: User = {
@@ -108,10 +112,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
             email: player.email || email,
             displayName: player.name || email.split("@")[0],
             role: player.role || "player",
-            totalScore: Number(player.totalPoints) || 0,
+            selectedCharacterId: player.selectedCharacterId || undefined,
+            totalScore: player.totalPoints ? toNumber(player.totalPoints) : 0,
+            totalRings: player.totalRings ? toNumber(player.totalRings) : 0,
             gamesPlayed: 0,
-            questionsAnswered: Number(player.totalAnswers) || 0,
-            correctAnswers: Number(player.totalSuccessfulAnswers) || 0,
+            questionsAnswered: player.totalAnswers
+              ? toNumber(player.totalAnswers)
+              : 0,
+            correctAnswers: player.totalSuccessfulAnswers
+              ? toNumber(player.totalSuccessfulAnswers)
+              : 0,
           };
 
           setUser(userData);
@@ -160,8 +170,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const tokenParts = jwtToken.split(".");
           let userId = "";
           if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            userId = payload.user_id || "";
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              userId = payload.user_id || "";
+            } catch (error) {
+              console.error("Failed to parse JWT payload:", error);
+            }
           }
 
           const userData: User = {
@@ -170,10 +184,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
             email: player.email || email,
             displayName: player.name || username,
             role: player.role || "player",
-            totalScore: Number(player.totalPoints) || 0,
+            selectedCharacterId: player.selectedCharacterId || undefined,
+            totalScore: player.totalPoints ? toNumber(player.totalPoints) : 0,
+            totalRings: player.totalRings ? toNumber(player.totalRings) : 0,
             gamesPlayed: 0,
-            questionsAnswered: Number(player.totalAnswers) || 0,
-            correctAnswers: Number(player.totalSuccessfulAnswers) || 0,
+            questionsAnswered: player.totalAnswers
+              ? toNumber(player.totalAnswers)
+              : 0,
+            correctAnswers: player.totalSuccessfulAnswers
+              ? toNumber(player.totalSuccessfulAnswers)
+              : 0,
           };
 
           setUser(userData);

@@ -54,14 +54,51 @@ export const Login = () => {
     setUsername("");
   };
 
-  const fillDevCredentials = (type: "admin" | "player") => {
-    if (type === "admin") {
-      setEmail("admin@sonictrivia.com");
-      setPassword("password123");
-    } else {
-      setEmail("sonic@sonictrivia.com");
-      setPassword("password123");
-    }
+  const devUsers = [
+    {
+      email: "admin@sonictrivia.com",
+      displayName: "Admin User",
+      role: "admin",
+      color: "red",
+    },
+    {
+      email: "mod@sonictrivia.com",
+      displayName: "Moderator",
+      role: "moderator",
+      color: "orange",
+    },
+    {
+      email: "sonic@sonictrivia.com",
+      displayName: "Sonic Fan",
+      role: "player",
+      color: "blue",
+    },
+    {
+      email: "tails@sonictrivia.com",
+      displayName: "Tails Lover",
+      role: "player",
+      color: "yellow",
+    },
+    {
+      email: "knuckles@sonictrivia.com",
+      displayName: "Knuckles Master",
+      role: "player",
+      color: "red",
+    },
+    {
+      email: "shadow@sonictrivia.com",
+      displayName: "Shadow Edge",
+      role: "player",
+      color: "purple",
+    },
+  ];
+
+  const devPassword = import.meta.env.VITE_DEV_PASSWORD || "admin123";
+  const showDevMode = import.meta.env.VITE_SHOW_DEV_MODE !== "false";
+
+  const fillDevCredentials = (email: string) => {
+    setEmail(email);
+    setPassword(devPassword);
   };
 
   return (
@@ -177,38 +214,48 @@ export const Login = () => {
                 </div>
               )}
 
-              {isLogin && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-lg space-y-2">
+              {isLogin && showDevMode && (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-lg space-y-3">
                   <p className="text-sm font-semibold text-blue-900 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     Quick Access (Dev Mode)
                   </p>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => fillDevCredentials("admin")}
-                      disabled={isSubmitting}
-                      className="flex-1 text-xs border-blue-300 hover:bg-blue-100 hover:border-blue-400"
-                    >
-                      Admin
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => fillDevCredentials("player")}
-                      disabled={isSubmitting}
-                      className="flex-1 text-xs border-blue-300 hover:bg-blue-100 hover:border-blue-400"
-                    >
-                      Player
-                    </Button>
+                  <div className="grid grid-cols-2 gap-2">
+                    {devUsers.map((user) => (
+                      <Button
+                        key={user.email}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fillDevCredentials(user.email)}
+                        disabled={isSubmitting}
+                        className={`text-xs border-blue-300 hover:bg-blue-100 hover:border-blue-400 flex flex-col items-center gap-1 h-auto py-2 ${
+                          user.role === "admin"
+                            ? "border-red-300 hover:bg-red-50"
+                            : user.role === "moderator"
+                              ? "border-orange-300 hover:bg-orange-50"
+                              : "border-blue-300 hover:bg-blue-50"
+                        }`}
+                      >
+                        <span className="font-medium">{user.displayName}</span>
+                        <span
+                          className={`text-xs opacity-75 ${
+                            user.role === "admin"
+                              ? "text-red-600"
+                              : user.role === "moderator"
+                                ? "text-orange-600"
+                                : "text-blue-600"
+                          }`}
+                        >
+                          {user.role}
+                        </span>
+                      </Button>
+                    ))}
                   </div>
                   <p className="text-xs text-blue-600 mt-2">
                     All dev accounts use password:{" "}
                     <code className="bg-blue-100 px-1 rounded">
-                      password123
+                      {devPassword}
                     </code>
                   </p>
                 </div>

@@ -32,7 +32,6 @@ message Question {
 
 service TriviaService {
   rpc GetQuestion(GetQuestionRequest) returns (GetQuestionResponse) {}
-  rpc GetRandomQuestion(GetRandomQuestionRequest) returns (GetQuestionResponse) {}
   rpc GetRandomQuestions(GetRandomQuestionsRequest) returns (GetRandomQuestionsResponse) {}
   rpc UpdateQuestion(UpdateQuestionRequest) returns (UpdateQuestionResponse) {}
   rpc DeleteQuestion(DeleteQuestionRequest) returns (DeleteQuestionResponse) {}

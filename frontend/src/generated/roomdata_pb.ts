@@ -18,7 +18,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file roomdata.proto.
  */
 export const file_roomdata: GenFile = /*@__PURE__*/
-  fileDesc("Cg5yb29tZGF0YS5wcm90bxIGcHJvdG9zIvIDCghSb29tRGF0YRIMCgRuYW1lGAEgASgJEh8KB3BsYXllcnMYAiADKAsyDi5wcm90b3MuUGxheWVyEjAKDGxhc3RfdXBkYXRlZBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEwoLZGVzY3JpcHRpb24YBSABKAkSDAoEY29kZRgGIAEoCRIpCgRtb2RlGAcgASgOMhsucHJvdG9zLkluZGl2aWR1YWxHYW1lTW9kZXMSMwoPdHJpdmlhX2NhdGVnb3J5GAggASgOMhgucHJvdG9zLlRyaXZpYUNhdGVnb3JpZXNIABJDChhndWVzc190aGF0X3NvbmdfY2F0ZWdvcnkYCSABKA4yHy5wcm90b3MuR3Vlc3NUaGF0U29uZ0NhdGVnb3JpZXNIABIsCgtsZWFkZXJib2FyZBgKIAEoCzIXLnByb3Rvcy5Sb29tTGVhZGVyYm9hcmQSFQoNbWF4X3Jvb21fc2l6ZRgLIAEoAxIYChBhbW91bnRfb2Zfcm91bmRzGAwgASgDEhEKCXJlYWRfb25seRgNIAEoCBISCgppc19wcml2YXRlGA4gASgIQgcKBXZhbHVlQh1aG3NvbmljLXRyaXZpYS9iYWNrZW5kL3Byb3Rvc2IGcHJvdG8z", [file_gamemodes, file_google_protobuf_timestamp, file_leaderboard, file_player]);
+  fileDesc("Cg5yb29tZGF0YS5wcm90bxIGcHJvdG9zIpQECghSb29tRGF0YRIMCgRuYW1lGAEgASgJEh8KB3BsYXllcnMYAiADKAsyDi5wcm90b3MuUGxheWVyEjAKDGxhc3RfdXBkYXRlZBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEwoLZGVzY3JpcHRpb24YBSABKAkSDAoEY29kZRgGIAEoCRIpCgRtb2RlGAcgASgOMhsucHJvdG9zLkluZGl2aWR1YWxHYW1lTW9kZXMSMwoPdHJpdmlhX2NhdGVnb3J5GAggASgOMhgucHJvdG9zLlRyaXZpYUNhdGVnb3JpZXNIABJDChhndWVzc190aGF0X3NvbmdfY2F0ZWdvcnkYCSABKA4yHy5wcm90b3MuR3Vlc3NUaGF0U29uZ0NhdGVnb3JpZXNIABIsCgtsZWFkZXJib2FyZBgKIAEoCzIXLnByb3Rvcy5Sb29tTGVhZGVyYm9hcmQSFQoNbWF4X3Jvb21fc2l6ZRgLIAEoAxIYChBhbW91bnRfb2Zfcm91bmRzGAwgASgDEhEKCXJlYWRfb25seRgNIAEoCBISCgppc19wcml2YXRlGA4gASgIEiAKB2p1a2Vib3gYDyABKAsyDy5wcm90b3MuSnVrZUJveEIHCgV2YWx1ZSIYCgdKdWtlQm94Eg0KBXNvbmdzGAEgAygJQh1aG3NvbmljLXRyaXZpYS9iYWNrZW5kL3Byb3Rvc2IGcHJvdG8z", [file_gamemodes, file_google_protobuf_timestamp, file_leaderboard, file_player]);
 
 /**
  * @generated from message protos.RoomData
@@ -100,6 +100,11 @@ export type RoomData = Message<"protos.RoomData"> & {
    * @generated from field: bool is_private = 14;
    */
   isPrivate: boolean;
+
+  /**
+   * @generated from field: protos.JukeBox jukebox = 15;
+   */
+  jukebox?: JukeBox;
 };
 
 /**
@@ -108,4 +113,21 @@ export type RoomData = Message<"protos.RoomData"> & {
  */
 export const RoomDataSchema: GenMessage<RoomData> = /*@__PURE__*/
   messageDesc(file_roomdata, 0);
+
+/**
+ * @generated from message protos.JukeBox
+ */
+export type JukeBox = Message<"protos.JukeBox"> & {
+  /**
+   * @generated from field: repeated string songs = 1;
+   */
+  songs: string[];
+};
+
+/**
+ * Describes the message protos.JukeBox.
+ * Use `create(JukeBoxSchema)` to create a new message.
+ */
+export const JukeBoxSchema: GenMessage<JukeBox> = /*@__PURE__*/
+  messageDesc(file_roomdata, 1);
 

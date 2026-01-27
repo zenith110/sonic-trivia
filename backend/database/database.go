@@ -14,39 +14,50 @@ var DB *gorm.DB
 
 // InitDB initializes the database connection
 func InitDB() error {
-	// Get database connection details from environment variables
-	host := os.Getenv("DB_HOST")
-	if host == "" {
-		host = "localhost"
-	}
+	var dsn string
 
-	port := os.Getenv("DB_PORT")
-	if port == "" {
-		port = "5432"
-	}
+	// Try to use DATABASE_URL first
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL != "" {
+		dsn = databaseURL
+		log.Println("Using DATABASE_URL for database connection")
+	} else {
+		// Fall back to individual environment variables
+		log.Println("DATABASE_URL not found, using individual DB environment variables")
 
-	user := os.Getenv("DB_USER")
-	if user == "" {
-		user = "postgres"
-	}
+		host := os.Getenv("DB_HOST")
+		if host == "" {
+			host = "postgres"
+		}
 
-	password := os.Getenv("DB_PASSWORD")
-	if password == "" {
-		password = "postgres"
-	}
+		port := os.Getenv("DB_PORT")
+		if port == "" {
+			port = "5432"
+		}
 
-	dbname := os.Getenv("DB_NAME")
-	if dbname == "" {
-		dbname = "sonic_trivia"
-	}
+		user := os.Getenv("DB_USER")
+		if user == "" {
+			user = "sonic_trivia"
+		}
 
-	sslmode := os.Getenv("DB_SSLMODE")
-	if sslmode == "" {
-		sslmode = "disable"
-	}
+		password := os.Getenv("DB_PASSWORD")
+		if password == "" {
+			password = "sonic_trivia_pass"
+		}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC",
-		host, user, password, dbname, port, sslmode)
+		dbname := os.Getenv("DB_NAME")
+		if dbname == "" {
+			dbname = "sonic_trivia"
+		}
+
+		sslmode := os.Getenv("DB_SSLMODE")
+		if sslmode == "" {
+			sslmode = "disable"
+		}
+
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC",
+			host, user, password, dbname, port, sslmode)
+	}
 
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -74,7 +85,11 @@ func AutoMigrate() error {
 		&Hint{},
 		&Song{},
 		&SongHint{},
+		&SonicCharacter{},
+		&CharacterAbility{},
 		&Player{},
+		&PlayerCharacter{},
+		&Friendship{},
 		&PlayerAnswer{},
 		&LeaderboardEntry{},
 	)

@@ -22,20 +22,138 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type CharacterRarity int32
+
+const (
+	CharacterRarity_CHARACTER_RARITY_UNSPECIFIED CharacterRarity = 0
+	CharacterRarity_CHARACTER_RARITY_COMMON      CharacterRarity = 1
+	CharacterRarity_CHARACTER_RARITY_RARE        CharacterRarity = 2
+	CharacterRarity_CHARACTER_RARITY_EPIC        CharacterRarity = 3
+	CharacterRarity_CHARACTER_RARITY_LEGENDARY   CharacterRarity = 4
+)
+
+// Enum value maps for CharacterRarity.
+var (
+	CharacterRarity_name = map[int32]string{
+		0: "CHARACTER_RARITY_UNSPECIFIED",
+		1: "CHARACTER_RARITY_COMMON",
+		2: "CHARACTER_RARITY_RARE",
+		3: "CHARACTER_RARITY_EPIC",
+		4: "CHARACTER_RARITY_LEGENDARY",
+	}
+	CharacterRarity_value = map[string]int32{
+		"CHARACTER_RARITY_UNSPECIFIED": 0,
+		"CHARACTER_RARITY_COMMON":      1,
+		"CHARACTER_RARITY_RARE":        2,
+		"CHARACTER_RARITY_EPIC":        3,
+		"CHARACTER_RARITY_LEGENDARY":   4,
+	}
+)
+
+func (x CharacterRarity) Enum() *CharacterRarity {
+	p := new(CharacterRarity)
+	*p = x
+	return p
+}
+
+func (x CharacterRarity) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CharacterRarity) Descriptor() protoreflect.EnumDescriptor {
+	return file_player_proto_enumTypes[0].Descriptor()
+}
+
+func (CharacterRarity) Type() protoreflect.EnumType {
+	return &file_player_proto_enumTypes[0]
+}
+
+func (x CharacterRarity) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CharacterRarity.Descriptor instead.
+func (CharacterRarity) EnumDescriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{0}
+}
+
+type Ability struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Ability) Reset() {
+	*x = Ability{}
+	mi := &file_player_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Ability) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Ability) ProtoMessage() {}
+
+func (x *Ability) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Ability.ProtoReflect.Descriptor instead.
+func (*Ability) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Ability) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Ability) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 type SonicCharacter struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Name           string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description    string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	ProfilePicture string                 `protobuf:"bytes,3,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
-	SpecialAbility string                 `protobuf:"bytes,4,opt,name=special_ability,json=specialAbility,proto3" json:"special_ability,omitempty"`
-	LastUsed       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=last_used,json=lastUsed,proto3" json:"last_used,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	ProfilePicture  string                 `protobuf:"bytes,4,opt,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
+	Abilities       []*Ability             `protobuf:"bytes,5,rep,name=abilities,proto3" json:"abilities,omitempty"`
+	Speed           int32                  `protobuf:"varint,6,opt,name=speed,proto3" json:"speed,omitempty"`
+	Power           int32                  `protobuf:"varint,7,opt,name=power,proto3" json:"power,omitempty"`
+	Technique       int32                  `protobuf:"varint,8,opt,name=technique,proto3" json:"technique,omitempty"`
+	Rarity          CharacterRarity        `protobuf:"varint,9,opt,name=rarity,proto3,enum=protos.CharacterRarity" json:"rarity,omitempty"`
+	Game            string                 `protobuf:"bytes,10,opt,name=game,proto3" json:"game,omitempty"`
+	Quote           string                 `protobuf:"bytes,11,opt,name=quote,proto3" json:"quote,omitempty"`
+	Color           string                 `protobuf:"bytes,12,opt,name=color,proto3" json:"color,omitempty"`
+	Unlocked        bool                   `protobuf:"varint,13,opt,name=unlocked,proto3" json:"unlocked,omitempty"`
+	UnlockedAt      *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=unlocked_at,json=unlockedAt,proto3" json:"unlocked_at,omitempty"`
+	LastUsed        *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=last_used,json=lastUsed,proto3" json:"last_used,omitempty"`
+	GamesPlayedWith int64                  `protobuf:"varint,16,opt,name=games_played_with,json=gamesPlayedWith,proto3" json:"games_played_with,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *SonicCharacter) Reset() {
 	*x = SonicCharacter{}
-	mi := &file_player_proto_msgTypes[0]
+	mi := &file_player_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +165,7 @@ func (x *SonicCharacter) String() string {
 func (*SonicCharacter) ProtoMessage() {}
 
 func (x *SonicCharacter) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[0]
+	mi := &file_player_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +178,14 @@ func (x *SonicCharacter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SonicCharacter.ProtoReflect.Descriptor instead.
 func (*SonicCharacter) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{0}
+	return file_player_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SonicCharacter) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *SonicCharacter) GetName() string {
@@ -84,11 +209,74 @@ func (x *SonicCharacter) GetProfilePicture() string {
 	return ""
 }
 
-func (x *SonicCharacter) GetSpecialAbility() string {
+func (x *SonicCharacter) GetAbilities() []*Ability {
 	if x != nil {
-		return x.SpecialAbility
+		return x.Abilities
+	}
+	return nil
+}
+
+func (x *SonicCharacter) GetSpeed() int32 {
+	if x != nil {
+		return x.Speed
+	}
+	return 0
+}
+
+func (x *SonicCharacter) GetPower() int32 {
+	if x != nil {
+		return x.Power
+	}
+	return 0
+}
+
+func (x *SonicCharacter) GetTechnique() int32 {
+	if x != nil {
+		return x.Technique
+	}
+	return 0
+}
+
+func (x *SonicCharacter) GetRarity() CharacterRarity {
+	if x != nil {
+		return x.Rarity
+	}
+	return CharacterRarity_CHARACTER_RARITY_UNSPECIFIED
+}
+
+func (x *SonicCharacter) GetGame() string {
+	if x != nil {
+		return x.Game
 	}
 	return ""
+}
+
+func (x *SonicCharacter) GetQuote() string {
+	if x != nil {
+		return x.Quote
+	}
+	return ""
+}
+
+func (x *SonicCharacter) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+func (x *SonicCharacter) GetUnlocked() bool {
+	if x != nil {
+		return x.Unlocked
+	}
+	return false
+}
+
+func (x *SonicCharacter) GetUnlockedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UnlockedAt
+	}
+	return nil
 }
 
 func (x *SonicCharacter) GetLastUsed() *timestamppb.Timestamp {
@@ -96,6 +284,13 @@ func (x *SonicCharacter) GetLastUsed() *timestamppb.Timestamp {
 		return x.LastUsed
 	}
 	return nil
+}
+
+func (x *SonicCharacter) GetGamesPlayedWith() int64 {
+	if x != nil {
+		return x.GamesPlayedWith
+	}
+	return 0
 }
 
 type FriendList struct {
@@ -107,7 +302,7 @@ type FriendList struct {
 
 func (x *FriendList) Reset() {
 	*x = FriendList{}
-	mi := &file_player_proto_msgTypes[1]
+	mi := &file_player_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -119,7 +314,7 @@ func (x *FriendList) String() string {
 func (*FriendList) ProtoMessage() {}
 
 func (x *FriendList) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[1]
+	mi := &file_player_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -132,7 +327,7 @@ func (x *FriendList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FriendList.ProtoReflect.Descriptor instead.
 func (*FriendList) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{1}
+	return file_player_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *FriendList) GetUsername() string {
@@ -147,19 +342,21 @@ type Player struct {
 	Name                   string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Email                  string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	SocialsLinked          string                 `protobuf:"bytes,4,opt,name=socials_linked,json=socialsLinked,proto3" json:"socials_linked,omitempty"`
-	SonicCharacter         []*SonicCharacter      `protobuf:"bytes,5,rep,name=sonic_character,json=sonicCharacter,proto3" json:"sonic_character,omitempty"`
-	TotalPoints            int64                  `protobuf:"varint,6,opt,name=total_points,json=totalPoints,proto3" json:"total_points,omitempty"`
-	TotalSuccessfulAnswers int64                  `protobuf:"varint,7,opt,name=total_successful_answers,json=totalSuccessfulAnswers,proto3" json:"total_successful_answers,omitempty"`
-	TotalAnswers           int64                  `protobuf:"varint,8,opt,name=total_answers,json=totalAnswers,proto3" json:"total_answers,omitempty"`
-	Role                   string                 `protobuf:"bytes,9,opt,name=role,proto3" json:"role,omitempty"`
-	Friends                []*FriendList          `protobuf:"bytes,10,rep,name=friends,proto3" json:"friends,omitempty"`
+	UnlockedCharacters     []*SonicCharacter      `protobuf:"bytes,5,rep,name=unlocked_characters,json=unlockedCharacters,proto3" json:"unlocked_characters,omitempty"`
+	SelectedCharacterId    string                 `protobuf:"bytes,6,opt,name=selected_character_id,json=selectedCharacterId,proto3" json:"selected_character_id,omitempty"`
+	TotalPoints            int64                  `protobuf:"varint,7,opt,name=total_points,json=totalPoints,proto3" json:"total_points,omitempty"`
+	TotalSuccessfulAnswers int64                  `protobuf:"varint,8,opt,name=total_successful_answers,json=totalSuccessfulAnswers,proto3" json:"total_successful_answers,omitempty"`
+	TotalAnswers           int64                  `protobuf:"varint,9,opt,name=total_answers,json=totalAnswers,proto3" json:"total_answers,omitempty"`
+	Role                   string                 `protobuf:"bytes,10,opt,name=role,proto3" json:"role,omitempty"`
+	TotalRings             int64                  `protobuf:"varint,11,opt,name=total_rings,json=totalRings,proto3" json:"total_rings,omitempty"`
+	Friends                []*FriendList          `protobuf:"bytes,12,rep,name=friends,proto3" json:"friends,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Player) Reset() {
 	*x = Player{}
-	mi := &file_player_proto_msgTypes[2]
+	mi := &file_player_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -171,7 +368,7 @@ func (x *Player) String() string {
 func (*Player) ProtoMessage() {}
 
 func (x *Player) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[2]
+	mi := &file_player_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -184,7 +381,7 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Player.ProtoReflect.Descriptor instead.
 func (*Player) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{2}
+	return file_player_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Player) GetName() string {
@@ -208,11 +405,18 @@ func (x *Player) GetSocialsLinked() string {
 	return ""
 }
 
-func (x *Player) GetSonicCharacter() []*SonicCharacter {
+func (x *Player) GetUnlockedCharacters() []*SonicCharacter {
 	if x != nil {
-		return x.SonicCharacter
+		return x.UnlockedCharacters
 	}
 	return nil
+}
+
+func (x *Player) GetSelectedCharacterId() string {
+	if x != nil {
+		return x.SelectedCharacterId
+	}
+	return ""
 }
 
 func (x *Player) GetTotalPoints() int64 {
@@ -243,6 +447,13 @@ func (x *Player) GetRole() string {
 	return ""
 }
 
+func (x *Player) GetTotalRings() int64 {
+	if x != nil {
+		return x.TotalRings
+	}
+	return 0
+}
+
 func (x *Player) GetFriends() []*FriendList {
 	if x != nil {
 		return x.Friends
@@ -250,31 +461,452 @@ func (x *Player) GetFriends() []*FriendList {
 	return nil
 }
 
+type GetPlayerRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerRequest) Reset() {
+	*x = GetPlayerRequest{}
+	mi := &file_player_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerRequest) ProtoMessage() {}
+
+func (x *GetPlayerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerRequest.ProtoReflect.Descriptor instead.
+func (*GetPlayerRequest) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetPlayerRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetPlayerResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *Player                `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerResponse) Reset() {
+	*x = GetPlayerResponse{}
+	mi := &file_player_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerResponse) ProtoMessage() {}
+
+func (x *GetPlayerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerResponse.ProtoReflect.Descriptor instead.
+func (*GetPlayerResponse) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetPlayerResponse) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+type GetSonicCharactersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSonicCharactersRequest) Reset() {
+	*x = GetSonicCharactersRequest{}
+	mi := &file_player_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSonicCharactersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSonicCharactersRequest) ProtoMessage() {}
+
+func (x *GetSonicCharactersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSonicCharactersRequest.ProtoReflect.Descriptor instead.
+func (*GetSonicCharactersRequest) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetSonicCharactersRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetSonicCharactersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Characters    []*SonicCharacter      `protobuf:"bytes,1,rep,name=characters,proto3" json:"characters,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSonicCharactersResponse) Reset() {
+	*x = GetSonicCharactersResponse{}
+	mi := &file_player_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSonicCharactersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSonicCharactersResponse) ProtoMessage() {}
+
+func (x *GetSonicCharactersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSonicCharactersResponse.ProtoReflect.Descriptor instead.
+func (*GetSonicCharactersResponse) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetSonicCharactersResponse) GetCharacters() []*SonicCharacter {
+	if x != nil {
+		return x.Characters
+	}
+	return nil
+}
+
+type DeletePlayerRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeletePlayerRequest) Reset() {
+	*x = DeletePlayerRequest{}
+	mi := &file_player_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeletePlayerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeletePlayerRequest) ProtoMessage() {}
+
+func (x *DeletePlayerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeletePlayerRequest.ProtoReflect.Descriptor instead.
+func (*DeletePlayerRequest) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeletePlayerRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeletePlayerResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeletePlayerResponse) Reset() {
+	*x = DeletePlayerResponse{}
+	mi := &file_player_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeletePlayerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeletePlayerResponse) ProtoMessage() {}
+
+func (x *DeletePlayerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeletePlayerResponse.ProtoReflect.Descriptor instead.
+func (*DeletePlayerResponse) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeletePlayerResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type SelectCharacterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerId      string                 `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	CharacterId   string                 `protobuf:"bytes,2,opt,name=character_id,json=characterId,proto3" json:"character_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelectCharacterRequest) Reset() {
+	*x = SelectCharacterRequest{}
+	mi := &file_player_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelectCharacterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectCharacterRequest) ProtoMessage() {}
+
+func (x *SelectCharacterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectCharacterRequest.ProtoReflect.Descriptor instead.
+func (*SelectCharacterRequest) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SelectCharacterRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+func (x *SelectCharacterRequest) GetCharacterId() string {
+	if x != nil {
+		return x.CharacterId
+	}
+	return ""
+}
+
+type SelectCharacterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *Player                `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelectCharacterResponse) Reset() {
+	*x = SelectCharacterResponse{}
+	mi := &file_player_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelectCharacterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectCharacterResponse) ProtoMessage() {}
+
+func (x *SelectCharacterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectCharacterResponse.ProtoReflect.Descriptor instead.
+func (*SelectCharacterResponse) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SelectCharacterResponse) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+func (x *SelectCharacterResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_player_proto protoreflect.FileDescriptor
 
 const file_player_proto_rawDesc = "" +
 	"\n" +
-	"\fplayer.proto\x12\x06protos\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd1\x01\n" +
-	"\x0eSonicCharacter\x12\x12\n" +
+	"\fplayer.proto\x12\x06protos\x1a\x1fgoogle/protobuf/timestamp.proto\"?\n" +
+	"\aAbility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12'\n" +
-	"\x0fprofile_picture\x18\x03 \x01(\tR\x0eprofilePicture\x12'\n" +
-	"\x0fspecial_ability\x18\x04 \x01(\tR\x0especialAbility\x127\n" +
-	"\tlast_used\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\blastUsed\"(\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"\xa7\x04\n" +
+	"\x0eSonicCharacter\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12'\n" +
+	"\x0fprofile_picture\x18\x04 \x01(\tR\x0eprofilePicture\x12-\n" +
+	"\tabilities\x18\x05 \x03(\v2\x0f.protos.AbilityR\tabilities\x12\x14\n" +
+	"\x05speed\x18\x06 \x01(\x05R\x05speed\x12\x14\n" +
+	"\x05power\x18\a \x01(\x05R\x05power\x12\x1c\n" +
+	"\ttechnique\x18\b \x01(\x05R\ttechnique\x12/\n" +
+	"\x06rarity\x18\t \x01(\x0e2\x17.protos.CharacterRarityR\x06rarity\x12\x12\n" +
+	"\x04game\x18\n" +
+	" \x01(\tR\x04game\x12\x14\n" +
+	"\x05quote\x18\v \x01(\tR\x05quote\x12\x14\n" +
+	"\x05color\x18\f \x01(\tR\x05color\x12\x1a\n" +
+	"\bunlocked\x18\r \x01(\bR\bunlocked\x12;\n" +
+	"\vunlocked_at\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"unlockedAt\x127\n" +
+	"\tlast_used\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\blastUsed\x12*\n" +
+	"\x11games_played_with\x18\x10 \x01(\x03R\x0fgamesPlayedWith\"(\n" +
 	"\n" +
 	"FriendList\x12\x1a\n" +
-	"\busername\x18\x01 \x01(\tR\busername\"\xde\x02\n" +
+	"\busername\x18\x01 \x01(\tR\busername\"\xbb\x03\n" +
 	"\x06Player\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12%\n" +
-	"\x0esocials_linked\x18\x04 \x01(\tR\rsocialsLinked\x12?\n" +
-	"\x0fsonic_character\x18\x05 \x03(\v2\x16.protos.SonicCharacterR\x0esonicCharacter\x12!\n" +
-	"\ftotal_points\x18\x06 \x01(\x03R\vtotalPoints\x128\n" +
-	"\x18total_successful_answers\x18\a \x01(\x03R\x16totalSuccessfulAnswers\x12#\n" +
-	"\rtotal_answers\x18\b \x01(\x03R\ftotalAnswers\x12\x12\n" +
-	"\x04role\x18\t \x01(\tR\x04role\x12,\n" +
-	"\afriends\x18\n" +
-	" \x03(\v2\x12.protos.FriendListR\afriendsB\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"\x0esocials_linked\x18\x04 \x01(\tR\rsocialsLinked\x12G\n" +
+	"\x13unlocked_characters\x18\x05 \x03(\v2\x16.protos.SonicCharacterR\x12unlockedCharacters\x122\n" +
+	"\x15selected_character_id\x18\x06 \x01(\tR\x13selectedCharacterId\x12!\n" +
+	"\ftotal_points\x18\a \x01(\x03R\vtotalPoints\x128\n" +
+	"\x18total_successful_answers\x18\b \x01(\x03R\x16totalSuccessfulAnswers\x12#\n" +
+	"\rtotal_answers\x18\t \x01(\x03R\ftotalAnswers\x12\x12\n" +
+	"\x04role\x18\n" +
+	" \x01(\tR\x04role\x12\x1f\n" +
+	"\vtotal_rings\x18\v \x01(\x03R\n" +
+	"totalRings\x12,\n" +
+	"\afriends\x18\f \x03(\v2\x12.protos.FriendListR\afriends\"\"\n" +
+	"\x10GetPlayerRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\";\n" +
+	"\x11GetPlayerResponse\x12&\n" +
+	"\x06player\x18\x01 \x01(\v2\x0e.protos.PlayerR\x06player\"4\n" +
+	"\x19GetSonicCharactersRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"T\n" +
+	"\x1aGetSonicCharactersResponse\x126\n" +
+	"\n" +
+	"characters\x18\x01 \x03(\v2\x16.protos.SonicCharacterR\n" +
+	"characters\"%\n" +
+	"\x13DeletePlayerRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"0\n" +
+	"\x14DeletePlayerResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"X\n" +
+	"\x16SelectCharacterRequest\x12\x1b\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12!\n" +
+	"\fcharacter_id\x18\x02 \x01(\tR\vcharacterId\"[\n" +
+	"\x17SelectCharacterResponse\x12&\n" +
+	"\x06player\x18\x01 \x01(\v2\x0e.protos.PlayerR\x06player\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage*\xa6\x01\n" +
+	"\x0fCharacterRarity\x12 \n" +
+	"\x1cCHARACTER_RARITY_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17CHARACTER_RARITY_COMMON\x10\x01\x12\x19\n" +
+	"\x15CHARACTER_RARITY_RARE\x10\x02\x12\x19\n" +
+	"\x15CHARACTER_RARITY_EPIC\x10\x03\x12\x1e\n" +
+	"\x1aCHARACTER_RARITY_LEGENDARY\x10\x042\x83\x04\n" +
+	"\rPlayerService\x120\n" +
+	"\fCreatePlayer\x12\x0e.protos.Player\x1a\x0e.protos.Player\"\x00\x12B\n" +
+	"\tGetPlayer\x12\x18.protos.GetPlayerRequest\x1a\x19.protos.GetPlayerResponse\"\x00\x120\n" +
+	"\fUpdatePlayer\x12\x0e.protos.Player\x1a\x0e.protos.Player\"\x00\x12K\n" +
+	"\fDeletePlayer\x12\x1b.protos.DeletePlayerRequest\x1a\x1c.protos.DeletePlayerResponse\"\x00\x12H\n" +
+	"\x14UpdateSonicCharacter\x12\x16.protos.SonicCharacter\x1a\x16.protos.SonicCharacter\"\x00\x12]\n" +
+	"\x12GetSonicCharacters\x12!.protos.GetSonicCharactersRequest\x1a\".protos.GetSonicCharactersResponse\"\x00\x12T\n" +
+	"\x0fSelectCharacter\x12\x1e.protos.SelectCharacterRequest\x1a\x1f.protos.SelectCharacterResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_player_proto_rawDescOnce sync.Once
@@ -288,22 +920,53 @@ func file_player_proto_rawDescGZIP() []byte {
 	return file_player_proto_rawDescData
 }
 
-var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_player_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_player_proto_goTypes = []any{
-	(*SonicCharacter)(nil),        // 0: protos.SonicCharacter
-	(*FriendList)(nil),            // 1: protos.FriendList
-	(*Player)(nil),                // 2: protos.Player
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(CharacterRarity)(0),               // 0: protos.CharacterRarity
+	(*Ability)(nil),                    // 1: protos.Ability
+	(*SonicCharacter)(nil),             // 2: protos.SonicCharacter
+	(*FriendList)(nil),                 // 3: protos.FriendList
+	(*Player)(nil),                     // 4: protos.Player
+	(*GetPlayerRequest)(nil),           // 5: protos.GetPlayerRequest
+	(*GetPlayerResponse)(nil),          // 6: protos.GetPlayerResponse
+	(*GetSonicCharactersRequest)(nil),  // 7: protos.GetSonicCharactersRequest
+	(*GetSonicCharactersResponse)(nil), // 8: protos.GetSonicCharactersResponse
+	(*DeletePlayerRequest)(nil),        // 9: protos.DeletePlayerRequest
+	(*DeletePlayerResponse)(nil),       // 10: protos.DeletePlayerResponse
+	(*SelectCharacterRequest)(nil),     // 11: protos.SelectCharacterRequest
+	(*SelectCharacterResponse)(nil),    // 12: protos.SelectCharacterResponse
+	(*timestamppb.Timestamp)(nil),      // 13: google.protobuf.Timestamp
 }
 var file_player_proto_depIdxs = []int32{
-	3, // 0: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
-	0, // 1: protos.Player.sonic_character:type_name -> protos.SonicCharacter
-	1, // 2: protos.Player.friends:type_name -> protos.FriendList
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	1,  // 0: protos.SonicCharacter.abilities:type_name -> protos.Ability
+	0,  // 1: protos.SonicCharacter.rarity:type_name -> protos.CharacterRarity
+	13, // 2: protos.SonicCharacter.unlocked_at:type_name -> google.protobuf.Timestamp
+	13, // 3: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
+	2,  // 4: protos.Player.unlocked_characters:type_name -> protos.SonicCharacter
+	3,  // 5: protos.Player.friends:type_name -> protos.FriendList
+	4,  // 6: protos.GetPlayerResponse.player:type_name -> protos.Player
+	2,  // 7: protos.GetSonicCharactersResponse.characters:type_name -> protos.SonicCharacter
+	4,  // 8: protos.SelectCharacterResponse.player:type_name -> protos.Player
+	4,  // 9: protos.PlayerService.CreatePlayer:input_type -> protos.Player
+	5,  // 10: protos.PlayerService.GetPlayer:input_type -> protos.GetPlayerRequest
+	4,  // 11: protos.PlayerService.UpdatePlayer:input_type -> protos.Player
+	9,  // 12: protos.PlayerService.DeletePlayer:input_type -> protos.DeletePlayerRequest
+	2,  // 13: protos.PlayerService.UpdateSonicCharacter:input_type -> protos.SonicCharacter
+	7,  // 14: protos.PlayerService.GetSonicCharacters:input_type -> protos.GetSonicCharactersRequest
+	11, // 15: protos.PlayerService.SelectCharacter:input_type -> protos.SelectCharacterRequest
+	4,  // 16: protos.PlayerService.CreatePlayer:output_type -> protos.Player
+	6,  // 17: protos.PlayerService.GetPlayer:output_type -> protos.GetPlayerResponse
+	4,  // 18: protos.PlayerService.UpdatePlayer:output_type -> protos.Player
+	10, // 19: protos.PlayerService.DeletePlayer:output_type -> protos.DeletePlayerResponse
+	2,  // 20: protos.PlayerService.UpdateSonicCharacter:output_type -> protos.SonicCharacter
+	8,  // 21: protos.PlayerService.GetSonicCharacters:output_type -> protos.GetSonicCharactersResponse
+	12, // 22: protos.PlayerService.SelectCharacter:output_type -> protos.SelectCharacterResponse
+	16, // [16:23] is the sub-list for method output_type
+	9,  // [9:16] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_player_proto_init() }
@@ -316,13 +979,14 @@ func file_player_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_player_proto_rawDesc), len(file_player_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   3,
+			NumEnums:      1,
+			NumMessages:   12,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_player_proto_goTypes,
 		DependencyIndexes: file_player_proto_depIdxs,
+		EnumInfos:         file_player_proto_enumTypes,
 		MessageInfos:      file_player_proto_msgTypes,
 	}.Build()
 	File_player_proto = out.File

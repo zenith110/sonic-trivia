@@ -156,7 +156,7 @@ export function MultiplayerLobby({
 
   if (!roomCreated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
         {/* Top Navigation Bar */}
         <header className="bg-white border-b shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -324,7 +324,7 @@ export function MultiplayerLobby({
                 <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-gradient-to-br from-slate-50 to-slate-100 px-2 text-muted-foreground">
+                <span className="bg-linear-to-br from-slate-50 to-slate-100 px-2 text-muted-foreground">
                   Or
                 </span>
               </div>
@@ -369,7 +369,7 @@ export function MultiplayerLobby({
 
   // Room Created - Lobby View
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
       {/* Top Navigation Bar */}
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -591,7 +591,7 @@ export function MultiplayerLobby({
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+            <Card className="bg-linear-to-br from-blue-50 to-indigo-50 border-blue-200">
               <CardHeader>
                 <CardTitle className="text-base">Room Info</CardTitle>
               </CardHeader>

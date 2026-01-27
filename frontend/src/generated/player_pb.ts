@@ -2,8 +2,8 @@
 // @generated from file player.proto (package protos, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,12 +12,12 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file player.proto.
  */
 export const file_player: GenFile = /*@__PURE__*/
-  fileDesc("CgxwbGF5ZXIucHJvdG8SBnByb3RvcyKUAQoOU29uaWNDaGFyYWN0ZXISDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIXCg9wcm9maWxlX3BpY3R1cmUYAyABKAkSFwoPc3BlY2lhbF9hYmlsaXR5GAQgASgJEi0KCWxhc3RfdXNlZBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiHgoKRnJpZW5kTGlzdBIQCgh1c2VybmFtZRgBIAEoCSLwAQoGUGxheWVyEgwKBG5hbWUYASABKAkSDQoFZW1haWwYAyABKAkSFgoOc29jaWFsc19saW5rZWQYBCABKAkSLwoPc29uaWNfY2hhcmFjdGVyGAUgAygLMhYucHJvdG9zLlNvbmljQ2hhcmFjdGVyEhQKDHRvdGFsX3BvaW50cxgGIAEoAxIgChh0b3RhbF9zdWNjZXNzZnVsX2Fuc3dlcnMYByABKAMSFQoNdG90YWxfYW5zd2VycxgIIAEoAxIMCgRyb2xlGAkgASgJEiMKB2ZyaWVuZHMYCiADKAsyEi5wcm90b3MuRnJpZW5kTGlzdEIdWhtzb25pYy10cml2aWEvYmFja2VuZC9wcm90b3NiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("CgxwbGF5ZXIucHJvdG8SBnByb3RvcyIsCgdBYmlsaXR5EgwKBG5hbWUYASABKAkSEwoLZGVzY3JpcHRpb24YAiABKAkijwMKDlNvbmljQ2hhcmFjdGVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkSFwoPcHJvZmlsZV9waWN0dXJlGAQgASgJEiIKCWFiaWxpdGllcxgFIAMoCzIPLnByb3Rvcy5BYmlsaXR5Eg0KBXNwZWVkGAYgASgFEg0KBXBvd2VyGAcgASgFEhEKCXRlY2huaXF1ZRgIIAEoBRInCgZyYXJpdHkYCSABKA4yFy5wcm90b3MuQ2hhcmFjdGVyUmFyaXR5EgwKBGdhbWUYCiABKAkSDQoFcXVvdGUYCyABKAkSDQoFY29sb3IYDCABKAkSEAoIdW5sb2NrZWQYDSABKAgSLwoLdW5sb2NrZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCWxhc3RfdXNlZBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASGQoRZ2FtZXNfcGxheWVkX3dpdGgYECABKAMiHgoKRnJpZW5kTGlzdBIQCgh1c2VybmFtZRgBIAEoCSKoAgoGUGxheWVyEgwKBG5hbWUYASABKAkSDQoFZW1haWwYAyABKAkSFgoOc29jaWFsc19saW5rZWQYBCABKAkSMwoTdW5sb2NrZWRfY2hhcmFjdGVycxgFIAMoCzIWLnByb3Rvcy5Tb25pY0NoYXJhY3RlchIdChVzZWxlY3RlZF9jaGFyYWN0ZXJfaWQYBiABKAkSFAoMdG90YWxfcG9pbnRzGAcgASgDEiAKGHRvdGFsX3N1Y2Nlc3NmdWxfYW5zd2VycxgIIAEoAxIVCg10b3RhbF9hbnN3ZXJzGAkgASgDEgwKBHJvbGUYCiABKAkSEwoLdG90YWxfcmluZ3MYCyABKAMSIwoHZnJpZW5kcxgMIAMoCzISLnByb3Rvcy5GcmllbmRMaXN0Ih4KEEdldFBsYXllclJlcXVlc3QSCgoCaWQYASABKAkiMwoRR2V0UGxheWVyUmVzcG9uc2USHgoGcGxheWVyGAEgASgLMg4ucHJvdG9zLlBsYXllciIsChlHZXRTb25pY0NoYXJhY3RlcnNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiSAoaR2V0U29uaWNDaGFyYWN0ZXJzUmVzcG9uc2USKgoKY2hhcmFjdGVycxgBIAMoCzIWLnByb3Rvcy5Tb25pY0NoYXJhY3RlciIhChNEZWxldGVQbGF5ZXJSZXF1ZXN0EgoKAmlkGAEgASgJIicKFERlbGV0ZVBsYXllclJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiQQoWU2VsZWN0Q2hhcmFjdGVyUmVxdWVzdBIRCglwbGF5ZXJfaWQYASABKAkSFAoMY2hhcmFjdGVyX2lkGAIgASgJIkoKF1NlbGVjdENoYXJhY3RlclJlc3BvbnNlEh4KBnBsYXllchgBIAEoCzIOLnByb3Rvcy5QbGF5ZXISDwoHbWVzc2FnZRgCIAEoCSqmAQoPQ2hhcmFjdGVyUmFyaXR5EiAKHENIQVJBQ1RFUl9SQVJJVFlfVU5TUEVDSUZJRUQQABIbChdDSEFSQUNURVJfUkFSSVRZX0NPTU1PThABEhkKFUNIQVJBQ1RFUl9SQVJJVFlfUkFSRRACEhkKFUNIQVJBQ1RFUl9SQVJJVFlfRVBJQxADEh4KGkNIQVJBQ1RFUl9SQVJJVFlfTEVHRU5EQVJZEAQygwQKDVBsYXllclNlcnZpY2USMAoMQ3JlYXRlUGxheWVyEg4ucHJvdG9zLlBsYXllchoOLnByb3Rvcy5QbGF5ZXIiABJCCglHZXRQbGF5ZXISGC5wcm90b3MuR2V0UGxheWVyUmVxdWVzdBoZLnByb3Rvcy5HZXRQbGF5ZXJSZXNwb25zZSIAEjAKDFVwZGF0ZVBsYXllchIOLnByb3Rvcy5QbGF5ZXIaDi5wcm90b3MuUGxheWVyIgASSwoMRGVsZXRlUGxheWVyEhsucHJvdG9zLkRlbGV0ZVBsYXllclJlcXVlc3QaHC5wcm90b3MuRGVsZXRlUGxheWVyUmVzcG9uc2UiABJIChRVcGRhdGVTb25pY0NoYXJhY3RlchIWLnByb3Rvcy5Tb25pY0NoYXJhY3RlchoWLnByb3Rvcy5Tb25pY0NoYXJhY3RlciIAEl0KEkdldFNvbmljQ2hhcmFjdGVycxIhLnByb3Rvcy5HZXRTb25pY0NoYXJhY3RlcnNSZXF1ZXN0GiIucHJvdG9zLkdldFNvbmljQ2hhcmFjdGVyc1Jlc3BvbnNlIgASVAoPU2VsZWN0Q2hhcmFjdGVyEh4ucHJvdG9zLlNlbGVjdENoYXJhY3RlclJlcXVlc3QaHy5wcm90b3MuU2VsZWN0Q2hhcmFjdGVyUmVzcG9uc2UiAEIdWhtzb25pYy10cml2aWEvYmFja2VuZC9wcm90b3NiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
- * @generated from message protos.SonicCharacter
+ * @generated from message protos.Ability
  */
-export type SonicCharacter = Message<"protos.SonicCharacter"> & {
+export type Ability = Message<"protos.Ability"> & {
   /**
    * @generated from field: string name = 1;
    */
@@ -27,21 +27,98 @@ export type SonicCharacter = Message<"protos.SonicCharacter"> & {
    * @generated from field: string description = 2;
    */
   description: string;
+};
+
+/**
+ * Describes the message protos.Ability.
+ * Use `create(AbilitySchema)` to create a new message.
+ */
+export const AbilitySchema: GenMessage<Ability> = /*@__PURE__*/
+  messageDesc(file_player, 0);
+
+/**
+ * @generated from message protos.SonicCharacter
+ */
+export type SonicCharacter = Message<"protos.SonicCharacter"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 
   /**
-   * @generated from field: string profile_picture = 3;
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string description = 3;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string profile_picture = 4;
    */
   profilePicture: string;
 
   /**
-   * @generated from field: string special_ability = 4;
+   * @generated from field: repeated protos.Ability abilities = 5;
    */
-  specialAbility: string;
+  abilities: Ability[];
 
   /**
-   * @generated from field: google.protobuf.Timestamp last_used = 5;
+   * @generated from field: int32 speed = 6;
+   */
+  speed: number;
+
+  /**
+   * @generated from field: int32 power = 7;
+   */
+  power: number;
+
+  /**
+   * @generated from field: int32 technique = 8;
+   */
+  technique: number;
+
+  /**
+   * @generated from field: protos.CharacterRarity rarity = 9;
+   */
+  rarity: CharacterRarity;
+
+  /**
+   * @generated from field: string game = 10;
+   */
+  game: string;
+
+  /**
+   * @generated from field: string quote = 11;
+   */
+  quote: string;
+
+  /**
+   * @generated from field: string color = 12;
+   */
+  color: string;
+
+  /**
+   * @generated from field: bool unlocked = 13;
+   */
+  unlocked: boolean;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp unlocked_at = 14;
+   */
+  unlockedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp last_used = 15;
    */
   lastUsed?: Timestamp;
+
+  /**
+   * @generated from field: int64 games_played_with = 16;
+   */
+  gamesPlayedWith: bigint;
 };
 
 /**
@@ -49,7 +126,7 @@ export type SonicCharacter = Message<"protos.SonicCharacter"> & {
  * Use `create(SonicCharacterSchema)` to create a new message.
  */
 export const SonicCharacterSchema: GenMessage<SonicCharacter> = /*@__PURE__*/
-  messageDesc(file_player, 0);
+  messageDesc(file_player, 1);
 
 /**
  * @generated from message protos.FriendList
@@ -66,7 +143,7 @@ export type FriendList = Message<"protos.FriendList"> & {
  * Use `create(FriendListSchema)` to create a new message.
  */
 export const FriendListSchema: GenMessage<FriendList> = /*@__PURE__*/
-  messageDesc(file_player, 1);
+  messageDesc(file_player, 2);
 
 /**
  * @generated from message protos.Player
@@ -88,32 +165,42 @@ export type Player = Message<"protos.Player"> & {
   socialsLinked: string;
 
   /**
-   * @generated from field: repeated protos.SonicCharacter sonic_character = 5;
+   * @generated from field: repeated protos.SonicCharacter unlocked_characters = 5;
    */
-  sonicCharacter: SonicCharacter[];
+  unlockedCharacters: SonicCharacter[];
 
   /**
-   * @generated from field: int64 total_points = 6;
+   * @generated from field: string selected_character_id = 6;
+   */
+  selectedCharacterId: string;
+
+  /**
+   * @generated from field: int64 total_points = 7;
    */
   totalPoints: bigint;
 
   /**
-   * @generated from field: int64 total_successful_answers = 7;
+   * @generated from field: int64 total_successful_answers = 8;
    */
   totalSuccessfulAnswers: bigint;
 
   /**
-   * @generated from field: int64 total_answers = 8;
+   * @generated from field: int64 total_answers = 9;
    */
   totalAnswers: bigint;
 
   /**
-   * @generated from field: string role = 9;
+   * @generated from field: string role = 10;
    */
   role: string;
 
   /**
-   * @generated from field: repeated protos.FriendList friends = 10;
+   * @generated from field: int64 total_rings = 11;
+   */
+  totalRings: bigint;
+
+  /**
+   * @generated from field: repeated protos.FriendList friends = 12;
    */
   friends: FriendList[];
 };
@@ -123,5 +210,250 @@ export type Player = Message<"protos.Player"> & {
  * Use `create(PlayerSchema)` to create a new message.
  */
 export const PlayerSchema: GenMessage<Player> = /*@__PURE__*/
-  messageDesc(file_player, 2);
+  messageDesc(file_player, 3);
+
+/**
+ * @generated from message protos.GetPlayerRequest
+ */
+export type GetPlayerRequest = Message<"protos.GetPlayerRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message protos.GetPlayerRequest.
+ * Use `create(GetPlayerRequestSchema)` to create a new message.
+ */
+export const GetPlayerRequestSchema: GenMessage<GetPlayerRequest> = /*@__PURE__*/
+  messageDesc(file_player, 4);
+
+/**
+ * @generated from message protos.GetPlayerResponse
+ */
+export type GetPlayerResponse = Message<"protos.GetPlayerResponse"> & {
+  /**
+   * @generated from field: protos.Player player = 1;
+   */
+  player?: Player;
+};
+
+/**
+ * Describes the message protos.GetPlayerResponse.
+ * Use `create(GetPlayerResponseSchema)` to create a new message.
+ */
+export const GetPlayerResponseSchema: GenMessage<GetPlayerResponse> = /*@__PURE__*/
+  messageDesc(file_player, 5);
+
+/**
+ * @generated from message protos.GetSonicCharactersRequest
+ */
+export type GetSonicCharactersRequest = Message<"protos.GetSonicCharactersRequest"> & {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId: string;
+};
+
+/**
+ * Describes the message protos.GetSonicCharactersRequest.
+ * Use `create(GetSonicCharactersRequestSchema)` to create a new message.
+ */
+export const GetSonicCharactersRequestSchema: GenMessage<GetSonicCharactersRequest> = /*@__PURE__*/
+  messageDesc(file_player, 6);
+
+/**
+ * @generated from message protos.GetSonicCharactersResponse
+ */
+export type GetSonicCharactersResponse = Message<"protos.GetSonicCharactersResponse"> & {
+  /**
+   * @generated from field: repeated protos.SonicCharacter characters = 1;
+   */
+  characters: SonicCharacter[];
+};
+
+/**
+ * Describes the message protos.GetSonicCharactersResponse.
+ * Use `create(GetSonicCharactersResponseSchema)` to create a new message.
+ */
+export const GetSonicCharactersResponseSchema: GenMessage<GetSonicCharactersResponse> = /*@__PURE__*/
+  messageDesc(file_player, 7);
+
+/**
+ * @generated from message protos.DeletePlayerRequest
+ */
+export type DeletePlayerRequest = Message<"protos.DeletePlayerRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message protos.DeletePlayerRequest.
+ * Use `create(DeletePlayerRequestSchema)` to create a new message.
+ */
+export const DeletePlayerRequestSchema: GenMessage<DeletePlayerRequest> = /*@__PURE__*/
+  messageDesc(file_player, 8);
+
+/**
+ * @generated from message protos.DeletePlayerResponse
+ */
+export type DeletePlayerResponse = Message<"protos.DeletePlayerResponse"> & {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message protos.DeletePlayerResponse.
+ * Use `create(DeletePlayerResponseSchema)` to create a new message.
+ */
+export const DeletePlayerResponseSchema: GenMessage<DeletePlayerResponse> = /*@__PURE__*/
+  messageDesc(file_player, 9);
+
+/**
+ * @generated from message protos.SelectCharacterRequest
+ */
+export type SelectCharacterRequest = Message<"protos.SelectCharacterRequest"> & {
+  /**
+   * @generated from field: string player_id = 1;
+   */
+  playerId: string;
+
+  /**
+   * @generated from field: string character_id = 2;
+   */
+  characterId: string;
+};
+
+/**
+ * Describes the message protos.SelectCharacterRequest.
+ * Use `create(SelectCharacterRequestSchema)` to create a new message.
+ */
+export const SelectCharacterRequestSchema: GenMessage<SelectCharacterRequest> = /*@__PURE__*/
+  messageDesc(file_player, 10);
+
+/**
+ * @generated from message protos.SelectCharacterResponse
+ */
+export type SelectCharacterResponse = Message<"protos.SelectCharacterResponse"> & {
+  /**
+   * @generated from field: protos.Player player = 1;
+   */
+  player?: Player;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message protos.SelectCharacterResponse.
+ * Use `create(SelectCharacterResponseSchema)` to create a new message.
+ */
+export const SelectCharacterResponseSchema: GenMessage<SelectCharacterResponse> = /*@__PURE__*/
+  messageDesc(file_player, 11);
+
+/**
+ * @generated from enum protos.CharacterRarity
+ */
+export enum CharacterRarity {
+  /**
+   * @generated from enum value: CHARACTER_RARITY_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: CHARACTER_RARITY_COMMON = 1;
+   */
+  COMMON = 1,
+
+  /**
+   * @generated from enum value: CHARACTER_RARITY_RARE = 2;
+   */
+  RARE = 2,
+
+  /**
+   * @generated from enum value: CHARACTER_RARITY_EPIC = 3;
+   */
+  EPIC = 3,
+
+  /**
+   * @generated from enum value: CHARACTER_RARITY_LEGENDARY = 4;
+   */
+  LEGENDARY = 4,
+}
+
+/**
+ * Describes the enum protos.CharacterRarity.
+ */
+export const CharacterRaritySchema: GenEnum<CharacterRarity> = /*@__PURE__*/
+  enumDesc(file_player, 0);
+
+/**
+ * @generated from service protos.PlayerService
+ */
+export const PlayerService: GenService<{
+  /**
+   * @generated from rpc protos.PlayerService.CreatePlayer
+   */
+  createPlayer: {
+    methodKind: "unary";
+    input: typeof PlayerSchema;
+    output: typeof PlayerSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.GetPlayer
+   */
+  getPlayer: {
+    methodKind: "unary";
+    input: typeof GetPlayerRequestSchema;
+    output: typeof GetPlayerResponseSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.UpdatePlayer
+   */
+  updatePlayer: {
+    methodKind: "unary";
+    input: typeof PlayerSchema;
+    output: typeof PlayerSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.DeletePlayer
+   */
+  deletePlayer: {
+    methodKind: "unary";
+    input: typeof DeletePlayerRequestSchema;
+    output: typeof DeletePlayerResponseSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.UpdateSonicCharacter
+   */
+  updateSonicCharacter: {
+    methodKind: "unary";
+    input: typeof SonicCharacterSchema;
+    output: typeof SonicCharacterSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.GetSonicCharacters
+   */
+  getSonicCharacters: {
+    methodKind: "unary";
+    input: typeof GetSonicCharactersRequestSchema;
+    output: typeof GetSonicCharactersResponseSchema;
+  },
+  /**
+   * @generated from rpc protos.PlayerService.SelectCharacter
+   */
+  selectCharacter: {
+    methodKind: "unary";
+    input: typeof SelectCharacterRequestSchema;
+    output: typeof SelectCharacterResponseSchema;
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_player, 0);
 

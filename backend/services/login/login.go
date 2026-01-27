@@ -55,6 +55,7 @@ func playerToProto(player *database.Player) *pb.Player {
 		TotalSuccessfulAnswers: player.CorrectAnswers,
 		TotalAnswers:           player.QuestionsAnswered,
 		Role:                   player.Role,
+		TotalRings:             player.TotalRings,
 	}
 }
 
