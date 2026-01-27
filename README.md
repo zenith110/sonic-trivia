@@ -22,7 +22,7 @@ To set up the project, follow these steps:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/sonic-trivia.git
+   git clone https://github.com/zenith110/sonic-trivia.git
    ```
 
 2. Navigate to the project directory:
@@ -48,6 +48,9 @@ To set up the project, follow these steps:
 
 ## Credits
 [Sega](https://www.sega.com/) - For publishing and keeping the Sonic the Hedgehog series alive.
+
 Sonic Team - For making the Sonic the Hedgehog series.
+
 Dimps - For creating Sonic Rush where sprites were used from.
+
 Sonic Wiki - For providing information about the Sonic the Hedgehog series, as well as sprites.
