@@ -10,11 +10,13 @@ export interface Character {
   power: number;
   technique: number;
   rarity: "common" | "rare" | "epic" | "legendary";
+  type: "hero" | "villain" | "neutral";
   game: string;
   abilities: abilities[];
   quote: string;
   color: string;
   unlocked: boolean;
+  picture: string;
 }
 
 export const characters: Character[] = [
@@ -27,6 +29,7 @@ export const characters: Character[] = [
     power: 60,
     technique: 70,
     rarity: "legendary",
+    type: "hero",
     game: "Sonic Adventure 2",
     abilities: [
       {
@@ -37,6 +40,7 @@ export const characters: Character[] = [
     quote: "Gotta go fast!",
     color: "bg-blue-500",
     unlocked: true,
+    picture: "/characters/heroes/sonic.png",
   },
   {
     id: "tails",
@@ -47,6 +51,7 @@ export const characters: Character[] = [
     power: 50,
     technique: 95,
     rarity: "epic",
+    type: "hero",
     game: "Sonic Adventure 2",
     abilities: [
       { name: "Flight", description: "Tails can fly using his twin tails." },
@@ -59,6 +64,7 @@ export const characters: Character[] = [
     quote: "I can fly if I try!",
     color: "bg-yellow-500",
     unlocked: true,
+    picture: "/characters/heroes/tails.png",
   },
   {
     id: "knuckles",
@@ -69,6 +75,7 @@ export const characters: Character[] = [
     power: 100,
     technique: 70,
     rarity: "epic",
+    type: "hero",
     game: "Sonic Adventure 2",
     abilities: [
       { name: "Glide", description: "Glide through the air using dreadlocks." },
@@ -82,6 +89,7 @@ export const characters: Character[] = [
     quote: "Here I come, rougher than the rest of them!",
     color: "bg-red-500",
     unlocked: true,
+    picture: "/characters/heroes/knuckles.png",
   },
   {
     id: "shadow",
@@ -92,6 +100,7 @@ export const characters: Character[] = [
     power: 85,
     technique: 80,
     rarity: "legendary",
+    type: "neutral",
     game: "Sonic Adventure 2",
     abilities: [
       { name: "Chaos Control", description: "Manipulate time and space." },
@@ -101,6 +110,7 @@ export const characters: Character[] = [
     quote: "I am the ultimate life form!",
     color: "bg-gray-900",
     unlocked: false,
+    picture: "/characters/neutrals/shadow.png",
   },
   {
     id: "rouge",
@@ -111,6 +121,7 @@ export const characters: Character[] = [
     power: 65,
     technique: 90,
     rarity: "rare",
+    type: "neutral",
     game: "Sonic Adventure 2",
     abilities: [
       { name: "Flight", description: "Fly using her wings." },
@@ -120,6 +131,7 @@ export const characters: Character[] = [
     quote: "A treasure hunter always gets her prize!",
     color: "bg-purple-500",
     unlocked: false,
+    picture: "/characters/neutrals/rouge.png",
   },
   {
     id: "amy",
@@ -130,6 +142,7 @@ export const characters: Character[] = [
     power: 80,
     technique: 60,
     rarity: "rare",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       {
@@ -145,6 +158,7 @@ export const characters: Character[] = [
     quote: "I'll show you what I'm made of!",
     color: "bg-pink-500",
     unlocked: false,
+    picture: "/characters/heroes/amy.png",
   },
   {
     id: "cream",
@@ -155,6 +169,7 @@ export const characters: Character[] = [
     power: 45,
     technique: 85,
     rarity: "common",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       { name: "Ear Flight", description: "Fly using her large ears." },
@@ -164,6 +179,7 @@ export const characters: Character[] = [
     quote: "I'll do my best!",
     color: "bg-orange-300",
     unlocked: false,
+    picture: "/characters/heroes/cream.png",
   },
   {
     id: "big",
@@ -174,6 +190,7 @@ export const characters: Character[] = [
     power: 90,
     technique: 50,
     rarity: "common",
+    type: "hero",
     game: "Sonic Adventure",
     abilities: [
       { name: "Fishing Rod", description: "Use a fishing rod to catch items." },
@@ -183,6 +200,7 @@ export const characters: Character[] = [
     quote: "Froggy, where are you?",
     color: "bg-purple-600",
     unlocked: false,
+    picture: "/characters/heroes/big.png",
   },
   {
     id: "omega",
@@ -193,6 +211,7 @@ export const characters: Character[] = [
     power: 100,
     technique: 75,
     rarity: "epic",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       { name: "Heavy Machine Gun", description: "Rapid fire weapon." },
@@ -205,6 +224,7 @@ export const characters: Character[] = [
     quote: "Worthless consumer models!",
     color: "bg-red-600",
     unlocked: false,
+    picture: "/characters/heroes/omega.png",
   },
   {
     id: "blaze",
@@ -215,6 +235,7 @@ export const characters: Character[] = [
     power: 75,
     technique: 90,
     rarity: "legendary",
+    type: "hero",
     game: "Sonic Rush",
     abilities: [
       { name: "Fire Control", description: "Control and manipulate fire." },
@@ -224,6 +245,7 @@ export const characters: Character[] = [
     quote: "I will protect the Sol Emeralds!",
     color: "bg-purple-400",
     unlocked: false,
+    picture: "/characters/heroes/blaze.png",
   },
   {
     id: "silver",
@@ -234,6 +256,7 @@ export const characters: Character[] = [
     power: 75,
     technique: 95,
     rarity: "epic",
+    type: "hero",
     game: "Sonic '06",
     abilities: [
       { name: "Psychokinesis", description: "Move objects with the mind." },
@@ -243,6 +266,7 @@ export const characters: Character[] = [
     quote: "It's no use!",
     color: "bg-gray-300",
     unlocked: false,
+    picture: "/characters/heroes/silver.png",
   },
   {
     id: "espio",
@@ -253,6 +277,7 @@ export const characters: Character[] = [
     power: 70,
     technique: 90,
     rarity: "rare",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       { name: "Invisibility", description: "Turn invisible to enemies." },
@@ -262,6 +287,7 @@ export const characters: Character[] = [
     quote: "A ninja's work is never done!",
     color: "bg-purple-700",
     unlocked: false,
+    picture: "/characters/heroes/espio.png",
   },
   {
     id: "vector",
@@ -272,6 +298,7 @@ export const characters: Character[] = [
     power: 90,
     technique: 60,
     rarity: "common",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       { name: "Headphones Boom", description: "Sonic attack from headphones." },
@@ -281,6 +308,7 @@ export const characters: Character[] = [
     quote: "We're Chaotix, and we're here to help!",
     color: "bg-green-600",
     unlocked: false,
+    picture: "/characters/heroes/vector.png",
   },
   {
     id: "charmy",
@@ -291,6 +319,7 @@ export const characters: Character[] = [
     power: 40,
     technique: 70,
     rarity: "common",
+    type: "hero",
     game: "Sonic Heroes",
     abilities: [
       { name: "Flight", description: "Fly freely through the air." },
@@ -300,6 +329,7 @@ export const characters: Character[] = [
     quote: "Yeah! Let's do it!",
     color: "bg-yellow-400",
     unlocked: false,
+    picture: "/characters/heroes/charmy.png",
   },
   {
     id: "metal-sonic",
@@ -310,6 +340,7 @@ export const characters: Character[] = [
     power: 80,
     technique: 85,
     rarity: "legendary",
+    type: "villain",
     game: "Sonic Heroes",
     abilities: [
       { name: "Maximum Overdrive", description: "Extreme speed boost." },
@@ -319,6 +350,7 @@ export const characters: Character[] = [
     quote: "...",
     color: "bg-blue-700",
     unlocked: false,
+    picture: "/characters/villains/metal-sonic.png",
   },
 ];
 
@@ -362,4 +394,15 @@ export const getLockedCharacters = (): Character[] => {
 
 export const getCharacterById = (id: string): Character | undefined => {
   return characters.find((char) => char.id === id);
+};
+
+// Helper function to get the correct directory based on character type
+export const getCharacterImagePath = (character: Character): string => {
+  const typeDirectory =
+    character.type === "villain"
+      ? "villains"
+      : character.type === "hero"
+        ? "heroes"
+        : "neutrals";
+  return `/characters/${typeDirectory}/${character.id}.png`;
 };

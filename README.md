@@ -13,9 +13,9 @@ This project is a game based on the Sonic the Hedgehog series. It is inspired by
 
 ## Setting up
 ### Prerequisites
-- Node.js and npm installed on your machine.
-- Bun installed on your machine.
-- Docker installed on your machine.
+- [Node.js and npm](https://nodejs.org/) installed on your machine.
+- [Bun](https://bun.sh/) installed on your machine.
+- [Docker](https://www.docker.com/) installed on your machine.
 - Make if on [windows](https://gnuwin32.sourceforge.net/packages/make.html)
 
 To set up the project, follow these steps:
@@ -45,3 +45,9 @@ To set up the project, follow these steps:
    make dev-db-reset
    ```
 7. Go to http://localhost:5176 to play the game.
+
+## Credits
+[Sega](https://www.sega.com/) - For publishing and keeping the Sonic the Hedgehog series alive.
+Sonic Team - For making the Sonic the Hedgehog series.
+Dimps - For creating Sonic Rush where sprites were used from.
+Sonic Wiki - For providing information about the Sonic the Hedgehog series, as well as sprites.

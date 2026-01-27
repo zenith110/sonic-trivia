@@ -17,6 +17,7 @@ import { MultiplayerLobby } from "./MultiplayerLobby";
 import { JoinRoomDialog } from "@/components/JoinRoomDialog";
 import { CharacterGallery } from "@/components/CharacterGallery";
 import { usePlayer } from "@/hooks/usePlayer";
+import { getCharacterById, getCharacterImagePath } from "@/data/characters";
 
 type PlayerMode = "single" | "multiplayer";
 type GameType = "trivia" | "guess-that-song";
@@ -172,17 +173,50 @@ export function MainMenu({
                 variant="outline"
                 size="lg"
                 onClick={() => setShowCharacterGallery(true)}
-                className="h-12"
+                className="h-16 px-6"
               >
-                <UsersIcon className="h-5 w-5 mr-2" />
-                Select Character
-                {selectedCharacterId && (
-                  <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                    {unlockedCharacters.find(
-                      (char) => char.id === selectedCharacterId,
-                    )?.name || "Selected"}
-                  </span>
-                )}
+                <UsersIcon className="h-5 w-5 mr-3" />
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">Select Character</span>
+                  {selectedCharacterId && (
+                    <span className="text-xs text-muted-foreground">
+                      {unlockedCharacters.find(
+                        (char) => char.id === selectedCharacterId,
+                      )?.name || "Selected"}
+                    </span>
+                  )}
+                </div>
+                {selectedCharacterId &&
+                  (() => {
+                    const character = getCharacterById(selectedCharacterId);
+                    return character ? (
+                      <div className="ml-auto">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden shadow-sm border-2 border-primary/20">
+                          <img
+                            src={getCharacterImagePath(character)}
+                            alt={character.name}
+                            className="w-full h-full object-cover rounded-full"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              const parent = target.parentElement;
+                              if (
+                                parent &&
+                                !parent.querySelector(".fallback-text")
+                              ) {
+                                const fallback = document.createElement("div");
+                                fallback.className = `fallback-text w-full h-full ${character.color} flex items-center justify-center text-white text-xs font-bold rounded-full`;
+                                fallback.textContent = character.name
+                                  .substring(0, 2)
+                                  .toUpperCase();
+                                parent.appendChild(fallback);
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
               </Button>
             </div>
           </div>
