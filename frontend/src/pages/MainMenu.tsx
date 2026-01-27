@@ -178,7 +178,9 @@ export function MainMenu({
                 Select Character
                 {selectedCharacterId && (
                   <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                    Selected
+                    {unlockedCharacters.find(
+                      (char) => char.id === selectedCharacterId,
+                    )?.name || "Selected"}
                   </span>
                 )}
               </Button>

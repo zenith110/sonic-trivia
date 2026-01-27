@@ -82,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       const response = await loginClient.login(request);
-
+      console.log(response);
       if (response.value?.case === "token" && response.value.value) {
         const jwtToken = response.value.value;
 
@@ -98,8 +98,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const tokenParts = jwtToken.split(".");
           let userId = "";
           if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            userId = payload.user_id || "";
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              userId = payload.user_id || "";
+            } catch (error) {
+              console.error("Failed to parse JWT payload:", error);
+            }
           }
 
           const userData: User = {
@@ -109,11 +113,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
             displayName: player.name || email.split("@")[0],
             role: player.role || "player",
             selectedCharacterId: player.selectedCharacterId || undefined,
-            totalScore: toNumber(player.totalPoints),
-            totalRings: toNumber(player.totalRings),
+            totalScore: player.totalPoints ? toNumber(player.totalPoints) : 0,
+            totalRings: player.totalRings ? toNumber(player.totalRings) : 0,
             gamesPlayed: 0,
-            questionsAnswered: toNumber(player.totalAnswers),
-            correctAnswers: toNumber(player.totalSuccessfulAnswers),
+            questionsAnswered: player.totalAnswers
+              ? toNumber(player.totalAnswers)
+              : 0,
+            correctAnswers: player.totalSuccessfulAnswers
+              ? toNumber(player.totalSuccessfulAnswers)
+              : 0,
           };
 
           setUser(userData);
@@ -162,8 +170,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const tokenParts = jwtToken.split(".");
           let userId = "";
           if (tokenParts.length === 3) {
-            const payload = JSON.parse(atob(tokenParts[1]));
-            userId = payload.user_id || "";
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              userId = payload.user_id || "";
+            } catch (error) {
+              console.error("Failed to parse JWT payload:", error);
+            }
           }
 
           const userData: User = {
@@ -173,11 +185,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
             displayName: player.name || username,
             role: player.role || "player",
             selectedCharacterId: player.selectedCharacterId || undefined,
-            totalScore: toNumber(player.totalPoints),
-            totalRings: toNumber(player.totalRings),
+            totalScore: player.totalPoints ? toNumber(player.totalPoints) : 0,
+            totalRings: player.totalRings ? toNumber(player.totalRings) : 0,
             gamesPlayed: 0,
-            questionsAnswered: toNumber(player.totalAnswers),
-            correctAnswers: toNumber(player.totalSuccessfulAnswers),
+            questionsAnswered: player.totalAnswers
+              ? toNumber(player.totalAnswers)
+              : 0,
+            correctAnswers: player.totalSuccessfulAnswers
+              ? toNumber(player.totalSuccessfulAnswers)
+              : 0,
           };
 
           setUser(userData);

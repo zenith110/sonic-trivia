@@ -16,8 +16,9 @@ func SeedDevData() error {
 
 	// Only seed in development mode
 	env := os.Getenv("ENVIRONMENT")
-	if env != "development" && env != "dev" {
-		log.Println("Skipping seed data - not in development mode")
+	appEnv := os.Getenv("APP_ENV")
+	if env != "development" && env != "dev" && appEnv != "development" && appEnv != "dev" {
+		log.Printf("Skipping seed data - not in development mode (ENVIRONMENT=%s, APP_ENV=%s)", env, appEnv)
 		return nil
 	}
 
@@ -103,7 +104,10 @@ func SeedDevData() error {
 		},
 	}
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
-	// Hash password for all players (using "password123" as default)
+	if adminPassword == "" {
+		adminPassword = "admin123"
+	}
+	// Hash password for all players (using "admin123" as default)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(adminPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -120,9 +124,9 @@ func SeedDevData() error {
 
 	log.Printf("Successfully seeded %d players", len(players))
 	log.Println("Development credentials:")
-	log.Println("  Admin: admin@sonictrivia.com / password123")
-	log.Println("  Moderator: mod@sonictrivia.com / password123")
-	log.Println("  Players: sonic@sonictrivia.com, tails@sonictrivia.com, etc. / password123")
+	log.Println("  Admin: admin@sonictrivia.com / admin123")
+	log.Println("  Moderator: mod@sonictrivia.com / admin123")
+	log.Println("  Players: sonic@sonictrivia.com, tails@sonictrivia.com, etc. / admin123")
 
 	// Unlock default characters for all players
 	if err := unlockDefaultCharacters(players); err != nil {
