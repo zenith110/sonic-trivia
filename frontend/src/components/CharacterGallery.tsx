@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -12,10 +12,12 @@ import {
   characters,
   getRarityColor,
   getRarityBorderColor,
+  getCharacterImagePath,
 } from "@/data/characters";
 import { Lock, Zap, Check, Star, Crown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import type { SonicCharacter } from "@/generated/player_pb";
+import { CharacterDetailModal } from "@/components/CharacterDetailModal";
 
 interface CharacterGalleryProps {
   selectedCharacterId?: string;
@@ -34,6 +36,26 @@ export function CharacterGallery({
 }: CharacterGalleryProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "unlocked" | "locked">("all");
+  const [typeFilter, setTypeFilter] = useState<
+    "all" | "hero" | "villain" | "neutral"
+  >("all");
+  const [expandedCharacter, setExpandedCharacter] = useState<Character | null>(
+    null,
+  );
+
+  // Lock body scroll when component mounts, unlock when it unmounts
+  useEffect(() => {
+    // Store original overflow style
+    const originalOverflow = document.body.style.overflow;
+
+    // Lock scroll
+    document.body.style.overflow = "hidden";
+
+    // Cleanup function to restore scroll
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
 
   // Merge backend unlocked characters with frontend character data
   const mergedCharacters = useMemo(() => {
@@ -47,13 +69,57 @@ export function CharacterGallery({
   const handleSelectCharacter = (characterId: string) => {
     if (isSelecting) return;
     onSelectCharacter(characterId);
+    setExpandedCharacter(null);
+  };
+
+  const handleCharacterClick = (character: Character) => {
+    if (!character.unlocked) return;
+    setExpandedCharacter(character);
   };
 
   const filteredCharacters = mergedCharacters.filter((char) => {
-    if (filter === "unlocked") return char.unlocked;
-    if (filter === "locked") return !char.unlocked;
-    return true;
+    // Apply unlock status filter
+    const matchesUnlockFilter =
+      filter === "all" ||
+      (filter === "unlocked" && char.unlocked) ||
+      (filter === "locked" && !char.unlocked);
+
+    // Apply type filter
+    const matchesTypeFilter = typeFilter === "all" || char.type === typeFilter;
+
+    return matchesUnlockFilter && matchesTypeFilter;
   });
+
+  // Calculate counts for filter buttons based on current selections
+  const getFilterCounts = () => {
+    const allChars = mergedCharacters.filter(
+      (char) => typeFilter === "all" || char.type === typeFilter,
+    );
+    const unlockedChars = allChars.filter((char) => char.unlocked);
+    const lockedChars = allChars.filter((char) => !char.unlocked);
+
+    const typeChars = mergedCharacters.filter(
+      (char) =>
+        filter === "all" ||
+        (filter === "unlocked" && char.unlocked) ||
+        (filter === "locked" && !char.unlocked),
+    );
+    const heroChars = typeChars.filter((char) => char.type === "hero");
+    const villainChars = typeChars.filter((char) => char.type === "villain");
+    const neutralChars = typeChars.filter((char) => char.type === "neutral");
+
+    return {
+      all: allChars.length,
+      unlocked: unlockedChars.length,
+      locked: lockedChars.length,
+      allTypes: typeChars.length,
+      heroes: heroChars.length,
+      villains: villainChars.length,
+      neutral: neutralChars.length,
+    };
+  };
+
+  const counts = getFilterCounts();
 
   const getRarityIcon = (rarity: Character["rarity"]) => {
     switch (rarity) {
@@ -92,8 +158,8 @@ export function CharacterGallery({
   );
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="w-full max-w-7xl bg-white rounded-lg shadow-2xl my-8">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-7xl bg-white rounded-lg shadow-2xl my-8 max-h-[90vh] flex flex-col">
         <div className="p-6 border-b">
           <div className="flex justify-between items-center">
             <div>
@@ -111,32 +177,70 @@ export function CharacterGallery({
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex gap-2 mt-4">
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("all")}
-            >
-              All Characters ({mergedCharacters.length})
-            </Button>
-            <Button
-              variant={filter === "unlocked" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("unlocked")}
-            >
-              Unlocked ({mergedCharacters.filter((c) => c.unlocked).length})
-            </Button>
-            <Button
-              variant={filter === "locked" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("locked")}
-            >
-              Locked ({mergedCharacters.filter((c) => !c.unlocked).length})
-            </Button>
+          <div className="space-y-3 mt-4">
+            {/* Unlock Status Filters */}
+            <div className="flex gap-2">
+              <Button
+                variant={filter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("all")}
+              >
+                All Characters ({counts.all})
+              </Button>
+              <Button
+                variant={filter === "unlocked" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("unlocked")}
+              >
+                Unlocked ({counts.unlocked})
+              </Button>
+              <Button
+                variant={filter === "locked" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("locked")}
+              >
+                Locked ({counts.locked})
+              </Button>
+            </div>
+
+            {/* Character Type Filters */}
+            <div className="flex gap-2">
+              <Button
+                variant={typeFilter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTypeFilter("all")}
+              >
+                All Types ({counts.allTypes})
+              </Button>
+              <Button
+                variant={typeFilter === "hero" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTypeFilter("hero")}
+                className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-300 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
+              >
+                Heroes ({counts.heroes})
+              </Button>
+              <Button
+                variant={typeFilter === "villain" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTypeFilter("villain")}
+                className="bg-red-50 hover:bg-red-100 text-red-700 border-red-300 data-[state=on]:bg-red-600 data-[state=on]:text-white"
+              >
+                Villains ({counts.villains})
+              </Button>
+              <Button
+                variant={typeFilter === "neutral" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTypeFilter("neutral")}
+                className="bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-300 data-[state=on]:bg-gray-600 data-[state=on]:text-white"
+              >
+                Neutral ({counts.neutral})
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className="p-6 max-h-[70vh] overflow-y-auto">
+        <div className="p-6 flex-1 overflow-y-auto scrollbar-hide">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredCharacters.map((character) => (
               <Card
@@ -150,9 +254,7 @@ export function CharacterGallery({
                 }`}
                 onMouseEnter={() => setHoveredCard(character.id)}
                 onMouseLeave={() => setHoveredCard(null)}
-                onClick={() =>
-                  character.unlocked && handleSelectCharacter(character.id)
-                }
+                onClick={() => handleCharacterClick(character)}
               >
                 {/* Rarity Gradient Header */}
                 <div
@@ -184,11 +286,27 @@ export function CharacterGallery({
                 </CardHeader>
 
                 <CardContent className="space-y-3">
-                  {/* Character Avatar Placeholder */}
-                  <div
-                    className={`w-full h-32 rounded-lg ${character.color} flex items-center justify-center text-white text-4xl font-bold shadow-inner`}
-                  >
-                    {character.name.substring(0, 2).toUpperCase()}
+                  {/* Character Avatar */}
+                  <div className="w-full h-32 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden shadow-inner">
+                    <img
+                      src={getCharacterImagePath(character)}
+                      alt={character.name}
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        // Fallback to initials if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        const parent = target.parentElement;
+                        if (parent && !parent.querySelector(".fallback-text")) {
+                          const fallback = document.createElement("div");
+                          fallback.className = `fallback-text w-full h-full ${character.color} flex items-center justify-center text-white text-4xl font-bold rounded-lg`;
+                          fallback.textContent = character.name
+                            .substring(0, 2)
+                            .toUpperCase();
+                          parent.appendChild(fallback);
+                        }
+                      }}
+                    />
                   </div>
 
                   <CardDescription className="text-xs line-clamp-2">
@@ -294,7 +412,10 @@ export function CharacterGallery({
                 <>
                   Selected:{" "}
                   <span className="font-semibold text-foreground">
-                    {mergedCharacters.find((c) => c.id === selectedCharacterId)?.name}
+                    {
+                      mergedCharacters.find((c) => c.id === selectedCharacterId)
+                        ?.name
+                    }
                   </span>
                 </>
               ) : (
@@ -318,6 +439,15 @@ export function CharacterGallery({
         </div>
       </div>
 
+      <CharacterDetailModal
+        character={expandedCharacter}
+        isOpen={!!expandedCharacter}
+        onClose={() => setExpandedCharacter(null)}
+        onSelectCharacter={handleSelectCharacter}
+        selectedCharacterId={selectedCharacterId}
+        isSelecting={isSelecting}
+      />
+
       <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
@@ -326,6 +456,14 @@ export function CharacterGallery({
 
         .animate-fade-in {
           animation: fade-in 0.3s ease-out;
+        }
+
+        .scrollbar-hide {
+          /* Hide scrollbar for Chrome, Safari and Opera */
+          -webkit-scrollbar: none;
+          /* Hide scrollbar for IE, Edge and Firefox */
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>
