@@ -66,6 +66,9 @@ const (
 	// GuessThatSongServiceGetSongCollectionsProcedure is the fully-qualified name of the
 	// GuessThatSongService's GetSongCollections RPC.
 	GuessThatSongServiceGetSongCollectionsProcedure = "/protos.GuessThatSongService/GetSongCollections"
+	// GuessThatSongServiceGetSongsProcedure is the fully-qualified name of the GuessThatSongService's
+	// GetSongs RPC.
+	GuessThatSongServiceGetSongsProcedure = "/protos.GuessThatSongService/GetSongs"
 )
 
 // GuessThatSongServiceClient is a client for the protos.GuessThatSongService service.
@@ -81,6 +84,7 @@ type GuessThatSongServiceClient interface {
 	DeleteSongCollection(context.Context, *connect.Request[protos.DeleteSongCollectionRequest]) (*connect.Response[protos.DeleteSongCollectionResponse], error)
 	UpdateSongCollection(context.Context, *connect.Request[protos.UpdateSongCollectionRequest]) (*connect.Response[protos.UpdateSongCollectionResponse], error)
 	GetSongCollections(context.Context, *connect.Request[protos.GetSongCollectionsRequest]) (*connect.Response[protos.GetSongCollectionsResponse], error)
+	GetSongs(context.Context, *connect.Request[protos.GetSongsRequest]) (*connect.Response[protos.GetSongsResponse], error)
 }
 
 // NewGuessThatSongServiceClient constructs a client for the protos.GuessThatSongService service. By
@@ -160,6 +164,12 @@ func NewGuessThatSongServiceClient(httpClient connect.HTTPClient, baseURL string
 			connect.WithSchema(guessThatSongServiceMethods.ByName("GetSongCollections")),
 			connect.WithClientOptions(opts...),
 		),
+		getSongs: connect.NewClient[protos.GetSongsRequest, protos.GetSongsResponse](
+			httpClient,
+			baseURL+GuessThatSongServiceGetSongsProcedure,
+			connect.WithSchema(guessThatSongServiceMethods.ByName("GetSongs")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -176,6 +186,7 @@ type guessThatSongServiceClient struct {
 	deleteSongCollection *connect.Client[protos.DeleteSongCollectionRequest, protos.DeleteSongCollectionResponse]
 	updateSongCollection *connect.Client[protos.UpdateSongCollectionRequest, protos.UpdateSongCollectionResponse]
 	getSongCollections   *connect.Client[protos.GetSongCollectionsRequest, protos.GetSongCollectionsResponse]
+	getSongs             *connect.Client[protos.GetSongsRequest, protos.GetSongsResponse]
 }
 
 // CreateSong calls protos.GuessThatSongService.CreateSong.
@@ -233,6 +244,11 @@ func (c *guessThatSongServiceClient) GetSongCollections(ctx context.Context, req
 	return c.getSongCollections.CallUnary(ctx, req)
 }
 
+// GetSongs calls protos.GuessThatSongService.GetSongs.
+func (c *guessThatSongServiceClient) GetSongs(ctx context.Context, req *connect.Request[protos.GetSongsRequest]) (*connect.Response[protos.GetSongsResponse], error) {
+	return c.getSongs.CallUnary(ctx, req)
+}
+
 // GuessThatSongServiceHandler is an implementation of the protos.GuessThatSongService service.
 type GuessThatSongServiceHandler interface {
 	CreateSong(context.Context, *connect.Request[protos.CreateSongRequest]) (*connect.Response[protos.CreateSongResponse], error)
@@ -246,6 +262,7 @@ type GuessThatSongServiceHandler interface {
 	DeleteSongCollection(context.Context, *connect.Request[protos.DeleteSongCollectionRequest]) (*connect.Response[protos.DeleteSongCollectionResponse], error)
 	UpdateSongCollection(context.Context, *connect.Request[protos.UpdateSongCollectionRequest]) (*connect.Response[protos.UpdateSongCollectionResponse], error)
 	GetSongCollections(context.Context, *connect.Request[protos.GetSongCollectionsRequest]) (*connect.Response[protos.GetSongCollectionsResponse], error)
+	GetSongs(context.Context, *connect.Request[protos.GetSongsRequest]) (*connect.Response[protos.GetSongsResponse], error)
 }
 
 // NewGuessThatSongServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -321,6 +338,12 @@ func NewGuessThatSongServiceHandler(svc GuessThatSongServiceHandler, opts ...con
 		connect.WithSchema(guessThatSongServiceMethods.ByName("GetSongCollections")),
 		connect.WithHandlerOptions(opts...),
 	)
+	guessThatSongServiceGetSongsHandler := connect.NewUnaryHandler(
+		GuessThatSongServiceGetSongsProcedure,
+		svc.GetSongs,
+		connect.WithSchema(guessThatSongServiceMethods.ByName("GetSongs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/protos.GuessThatSongService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case GuessThatSongServiceCreateSongProcedure:
@@ -345,6 +368,8 @@ func NewGuessThatSongServiceHandler(svc GuessThatSongServiceHandler, opts ...con
 			guessThatSongServiceUpdateSongCollectionHandler.ServeHTTP(w, r)
 		case GuessThatSongServiceGetSongCollectionsProcedure:
 			guessThatSongServiceGetSongCollectionsHandler.ServeHTTP(w, r)
+		case GuessThatSongServiceGetSongsProcedure:
+			guessThatSongServiceGetSongsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -396,4 +421,8 @@ func (UnimplementedGuessThatSongServiceHandler) UpdateSongCollection(context.Con
 
 func (UnimplementedGuessThatSongServiceHandler) GetSongCollections(context.Context, *connect.Request[protos.GetSongCollectionsRequest]) (*connect.Response[protos.GetSongCollectionsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.GuessThatSongService.GetSongCollections is not implemented"))
+}
+
+func (UnimplementedGuessThatSongServiceHandler) GetSongs(context.Context, *connect.Request[protos.GetSongsRequest]) (*connect.Response[protos.GetSongsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.GuessThatSongService.GetSongs is not implemented"))
 }

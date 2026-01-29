@@ -344,9 +344,45 @@ func (r *Repository) GetUserRole(ctx context.Context, userID string) (string, er
 		Select("role").
 		Where("id = ?", userID).
 		First(&player).Error
-	
+
 	if err != nil {
 		return "", err
 	}
 	return player.Role, nil
+}
+
+// GetSongs retrieves songs with pagination
+
+// GetSongs retrieves songs with pagination
+func (r *Repository) GetSongs(ctx context.Context, userID string, page, pageSize int32) ([]database.Song, int32, error) {
+	var songs []database.Song
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Song{})
+
+	// If userID is provided, filter by created_by
+	if userID != "" {
+		baseQuery = baseQuery.Where("created_by = ?", userID)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Hints").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Order("created_at DESC").
+		Find(&songs).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return songs, int32(total), nil
 }

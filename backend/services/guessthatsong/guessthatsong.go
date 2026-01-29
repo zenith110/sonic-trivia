@@ -223,6 +223,52 @@ func (s *Server) GetRandomSongs(
 	return res, nil
 }
 
+// GetSongs retrieves songs with pagination
+func (s *Server) GetSongs(
+	ctx context.Context,
+	req *connect.Request[pb.GetSongsRequest],
+) (*connect.Response[pb.GetSongsResponse], error) {
+	userID := req.Msg.GetUserId()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
+
+	log.Printf("GetSongs request received - userID: %s, page: %d, pageSize: %d", userID, page, pageSize)
+
+	// Set defaults
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	// Query database for songs with pagination
+	songs, total, err := s.repo.GetSongs(ctx, userID, page, pageSize)
+	if err != nil {
+		log.Printf("Error fetching songs: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch songs"))
+	}
+
+	// Convert to proto
+	protoSongs := make([]*pb.Song, len(songs))
+	for i, s := range songs {
+		protoSongs[i] = SongToProto(&s)
+	}
+
+	// Calculate pagination metadata
+	hasMore := int32(page*pageSize) < total
+
+	res := connect.NewResponse(&pb.GetSongsResponse{
+		Songs:    protoSongs,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
+		HasMore:  hasMore,
+	})
+
+	return res, nil
+}
+
 // UpdateSong updates an existing song
 func (s *Server) UpdateSong(
 	ctx context.Context,

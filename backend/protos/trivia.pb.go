@@ -401,6 +401,142 @@ func (x *QuestionCollection) GetIsPublic() bool {
 	return false
 }
 
+type GetQuestionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetQuestionsRequest) Reset() {
+	*x = GetQuestionsRequest{}
+	mi := &file_trivia_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetQuestionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetQuestionsRequest) ProtoMessage() {}
+
+func (x *GetQuestionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_trivia_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetQuestionsRequest.ProtoReflect.Descriptor instead.
+func (*GetQuestionsRequest) Descriptor() ([]byte, []int) {
+	return file_trivia_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetQuestionsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetQuestionsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetQuestionsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type GetQuestionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Questions     []*Question            `protobuf:"bytes,1,rep,name=questions,proto3" json:"questions,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	HasMore       bool                   `protobuf:"varint,5,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetQuestionsResponse) Reset() {
+	*x = GetQuestionsResponse{}
+	mi := &file_trivia_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetQuestionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetQuestionsResponse) ProtoMessage() {}
+
+func (x *GetQuestionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_trivia_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetQuestionsResponse.ProtoReflect.Descriptor instead.
+func (*GetQuestionsResponse) Descriptor() ([]byte, []int) {
+	return file_trivia_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetQuestionsResponse) GetQuestions() []*Question {
+	if x != nil {
+		return x.Questions
+	}
+	return nil
+}
+
+func (x *GetQuestionsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetQuestionsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetQuestionsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetQuestionsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
 type GetQuestionCollectionsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -412,7 +548,7 @@ type GetQuestionCollectionsRequest struct {
 
 func (x *GetQuestionCollectionsRequest) Reset() {
 	*x = GetQuestionCollectionsRequest{}
-	mi := &file_trivia_proto_msgTypes[5]
+	mi := &file_trivia_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -424,7 +560,7 @@ func (x *GetQuestionCollectionsRequest) String() string {
 func (*GetQuestionCollectionsRequest) ProtoMessage() {}
 
 func (x *GetQuestionCollectionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[5]
+	mi := &file_trivia_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -437,7 +573,7 @@ func (x *GetQuestionCollectionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetQuestionCollectionsRequest.ProtoReflect.Descriptor instead.
 func (*GetQuestionCollectionsRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{5}
+	return file_trivia_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetQuestionCollectionsRequest) GetUserId() string {
@@ -473,7 +609,7 @@ type GetQuestionCollectionsResponse struct {
 
 func (x *GetQuestionCollectionsResponse) Reset() {
 	*x = GetQuestionCollectionsResponse{}
-	mi := &file_trivia_proto_msgTypes[6]
+	mi := &file_trivia_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -485,7 +621,7 @@ func (x *GetQuestionCollectionsResponse) String() string {
 func (*GetQuestionCollectionsResponse) ProtoMessage() {}
 
 func (x *GetQuestionCollectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[6]
+	mi := &file_trivia_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -498,7 +634,7 @@ func (x *GetQuestionCollectionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetQuestionCollectionsResponse.ProtoReflect.Descriptor instead.
 func (*GetQuestionCollectionsResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{6}
+	return file_trivia_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetQuestionCollectionsResponse) GetCollections() []*QuestionCollection {
@@ -541,7 +677,7 @@ type UpdateQuestionCollectionRequest struct {
 
 func (x *UpdateQuestionCollectionRequest) Reset() {
 	*x = UpdateQuestionCollectionRequest{}
-	mi := &file_trivia_proto_msgTypes[7]
+	mi := &file_trivia_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -553,7 +689,7 @@ func (x *UpdateQuestionCollectionRequest) String() string {
 func (*UpdateQuestionCollectionRequest) ProtoMessage() {}
 
 func (x *UpdateQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[7]
+	mi := &file_trivia_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -566,7 +702,7 @@ func (x *UpdateQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateQuestionCollectionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateQuestionCollectionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{7}
+	return file_trivia_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateQuestionCollectionRequest) GetId() string {
@@ -606,7 +742,7 @@ type UpdateQuestionCollectionResponse struct {
 
 func (x *UpdateQuestionCollectionResponse) Reset() {
 	*x = UpdateQuestionCollectionResponse{}
-	mi := &file_trivia_proto_msgTypes[8]
+	mi := &file_trivia_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -618,7 +754,7 @@ func (x *UpdateQuestionCollectionResponse) String() string {
 func (*UpdateQuestionCollectionResponse) ProtoMessage() {}
 
 func (x *UpdateQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[8]
+	mi := &file_trivia_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -631,7 +767,7 @@ func (x *UpdateQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateQuestionCollectionResponse.ProtoReflect.Descriptor instead.
 func (*UpdateQuestionCollectionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{8}
+	return file_trivia_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UpdateQuestionCollectionResponse) GetIsSuccess() bool {
@@ -650,7 +786,7 @@ type DeleteQuestionCollectionRequest struct {
 
 func (x *DeleteQuestionCollectionRequest) Reset() {
 	*x = DeleteQuestionCollectionRequest{}
-	mi := &file_trivia_proto_msgTypes[9]
+	mi := &file_trivia_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -662,7 +798,7 @@ func (x *DeleteQuestionCollectionRequest) String() string {
 func (*DeleteQuestionCollectionRequest) ProtoMessage() {}
 
 func (x *DeleteQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[9]
+	mi := &file_trivia_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -675,7 +811,7 @@ func (x *DeleteQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteQuestionCollectionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteQuestionCollectionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{9}
+	return file_trivia_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteQuestionCollectionRequest) GetId() string {
@@ -694,7 +830,7 @@ type DeleteQuestionCollectionResponse struct {
 
 func (x *DeleteQuestionCollectionResponse) Reset() {
 	*x = DeleteQuestionCollectionResponse{}
-	mi := &file_trivia_proto_msgTypes[10]
+	mi := &file_trivia_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -706,7 +842,7 @@ func (x *DeleteQuestionCollectionResponse) String() string {
 func (*DeleteQuestionCollectionResponse) ProtoMessage() {}
 
 func (x *DeleteQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[10]
+	mi := &file_trivia_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -719,7 +855,7 @@ func (x *DeleteQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteQuestionCollectionResponse.ProtoReflect.Descriptor instead.
 func (*DeleteQuestionCollectionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{10}
+	return file_trivia_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteQuestionCollectionResponse) GetIsSuccess() bool {
@@ -742,7 +878,7 @@ type CreateQuestionCollectionRequest struct {
 
 func (x *CreateQuestionCollectionRequest) Reset() {
 	*x = CreateQuestionCollectionRequest{}
-	mi := &file_trivia_proto_msgTypes[11]
+	mi := &file_trivia_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -754,7 +890,7 @@ func (x *CreateQuestionCollectionRequest) String() string {
 func (*CreateQuestionCollectionRequest) ProtoMessage() {}
 
 func (x *CreateQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[11]
+	mi := &file_trivia_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -767,7 +903,7 @@ func (x *CreateQuestionCollectionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateQuestionCollectionRequest.ProtoReflect.Descriptor instead.
 func (*CreateQuestionCollectionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{11}
+	return file_trivia_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CreateQuestionCollectionRequest) GetName() string {
@@ -814,7 +950,7 @@ type CreateQuestionCollectionResponse struct {
 
 func (x *CreateQuestionCollectionResponse) Reset() {
 	*x = CreateQuestionCollectionResponse{}
-	mi := &file_trivia_proto_msgTypes[12]
+	mi := &file_trivia_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -826,7 +962,7 @@ func (x *CreateQuestionCollectionResponse) String() string {
 func (*CreateQuestionCollectionResponse) ProtoMessage() {}
 
 func (x *CreateQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[12]
+	mi := &file_trivia_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -839,7 +975,7 @@ func (x *CreateQuestionCollectionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateQuestionCollectionResponse.ProtoReflect.Descriptor instead.
 func (*CreateQuestionCollectionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{12}
+	return file_trivia_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CreateQuestionCollectionResponse) GetId() string {
@@ -860,7 +996,7 @@ type GetRandomQuestionsRequest struct {
 
 func (x *GetRandomQuestionsRequest) Reset() {
 	*x = GetRandomQuestionsRequest{}
-	mi := &file_trivia_proto_msgTypes[13]
+	mi := &file_trivia_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -872,7 +1008,7 @@ func (x *GetRandomQuestionsRequest) String() string {
 func (*GetRandomQuestionsRequest) ProtoMessage() {}
 
 func (x *GetRandomQuestionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[13]
+	mi := &file_trivia_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -885,7 +1021,7 @@ func (x *GetRandomQuestionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomQuestionsRequest.ProtoReflect.Descriptor instead.
 func (*GetRandomQuestionsRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{13}
+	return file_trivia_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GetRandomQuestionsRequest) GetCategory() string {
@@ -918,7 +1054,7 @@ type GetRandomQuestionsResponse struct {
 
 func (x *GetRandomQuestionsResponse) Reset() {
 	*x = GetRandomQuestionsResponse{}
-	mi := &file_trivia_proto_msgTypes[14]
+	mi := &file_trivia_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -930,7 +1066,7 @@ func (x *GetRandomQuestionsResponse) String() string {
 func (*GetRandomQuestionsResponse) ProtoMessage() {}
 
 func (x *GetRandomQuestionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[14]
+	mi := &file_trivia_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -943,7 +1079,7 @@ func (x *GetRandomQuestionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomQuestionsResponse.ProtoReflect.Descriptor instead.
 func (*GetRandomQuestionsResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{14}
+	return file_trivia_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetRandomQuestionsResponse) GetQuestions() []*Question {
@@ -963,7 +1099,7 @@ type CheckAnswerRequest struct {
 
 func (x *CheckAnswerRequest) Reset() {
 	*x = CheckAnswerRequest{}
-	mi := &file_trivia_proto_msgTypes[15]
+	mi := &file_trivia_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -975,7 +1111,7 @@ func (x *CheckAnswerRequest) String() string {
 func (*CheckAnswerRequest) ProtoMessage() {}
 
 func (x *CheckAnswerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[15]
+	mi := &file_trivia_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -988,7 +1124,7 @@ func (x *CheckAnswerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAnswerRequest.ProtoReflect.Descriptor instead.
 func (*CheckAnswerRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{15}
+	return file_trivia_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *CheckAnswerRequest) GetQuestionId() string {
@@ -1014,7 +1150,7 @@ type CheckAnswerResponse struct {
 
 func (x *CheckAnswerResponse) Reset() {
 	*x = CheckAnswerResponse{}
-	mi := &file_trivia_proto_msgTypes[16]
+	mi := &file_trivia_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1026,7 +1162,7 @@ func (x *CheckAnswerResponse) String() string {
 func (*CheckAnswerResponse) ProtoMessage() {}
 
 func (x *CheckAnswerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[16]
+	mi := &file_trivia_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1039,7 +1175,7 @@ func (x *CheckAnswerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAnswerResponse.ProtoReflect.Descriptor instead.
 func (*CheckAnswerResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{16}
+	return file_trivia_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CheckAnswerResponse) GetIsCorrect() bool {
@@ -1066,7 +1202,7 @@ type UpdateQuestionRequest struct {
 
 func (x *UpdateQuestionRequest) Reset() {
 	*x = UpdateQuestionRequest{}
-	mi := &file_trivia_proto_msgTypes[17]
+	mi := &file_trivia_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1078,7 +1214,7 @@ func (x *UpdateQuestionRequest) String() string {
 func (*UpdateQuestionRequest) ProtoMessage() {}
 
 func (x *UpdateQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[17]
+	mi := &file_trivia_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1091,7 +1227,7 @@ func (x *UpdateQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateQuestionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{17}
+	return file_trivia_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *UpdateQuestionRequest) GetId() string {
@@ -1166,7 +1302,7 @@ type UpdateQuestionResponse struct {
 
 func (x *UpdateQuestionResponse) Reset() {
 	*x = UpdateQuestionResponse{}
-	mi := &file_trivia_proto_msgTypes[18]
+	mi := &file_trivia_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1178,7 +1314,7 @@ func (x *UpdateQuestionResponse) String() string {
 func (*UpdateQuestionResponse) ProtoMessage() {}
 
 func (x *UpdateQuestionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[18]
+	mi := &file_trivia_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1191,7 +1327,7 @@ func (x *UpdateQuestionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateQuestionResponse.ProtoReflect.Descriptor instead.
 func (*UpdateQuestionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{18}
+	return file_trivia_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UpdateQuestionResponse) GetQuestion() *Question {
@@ -1210,7 +1346,7 @@ type DeleteQuestionRequest struct {
 
 func (x *DeleteQuestionRequest) Reset() {
 	*x = DeleteQuestionRequest{}
-	mi := &file_trivia_proto_msgTypes[19]
+	mi := &file_trivia_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1222,7 +1358,7 @@ func (x *DeleteQuestionRequest) String() string {
 func (*DeleteQuestionRequest) ProtoMessage() {}
 
 func (x *DeleteQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[19]
+	mi := &file_trivia_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1235,7 +1371,7 @@ func (x *DeleteQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteQuestionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{19}
+	return file_trivia_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DeleteQuestionRequest) GetId() string {
@@ -1254,7 +1390,7 @@ type DeleteQuestionResponse struct {
 
 func (x *DeleteQuestionResponse) Reset() {
 	*x = DeleteQuestionResponse{}
-	mi := &file_trivia_proto_msgTypes[20]
+	mi := &file_trivia_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1266,7 +1402,7 @@ func (x *DeleteQuestionResponse) String() string {
 func (*DeleteQuestionResponse) ProtoMessage() {}
 
 func (x *DeleteQuestionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[20]
+	mi := &file_trivia_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1279,7 +1415,7 @@ func (x *DeleteQuestionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteQuestionResponse.ProtoReflect.Descriptor instead.
 func (*DeleteQuestionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{20}
+	return file_trivia_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *DeleteQuestionResponse) GetSuccess() bool {
@@ -1299,7 +1435,7 @@ type CreateQuestionRequest struct {
 
 func (x *CreateQuestionRequest) Reset() {
 	*x = CreateQuestionRequest{}
-	mi := &file_trivia_proto_msgTypes[21]
+	mi := &file_trivia_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1311,7 +1447,7 @@ func (x *CreateQuestionRequest) String() string {
 func (*CreateQuestionRequest) ProtoMessage() {}
 
 func (x *CreateQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[21]
+	mi := &file_trivia_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1324,7 +1460,7 @@ func (x *CreateQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateQuestionRequest.ProtoReflect.Descriptor instead.
 func (*CreateQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{21}
+	return file_trivia_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *CreateQuestionRequest) GetQuestion() *Question {
@@ -1350,7 +1486,7 @@ type CreateQuestionResponse struct {
 
 func (x *CreateQuestionResponse) Reset() {
 	*x = CreateQuestionResponse{}
-	mi := &file_trivia_proto_msgTypes[22]
+	mi := &file_trivia_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1362,7 +1498,7 @@ func (x *CreateQuestionResponse) String() string {
 func (*CreateQuestionResponse) ProtoMessage() {}
 
 func (x *CreateQuestionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[22]
+	mi := &file_trivia_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1375,7 +1511,7 @@ func (x *CreateQuestionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateQuestionResponse.ProtoReflect.Descriptor instead.
 func (*CreateQuestionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{22}
+	return file_trivia_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *CreateQuestionResponse) GetQuestion() *Question {
@@ -1394,7 +1530,7 @@ type GetAnsweredQuestionsRequest struct {
 
 func (x *GetAnsweredQuestionsRequest) Reset() {
 	*x = GetAnsweredQuestionsRequest{}
-	mi := &file_trivia_proto_msgTypes[23]
+	mi := &file_trivia_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1406,7 +1542,7 @@ func (x *GetAnsweredQuestionsRequest) String() string {
 func (*GetAnsweredQuestionsRequest) ProtoMessage() {}
 
 func (x *GetAnsweredQuestionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[23]
+	mi := &file_trivia_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1419,7 +1555,7 @@ func (x *GetAnsweredQuestionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAnsweredQuestionsRequest.ProtoReflect.Descriptor instead.
 func (*GetAnsweredQuestionsRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{23}
+	return file_trivia_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GetAnsweredQuestionsRequest) GetUserId() string {
@@ -1438,7 +1574,7 @@ type GetAnsweredQuestionsResponse struct {
 
 func (x *GetAnsweredQuestionsResponse) Reset() {
 	*x = GetAnsweredQuestionsResponse{}
-	mi := &file_trivia_proto_msgTypes[24]
+	mi := &file_trivia_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1450,7 +1586,7 @@ func (x *GetAnsweredQuestionsResponse) String() string {
 func (*GetAnsweredQuestionsResponse) ProtoMessage() {}
 
 func (x *GetAnsweredQuestionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[24]
+	mi := &file_trivia_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1463,7 +1599,7 @@ func (x *GetAnsweredQuestionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAnsweredQuestionsResponse.ProtoReflect.Descriptor instead.
 func (*GetAnsweredQuestionsResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{24}
+	return file_trivia_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GetAnsweredQuestionsResponse) GetQuestions() []*Question {
@@ -1481,7 +1617,7 @@ type GetRandomQuestionRequest struct {
 
 func (x *GetRandomQuestionRequest) Reset() {
 	*x = GetRandomQuestionRequest{}
-	mi := &file_trivia_proto_msgTypes[25]
+	mi := &file_trivia_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1493,7 +1629,7 @@ func (x *GetRandomQuestionRequest) String() string {
 func (*GetRandomQuestionRequest) ProtoMessage() {}
 
 func (x *GetRandomQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[25]
+	mi := &file_trivia_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1506,7 +1642,7 @@ func (x *GetRandomQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomQuestionRequest.ProtoReflect.Descriptor instead.
 func (*GetRandomQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{25}
+	return file_trivia_proto_rawDescGZIP(), []int{27}
 }
 
 type GetQuestionRequest struct {
@@ -1518,7 +1654,7 @@ type GetQuestionRequest struct {
 
 func (x *GetQuestionRequest) Reset() {
 	*x = GetQuestionRequest{}
-	mi := &file_trivia_proto_msgTypes[26]
+	mi := &file_trivia_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1530,7 +1666,7 @@ func (x *GetQuestionRequest) String() string {
 func (*GetQuestionRequest) ProtoMessage() {}
 
 func (x *GetQuestionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[26]
+	mi := &file_trivia_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1543,7 +1679,7 @@ func (x *GetQuestionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetQuestionRequest.ProtoReflect.Descriptor instead.
 func (*GetQuestionRequest) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{26}
+	return file_trivia_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetQuestionRequest) GetId() string {
@@ -1562,7 +1698,7 @@ type GetQuestionResponse struct {
 
 func (x *GetQuestionResponse) Reset() {
 	*x = GetQuestionResponse{}
-	mi := &file_trivia_proto_msgTypes[27]
+	mi := &file_trivia_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1574,7 +1710,7 @@ func (x *GetQuestionResponse) String() string {
 func (*GetQuestionResponse) ProtoMessage() {}
 
 func (x *GetQuestionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_trivia_proto_msgTypes[27]
+	mi := &file_trivia_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1587,7 +1723,7 @@ func (x *GetQuestionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetQuestionResponse.ProtoReflect.Descriptor instead.
 func (*GetQuestionResponse) Descriptor() ([]byte, []int) {
-	return file_trivia_proto_rawDescGZIP(), []int{27}
+	return file_trivia_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetQuestionResponse) GetQuestion() *Question {
@@ -1639,7 +1775,17 @@ const file_trivia_proto_rawDesc = "" +
 	"created_by\x18\x04 \x01(\tR\tcreatedBy\x12.\n" +
 	"\tquestions\x18\x05 \x03(\v2\x10.protos.QuestionR\tquestions\x12&\n" +
 	"\x0fis_under_review\x18\x06 \x01(\bR\risUnderReview\x12\x1b\n" +
-	"\tis_public\x18\a \x01(\bR\bisPublic\"i\n" +
+	"\tis_public\x18\a \x01(\bR\bisPublic\"_\n" +
+	"\x13GetQuestionsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\xa8\x01\n" +
+	"\x14GetQuestionsResponse\x12.\n" +
+	"\tquestions\x18\x01 \x03(\v2\x10.protos.QuestionR\tquestions\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12\x19\n" +
+	"\bhas_more\x18\x05 \x01(\bR\ahasMore\"i\n" +
 	"\x1dGetQuestionCollectionsRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
@@ -1720,7 +1866,7 @@ const file_trivia_proto_rawDesc = "" +
 	"\x12GetQuestionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"C\n" +
 	"\x13GetQuestionResponse\x12,\n" +
-	"\bquestion\x18\x01 \x01(\v2\x10.protos.QuestionR\bquestion2\x9e\b\n" +
+	"\bquestion\x18\x01 \x01(\v2\x10.protos.QuestionR\bquestion2\xeb\b\n" +
 	"\rTriviaService\x12H\n" +
 	"\vGetQuestion\x12\x1a.protos.GetQuestionRequest\x1a\x1b.protos.GetQuestionResponse\"\x00\x12]\n" +
 	"\x12GetRandomQuestions\x12!.protos.GetRandomQuestionsRequest\x1a\".protos.GetRandomQuestionsResponse\"\x00\x12Q\n" +
@@ -1732,7 +1878,8 @@ const file_trivia_proto_rawDesc = "" +
 	"\x18CreateQuestionCollection\x12'.protos.CreateQuestionCollectionRequest\x1a(.protos.CreateQuestionCollectionResponse\"\x00\x12o\n" +
 	"\x18DeleteQuestionCollection\x12'.protos.DeleteQuestionCollectionRequest\x1a(.protos.DeleteQuestionCollectionResponse\"\x00\x12o\n" +
 	"\x18UpdateQuestionCollection\x12'.protos.UpdateQuestionCollectionRequest\x1a(.protos.UpdateQuestionCollectionResponse\"\x00\x12i\n" +
-	"\x16GetQuestionCollections\x12%.protos.GetQuestionCollectionsRequest\x1a&.protos.GetQuestionCollectionsResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"\x16GetQuestionCollections\x12%.protos.GetQuestionCollectionsRequest\x1a&.protos.GetQuestionCollectionsResponse\"\x00\x12K\n" +
+	"\fGetQuestions\x12\x1b.protos.GetQuestionsRequest\x1a\x1c.protos.GetQuestionsResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_trivia_proto_rawDescOnce sync.Once
@@ -1746,79 +1893,84 @@ func file_trivia_proto_rawDescGZIP() []byte {
 	return file_trivia_proto_rawDescData
 }
 
-var file_trivia_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
+var file_trivia_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_trivia_proto_goTypes = []any{
 	(*Answer)(nil),                           // 0: protos.Answer
 	(*AnswerOptions)(nil),                    // 1: protos.AnswerOptions
 	(*Hint)(nil),                             // 2: protos.Hint
 	(*Question)(nil),                         // 3: protos.Question
 	(*QuestionCollection)(nil),               // 4: protos.QuestionCollection
-	(*GetQuestionCollectionsRequest)(nil),    // 5: protos.GetQuestionCollectionsRequest
-	(*GetQuestionCollectionsResponse)(nil),   // 6: protos.GetQuestionCollectionsResponse
-	(*UpdateQuestionCollectionRequest)(nil),  // 7: protos.UpdateQuestionCollectionRequest
-	(*UpdateQuestionCollectionResponse)(nil), // 8: protos.UpdateQuestionCollectionResponse
-	(*DeleteQuestionCollectionRequest)(nil),  // 9: protos.DeleteQuestionCollectionRequest
-	(*DeleteQuestionCollectionResponse)(nil), // 10: protos.DeleteQuestionCollectionResponse
-	(*CreateQuestionCollectionRequest)(nil),  // 11: protos.CreateQuestionCollectionRequest
-	(*CreateQuestionCollectionResponse)(nil), // 12: protos.CreateQuestionCollectionResponse
-	(*GetRandomQuestionsRequest)(nil),        // 13: protos.GetRandomQuestionsRequest
-	(*GetRandomQuestionsResponse)(nil),       // 14: protos.GetRandomQuestionsResponse
-	(*CheckAnswerRequest)(nil),               // 15: protos.CheckAnswerRequest
-	(*CheckAnswerResponse)(nil),              // 16: protos.CheckAnswerResponse
-	(*UpdateQuestionRequest)(nil),            // 17: protos.UpdateQuestionRequest
-	(*UpdateQuestionResponse)(nil),           // 18: protos.UpdateQuestionResponse
-	(*DeleteQuestionRequest)(nil),            // 19: protos.DeleteQuestionRequest
-	(*DeleteQuestionResponse)(nil),           // 20: protos.DeleteQuestionResponse
-	(*CreateQuestionRequest)(nil),            // 21: protos.CreateQuestionRequest
-	(*CreateQuestionResponse)(nil),           // 22: protos.CreateQuestionResponse
-	(*GetAnsweredQuestionsRequest)(nil),      // 23: protos.GetAnsweredQuestionsRequest
-	(*GetAnsweredQuestionsResponse)(nil),     // 24: protos.GetAnsweredQuestionsResponse
-	(*GetRandomQuestionRequest)(nil),         // 25: protos.GetRandomQuestionRequest
-	(*GetQuestionRequest)(nil),               // 26: protos.GetQuestionRequest
-	(*GetQuestionResponse)(nil),              // 27: protos.GetQuestionResponse
+	(*GetQuestionsRequest)(nil),              // 5: protos.GetQuestionsRequest
+	(*GetQuestionsResponse)(nil),             // 6: protos.GetQuestionsResponse
+	(*GetQuestionCollectionsRequest)(nil),    // 7: protos.GetQuestionCollectionsRequest
+	(*GetQuestionCollectionsResponse)(nil),   // 8: protos.GetQuestionCollectionsResponse
+	(*UpdateQuestionCollectionRequest)(nil),  // 9: protos.UpdateQuestionCollectionRequest
+	(*UpdateQuestionCollectionResponse)(nil), // 10: protos.UpdateQuestionCollectionResponse
+	(*DeleteQuestionCollectionRequest)(nil),  // 11: protos.DeleteQuestionCollectionRequest
+	(*DeleteQuestionCollectionResponse)(nil), // 12: protos.DeleteQuestionCollectionResponse
+	(*CreateQuestionCollectionRequest)(nil),  // 13: protos.CreateQuestionCollectionRequest
+	(*CreateQuestionCollectionResponse)(nil), // 14: protos.CreateQuestionCollectionResponse
+	(*GetRandomQuestionsRequest)(nil),        // 15: protos.GetRandomQuestionsRequest
+	(*GetRandomQuestionsResponse)(nil),       // 16: protos.GetRandomQuestionsResponse
+	(*CheckAnswerRequest)(nil),               // 17: protos.CheckAnswerRequest
+	(*CheckAnswerResponse)(nil),              // 18: protos.CheckAnswerResponse
+	(*UpdateQuestionRequest)(nil),            // 19: protos.UpdateQuestionRequest
+	(*UpdateQuestionResponse)(nil),           // 20: protos.UpdateQuestionResponse
+	(*DeleteQuestionRequest)(nil),            // 21: protos.DeleteQuestionRequest
+	(*DeleteQuestionResponse)(nil),           // 22: protos.DeleteQuestionResponse
+	(*CreateQuestionRequest)(nil),            // 23: protos.CreateQuestionRequest
+	(*CreateQuestionResponse)(nil),           // 24: protos.CreateQuestionResponse
+	(*GetAnsweredQuestionsRequest)(nil),      // 25: protos.GetAnsweredQuestionsRequest
+	(*GetAnsweredQuestionsResponse)(nil),     // 26: protos.GetAnsweredQuestionsResponse
+	(*GetRandomQuestionRequest)(nil),         // 27: protos.GetRandomQuestionRequest
+	(*GetQuestionRequest)(nil),               // 28: protos.GetQuestionRequest
+	(*GetQuestionResponse)(nil),              // 29: protos.GetQuestionResponse
 }
 var file_trivia_proto_depIdxs = []int32{
 	0,  // 0: protos.AnswerOptions.answers:type_name -> protos.Answer
 	1,  // 1: protos.Question.answer_options:type_name -> protos.AnswerOptions
 	2,  // 2: protos.Question.hints:type_name -> protos.Hint
 	3,  // 3: protos.QuestionCollection.questions:type_name -> protos.Question
-	4,  // 4: protos.GetQuestionCollectionsResponse.collections:type_name -> protos.QuestionCollection
-	3,  // 5: protos.UpdateQuestionCollectionRequest.questions:type_name -> protos.Question
-	3,  // 6: protos.GetRandomQuestionsResponse.questions:type_name -> protos.Question
-	1,  // 7: protos.UpdateQuestionRequest.answer_options:type_name -> protos.AnswerOptions
-	2,  // 8: protos.UpdateQuestionRequest.hints:type_name -> protos.Hint
-	3,  // 9: protos.UpdateQuestionResponse.question:type_name -> protos.Question
-	3,  // 10: protos.CreateQuestionRequest.question:type_name -> protos.Question
-	3,  // 11: protos.CreateQuestionResponse.question:type_name -> protos.Question
-	3,  // 12: protos.GetAnsweredQuestionsResponse.questions:type_name -> protos.Question
-	3,  // 13: protos.GetQuestionResponse.question:type_name -> protos.Question
-	26, // 14: protos.TriviaService.GetQuestion:input_type -> protos.GetQuestionRequest
-	13, // 15: protos.TriviaService.GetRandomQuestions:input_type -> protos.GetRandomQuestionsRequest
-	17, // 16: protos.TriviaService.UpdateQuestion:input_type -> protos.UpdateQuestionRequest
-	19, // 17: protos.TriviaService.DeleteQuestion:input_type -> protos.DeleteQuestionRequest
-	21, // 18: protos.TriviaService.CreateQuestion:input_type -> protos.CreateQuestionRequest
-	23, // 19: protos.TriviaService.GetAnsweredQuestions:input_type -> protos.GetAnsweredQuestionsRequest
-	15, // 20: protos.TriviaService.CheckAnswer:input_type -> protos.CheckAnswerRequest
-	11, // 21: protos.TriviaService.CreateQuestionCollection:input_type -> protos.CreateQuestionCollectionRequest
-	9,  // 22: protos.TriviaService.DeleteQuestionCollection:input_type -> protos.DeleteQuestionCollectionRequest
-	7,  // 23: protos.TriviaService.UpdateQuestionCollection:input_type -> protos.UpdateQuestionCollectionRequest
-	5,  // 24: protos.TriviaService.GetQuestionCollections:input_type -> protos.GetQuestionCollectionsRequest
-	27, // 25: protos.TriviaService.GetQuestion:output_type -> protos.GetQuestionResponse
-	14, // 26: protos.TriviaService.GetRandomQuestions:output_type -> protos.GetRandomQuestionsResponse
-	18, // 27: protos.TriviaService.UpdateQuestion:output_type -> protos.UpdateQuestionResponse
-	20, // 28: protos.TriviaService.DeleteQuestion:output_type -> protos.DeleteQuestionResponse
-	22, // 29: protos.TriviaService.CreateQuestion:output_type -> protos.CreateQuestionResponse
-	24, // 30: protos.TriviaService.GetAnsweredQuestions:output_type -> protos.GetAnsweredQuestionsResponse
-	16, // 31: protos.TriviaService.CheckAnswer:output_type -> protos.CheckAnswerResponse
-	12, // 32: protos.TriviaService.CreateQuestionCollection:output_type -> protos.CreateQuestionCollectionResponse
-	10, // 33: protos.TriviaService.DeleteQuestionCollection:output_type -> protos.DeleteQuestionCollectionResponse
-	8,  // 34: protos.TriviaService.UpdateQuestionCollection:output_type -> protos.UpdateQuestionCollectionResponse
-	6,  // 35: protos.TriviaService.GetQuestionCollections:output_type -> protos.GetQuestionCollectionsResponse
-	25, // [25:36] is the sub-list for method output_type
-	14, // [14:25] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	3,  // 4: protos.GetQuestionsResponse.questions:type_name -> protos.Question
+	4,  // 5: protos.GetQuestionCollectionsResponse.collections:type_name -> protos.QuestionCollection
+	3,  // 6: protos.UpdateQuestionCollectionRequest.questions:type_name -> protos.Question
+	3,  // 7: protos.GetRandomQuestionsResponse.questions:type_name -> protos.Question
+	1,  // 8: protos.UpdateQuestionRequest.answer_options:type_name -> protos.AnswerOptions
+	2,  // 9: protos.UpdateQuestionRequest.hints:type_name -> protos.Hint
+	3,  // 10: protos.UpdateQuestionResponse.question:type_name -> protos.Question
+	3,  // 11: protos.CreateQuestionRequest.question:type_name -> protos.Question
+	3,  // 12: protos.CreateQuestionResponse.question:type_name -> protos.Question
+	3,  // 13: protos.GetAnsweredQuestionsResponse.questions:type_name -> protos.Question
+	3,  // 14: protos.GetQuestionResponse.question:type_name -> protos.Question
+	28, // 15: protos.TriviaService.GetQuestion:input_type -> protos.GetQuestionRequest
+	15, // 16: protos.TriviaService.GetRandomQuestions:input_type -> protos.GetRandomQuestionsRequest
+	19, // 17: protos.TriviaService.UpdateQuestion:input_type -> protos.UpdateQuestionRequest
+	21, // 18: protos.TriviaService.DeleteQuestion:input_type -> protos.DeleteQuestionRequest
+	23, // 19: protos.TriviaService.CreateQuestion:input_type -> protos.CreateQuestionRequest
+	25, // 20: protos.TriviaService.GetAnsweredQuestions:input_type -> protos.GetAnsweredQuestionsRequest
+	17, // 21: protos.TriviaService.CheckAnswer:input_type -> protos.CheckAnswerRequest
+	13, // 22: protos.TriviaService.CreateQuestionCollection:input_type -> protos.CreateQuestionCollectionRequest
+	11, // 23: protos.TriviaService.DeleteQuestionCollection:input_type -> protos.DeleteQuestionCollectionRequest
+	9,  // 24: protos.TriviaService.UpdateQuestionCollection:input_type -> protos.UpdateQuestionCollectionRequest
+	7,  // 25: protos.TriviaService.GetQuestionCollections:input_type -> protos.GetQuestionCollectionsRequest
+	5,  // 26: protos.TriviaService.GetQuestions:input_type -> protos.GetQuestionsRequest
+	29, // 27: protos.TriviaService.GetQuestion:output_type -> protos.GetQuestionResponse
+	16, // 28: protos.TriviaService.GetRandomQuestions:output_type -> protos.GetRandomQuestionsResponse
+	20, // 29: protos.TriviaService.UpdateQuestion:output_type -> protos.UpdateQuestionResponse
+	22, // 30: protos.TriviaService.DeleteQuestion:output_type -> protos.DeleteQuestionResponse
+	24, // 31: protos.TriviaService.CreateQuestion:output_type -> protos.CreateQuestionResponse
+	26, // 32: protos.TriviaService.GetAnsweredQuestions:output_type -> protos.GetAnsweredQuestionsResponse
+	18, // 33: protos.TriviaService.CheckAnswer:output_type -> protos.CheckAnswerResponse
+	14, // 34: protos.TriviaService.CreateQuestionCollection:output_type -> protos.CreateQuestionCollectionResponse
+	12, // 35: protos.TriviaService.DeleteQuestionCollection:output_type -> protos.DeleteQuestionCollectionResponse
+	10, // 36: protos.TriviaService.UpdateQuestionCollection:output_type -> protos.UpdateQuestionCollectionResponse
+	8,  // 37: protos.TriviaService.GetQuestionCollections:output_type -> protos.GetQuestionCollectionsResponse
+	6,  // 38: protos.TriviaService.GetQuestions:output_type -> protos.GetQuestionsResponse
+	27, // [27:39] is the sub-list for method output_type
+	15, // [15:27] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_trivia_proto_init() }
@@ -1827,15 +1979,15 @@ func file_trivia_proto_init() {
 		return
 	}
 	file_trivia_proto_msgTypes[3].OneofWrappers = []any{}
-	file_trivia_proto_msgTypes[17].OneofWrappers = []any{}
-	file_trivia_proto_msgTypes[21].OneofWrappers = []any{}
+	file_trivia_proto_msgTypes[19].OneofWrappers = []any{}
+	file_trivia_proto_msgTypes[23].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_trivia_proto_rawDesc), len(file_trivia_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   28,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

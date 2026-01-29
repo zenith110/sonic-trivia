@@ -37,6 +37,19 @@ service GuessThatSongService {
   rpc DeleteSongCollection(DeleteSongCollectionRequest) returns (DeleteSongCollectionResponse) {}
   rpc UpdateSongCollection(UpdateSongCollectionRequest) returns (UpdateSongCollectionResponse) {}
   rpc GetSongCollections(GetSongCollectionsRequest) returns (GetSongCollectionsResponse) {}
+  rpc GetSongs(GetSongsRequest) returns (GetSongsResponse) {}
+}
+message GetSongsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+message GetSongsResponse {
+  repeated Song songs = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  bool has_more = 5;
 }
 
 message GetSongCollectionsRequest {

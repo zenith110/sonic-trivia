@@ -140,6 +140,52 @@ func (s *Server) GetRandomQuestions(
 	return res, nil
 }
 
+// GetQuestions retrieves questions with pagination
+func (s *Server) GetQuestions(
+	ctx context.Context,
+	req *connect.Request[pb.GetQuestionsRequest],
+) (*connect.Response[pb.GetQuestionsResponse], error) {
+	userID := req.Msg.GetUserId()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
+
+	log.Printf("GetQuestions request received - userID: %s, page: %d, pageSize: %d", userID, page, pageSize)
+
+	// Set defaults
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	// Query database for questions with pagination
+	questions, total, err := s.repo.GetQuestions(ctx, userID, page, pageSize)
+	if err != nil {
+		log.Printf("Error fetching questions: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch questions"))
+	}
+
+	// Convert to proto
+	protoQuestions := make([]*pb.Question, len(questions))
+	for i, q := range questions {
+		protoQuestions[i] = QuestionToProto(&q)
+	}
+
+	// Calculate pagination metadata
+	hasMore := int32(page*pageSize) < total
+
+	res := connect.NewResponse(&pb.GetQuestionsResponse{
+		Questions: protoQuestions,
+		Total:     total,
+		Page:      page,
+		PageSize:  pageSize,
+		HasMore:   hasMore,
+	})
+
+	return res, nil
+}
+
 // UpdateQuestion updates an existing question
 func (s *Server) UpdateQuestion(
 	ctx context.Context,

@@ -189,6 +189,41 @@ func (r *Repository) GetRandomQuestions(ctx context.Context, category string, di
 	return questions, nil
 }
 
+// GetQuestions retrieves questions with pagination
+func (r *Repository) GetQuestions(ctx context.Context, userID string, page, pageSize int32) ([]database.Question, int32, error) {
+	var questions []database.Question
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Question{})
+
+	// If userID is provided, filter by created_by
+	if userID != "" {
+		baseQuery = baseQuery.Where("created_by = ?", userID)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Answers").
+		Preload("Hints").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Order("created_at DESC").
+		Find(&questions).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return questions, int32(total), nil
+}
+
 // UpdateQuestion updates an existing question in the database
 func (r *Repository) UpdateQuestion(ctx context.Context, question *database.Question) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -387,7 +422,7 @@ func (r *Repository) GetUserRole(ctx context.Context, userID string) (string, er
 		Select("role").
 		Where("id = ?", userID).
 		First(&player).Error
-	
+
 	if err != nil {
 		return "", err
 	}

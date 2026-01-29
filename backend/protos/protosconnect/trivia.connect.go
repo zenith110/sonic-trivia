@@ -66,6 +66,9 @@ const (
 	// TriviaServiceGetQuestionCollectionsProcedure is the fully-qualified name of the TriviaService's
 	// GetQuestionCollections RPC.
 	TriviaServiceGetQuestionCollectionsProcedure = "/protos.TriviaService/GetQuestionCollections"
+	// TriviaServiceGetQuestionsProcedure is the fully-qualified name of the TriviaService's
+	// GetQuestions RPC.
+	TriviaServiceGetQuestionsProcedure = "/protos.TriviaService/GetQuestions"
 )
 
 // TriviaServiceClient is a client for the protos.TriviaService service.
@@ -81,6 +84,7 @@ type TriviaServiceClient interface {
 	DeleteQuestionCollection(context.Context, *connect.Request[protos.DeleteQuestionCollectionRequest]) (*connect.Response[protos.DeleteQuestionCollectionResponse], error)
 	UpdateQuestionCollection(context.Context, *connect.Request[protos.UpdateQuestionCollectionRequest]) (*connect.Response[protos.UpdateQuestionCollectionResponse], error)
 	GetQuestionCollections(context.Context, *connect.Request[protos.GetQuestionCollectionsRequest]) (*connect.Response[protos.GetQuestionCollectionsResponse], error)
+	GetQuestions(context.Context, *connect.Request[protos.GetQuestionsRequest]) (*connect.Response[protos.GetQuestionsResponse], error)
 }
 
 // NewTriviaServiceClient constructs a client for the protos.TriviaService service. By default, it
@@ -160,6 +164,12 @@ func NewTriviaServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(triviaServiceMethods.ByName("GetQuestionCollections")),
 			connect.WithClientOptions(opts...),
 		),
+		getQuestions: connect.NewClient[protos.GetQuestionsRequest, protos.GetQuestionsResponse](
+			httpClient,
+			baseURL+TriviaServiceGetQuestionsProcedure,
+			connect.WithSchema(triviaServiceMethods.ByName("GetQuestions")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -176,6 +186,7 @@ type triviaServiceClient struct {
 	deleteQuestionCollection *connect.Client[protos.DeleteQuestionCollectionRequest, protos.DeleteQuestionCollectionResponse]
 	updateQuestionCollection *connect.Client[protos.UpdateQuestionCollectionRequest, protos.UpdateQuestionCollectionResponse]
 	getQuestionCollections   *connect.Client[protos.GetQuestionCollectionsRequest, protos.GetQuestionCollectionsResponse]
+	getQuestions             *connect.Client[protos.GetQuestionsRequest, protos.GetQuestionsResponse]
 }
 
 // GetQuestion calls protos.TriviaService.GetQuestion.
@@ -233,6 +244,11 @@ func (c *triviaServiceClient) GetQuestionCollections(ctx context.Context, req *c
 	return c.getQuestionCollections.CallUnary(ctx, req)
 }
 
+// GetQuestions calls protos.TriviaService.GetQuestions.
+func (c *triviaServiceClient) GetQuestions(ctx context.Context, req *connect.Request[protos.GetQuestionsRequest]) (*connect.Response[protos.GetQuestionsResponse], error) {
+	return c.getQuestions.CallUnary(ctx, req)
+}
+
 // TriviaServiceHandler is an implementation of the protos.TriviaService service.
 type TriviaServiceHandler interface {
 	GetQuestion(context.Context, *connect.Request[protos.GetQuestionRequest]) (*connect.Response[protos.GetQuestionResponse], error)
@@ -246,6 +262,7 @@ type TriviaServiceHandler interface {
 	DeleteQuestionCollection(context.Context, *connect.Request[protos.DeleteQuestionCollectionRequest]) (*connect.Response[protos.DeleteQuestionCollectionResponse], error)
 	UpdateQuestionCollection(context.Context, *connect.Request[protos.UpdateQuestionCollectionRequest]) (*connect.Response[protos.UpdateQuestionCollectionResponse], error)
 	GetQuestionCollections(context.Context, *connect.Request[protos.GetQuestionCollectionsRequest]) (*connect.Response[protos.GetQuestionCollectionsResponse], error)
+	GetQuestions(context.Context, *connect.Request[protos.GetQuestionsRequest]) (*connect.Response[protos.GetQuestionsResponse], error)
 }
 
 // NewTriviaServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -321,6 +338,12 @@ func NewTriviaServiceHandler(svc TriviaServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(triviaServiceMethods.ByName("GetQuestionCollections")),
 		connect.WithHandlerOptions(opts...),
 	)
+	triviaServiceGetQuestionsHandler := connect.NewUnaryHandler(
+		TriviaServiceGetQuestionsProcedure,
+		svc.GetQuestions,
+		connect.WithSchema(triviaServiceMethods.ByName("GetQuestions")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/protos.TriviaService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TriviaServiceGetQuestionProcedure:
@@ -345,6 +368,8 @@ func NewTriviaServiceHandler(svc TriviaServiceHandler, opts ...connect.HandlerOp
 			triviaServiceUpdateQuestionCollectionHandler.ServeHTTP(w, r)
 		case TriviaServiceGetQuestionCollectionsProcedure:
 			triviaServiceGetQuestionCollectionsHandler.ServeHTTP(w, r)
+		case TriviaServiceGetQuestionsProcedure:
+			triviaServiceGetQuestionsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -396,4 +421,8 @@ func (UnimplementedTriviaServiceHandler) UpdateQuestionCollection(context.Contex
 
 func (UnimplementedTriviaServiceHandler) GetQuestionCollections(context.Context, *connect.Request[protos.GetQuestionCollectionsRequest]) (*connect.Response[protos.GetQuestionCollectionsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.TriviaService.GetQuestionCollections is not implemented"))
+}
+
+func (UnimplementedTriviaServiceHandler) GetQuestions(context.Context, *connect.Request[protos.GetQuestionsRequest]) (*connect.Response[protos.GetQuestionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.TriviaService.GetQuestions is not implemented"))
 }
