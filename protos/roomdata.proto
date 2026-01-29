@@ -30,3 +30,70 @@ message RoomData {
 message JukeBox {
   repeated string songs = 1;
 }
+
+service RoomService {
+  rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse) {}
+  rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse) {}
+  rpc LeaveRoom(LeaveRoomRequest) returns (LeaveRoomResponse) {}
+  rpc UpdateRoom(UpdateRoomRequest) returns (UpdateRoomResponse) {}
+  rpc DeleteRoom(DeleteRoomRequest) returns (DeleteRoomResponse) {}
+}
+
+message CreateRoomRequest {
+  string name = 1;
+  string description = 2;
+  string code = 3;
+  IndividualGameModes mode = 4;
+  oneof value {
+    TriviaCategories trivia_category = 5;
+    GuessThatSongCategories guess_that_song_category = 6;
+  }
+  int64 max_room_size = 7;
+  int64 amount_of_rounds = 8;
+  bool read_only = 9;
+  bool is_private = 10;
+  JukeBox jukebox = 11;
+}
+message CreateRoomResponse {
+  bool success = 1;
+  string room_code = 2;
+}
+message JoinRoomRequest {
+  string code = 1;
+}
+message JoinRoomResponse {
+  bool success = 1;
+}
+message LeaveRoomRequest {
+  string code = 1;
+}
+message LeaveRoomResponse {
+  bool success = 1;
+}
+message UpdateRoomResponse {
+  bool success = 1;
+  RoomData room_data = 2;
+}
+
+message UpdateRoomRequest {
+  string code = 1;
+  string name = 2;
+  string description = 3;
+  IndividualGameModes mode = 4;
+  oneof value {
+    TriviaCategories trivia_category = 5;
+    GuessThatSongCategories guess_that_song_category = 6;
+  }
+  int64 max_room_size = 7;
+  int64 amount_of_rounds = 8;
+  bool read_only = 9;
+  bool is_private = 10;
+  JukeBox jukebox = 11;
+}
+
+message DeleteRoomRequest {
+  string code = 1;
+}
+message DeleteRoomResponse {
+  bool success = 1;
+}
