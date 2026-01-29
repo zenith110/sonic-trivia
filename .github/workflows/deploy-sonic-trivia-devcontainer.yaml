@@ -27,7 +27,7 @@ jobs:
           DH_REPO: "${{ secrets.DH_REPO }}"
           GITHUB_SHA: "${{ github.sha }}"
         run: |
-          devcontainer build --workspace-folder .devcontainer-sonic-trivia --image-name $DH_REPO:latest
+          devcontainer build .devcontainer-sonic-trivia --image-name $DH_REPO:latest
       - name: Docker push Sonic Trivia dev container
         env:
           DH_REPO: "${{ secrets.DH_REPO }}"
