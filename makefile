@@ -4,6 +4,10 @@ GO_OUT = backend/protos
 TS_OUT = frontend/src/generated
 GO_BIN = $(shell go env GOPATH)/bin
 
+
+
+
+
 # Targets
 .PHONY: all export-protos export-protos-backend export-protos-frontend clean help install-deps \
 	docker-build docker-up docker-down docker-logs docker-clean docker-rebuild docker-ps \
@@ -18,6 +22,20 @@ all: export-protos
 
 # Install required protobuf plugins
 install-deps:
+	@echo "Checking for buf CLI..."
+	@command -v buf >/dev/null 2>&1 || { \
+		echo "buf not found, installing..."; \
+		if command -v go >/dev/null 2>&1; then \
+			echo "Installing buf via Go..."; \
+			go install github.com/bufbuild/buf/cmd/buf@latest; \
+		elif command -v bun >/dev/null 2>&1; then \
+			echo "Installing buf via Bun..."; \
+			bun install -g @bufbuild/buf; \
+		else \
+			echo "Error: Neither Go nor Bun found. Please install one of them first."; \
+			exit 1; \
+		fi; \
+	}
 	@echo "Installing protobuf Go plugins..."
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
@@ -34,8 +52,6 @@ export-protos: export-protos-backend export-protos-frontend
 # Export proto files for backend (Go) using buf
 export-protos-backend:
 	@echo "Compiling proto files for backend (Go)..."
-	@mkdir -p $(GO_OUT)
-	@mkdir -p $(GO_OUT)/protosconnect
 	@cd backend && PATH="$(GO_BIN):$$PATH" buf generate
 	@echo "Creating go.mod files..."
 	@echo "module sonic-trivia/backend/protos\n\ngo 1.25.5\n\nrequire google.golang.org/protobuf v1.36.11" > $(GO_OUT)/go.mod
@@ -46,19 +62,18 @@ export-protos-backend:
 export-protos-frontend:
 	@echo ""
 	@echo "Compiling proto files for frontend (TypeScript)..."
-	@rm -rf $(TS_OUT)
-	@mkdir -p $(TS_OUT)
-	@cd frontend && PATH="$$PATH:$$(pwd)/node_modules/.bin" buf generate
+	@mkdir -p $(TS_OUT) && echo "# Generated files" > $(TS_OUT)/.gitkeep
+	@cd frontend && PATH="$$PATH:./node_modules/.bin" buf generate
 	@echo "Frontend proto compilation complete! Generated files are in $(TS_OUT)"
 
 # Clean generated proto files
 clean:
 	@echo "Cleaning generated proto files..."
-	@rm -rf $(GO_OUT)/*.pb.go
-	@rm -rf $(GO_OUT)/protosconnect/*.connect.go
-	@rm -rf $(GO_OUT)/go.mod
-	@rm -rf $(GO_OUT)/protosconnect/go.mod
-	@rm -rf $(TS_OUT)
+	@rm -f $(GO_OUT)/*.pb.go || true
+	@rm -f $(GO_OUT)/protosconnect/*.connect.go || true
+	@rm -f $(GO_OUT)/go.mod || true
+	@rm -f $(GO_OUT)/protosconnect/go.mod || true
+	@rm -rf $(TS_OUT) || true
 	@echo "Clean complete!"
 
 # =================================
