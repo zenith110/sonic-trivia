@@ -151,10 +151,11 @@ type Player struct {
 	CorrectAnswers      int64  `gorm:"not null;default:0"`
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
-	DeletedAt           gorm.DeletedAt    `gorm:"index"`
-	AnsweredQuestions   []PlayerAnswer    `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
-	UnlockedCharacters  []PlayerCharacter `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
-	Friends             []Friendship      `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	DeletedAt           gorm.DeletedAt       `gorm:"index"`
+	AnsweredQuestions   []PlayerTriviaAnswer `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	AnsweredSongs       []PlayerSongAnswer   `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	UnlockedCharacters  []PlayerCharacter    `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	Friends             []Friendship         `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
 }
 
 // PlayerCharacter represents a many-to-many relationship between players and characters
@@ -181,8 +182,8 @@ type Friendship struct {
 	UpdatedAt time.Time
 }
 
-// PlayerAnswer represents a player's answer to a question
-type PlayerAnswer struct {
+// PlayerTriviaAnswer represents a player's answer to a trivia question
+type PlayerTriviaAnswer struct {
 	ID           string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	PlayerID     string    `gorm:"not null;type:uuid;index"`
 	QuestionID   string    `gorm:"not null;type:uuid;index"`
@@ -192,6 +193,20 @@ type PlayerAnswer struct {
 	AnsweredAt   time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+// PlayerSongAnswer represents a player's answer to a song
+type PlayerSongAnswer struct {
+	ID            string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	PlayerID      string    `gorm:"not null;type:uuid;index"`
+	SongID        string    `gorm:"not null;type:uuid;index"`
+	GuessedTitle  string    `gorm:"type:text"`
+	GuessedArtist string    `gorm:"type:text"`
+	IsCorrect     bool      `gorm:"not null"`
+	PointsEarned  int32     `gorm:"not null;default:0"`
+	AnsweredAt    time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 // LeaderboardEntry represents a leaderboard entry
@@ -249,8 +264,12 @@ func (Friendship) TableName() string {
 	return "friendships"
 }
 
-func (PlayerAnswer) TableName() string {
-	return "player_answers"
+func (PlayerTriviaAnswer) TableName() string {
+	return "player_trivia_answers"
+}
+
+func (PlayerSongAnswer) TableName() string {
+	return "player_song_answers"
 }
 
 func (LeaderboardEntry) TableName() string {

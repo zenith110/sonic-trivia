@@ -12,7 +12,9 @@ import {
   User,
   FolderPlus,
   Shield,
+  Circle,
 } from "lucide-react";
+import { getCharacterById, getCharacterImagePath } from "@/data/characters";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Sidebar,
@@ -91,20 +93,69 @@ export function Dashboard({
         <Sidebar>
           <SidebarHeader className="border-b px-6 py-4">
             {user && (
-              <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted p-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  <User className="h-5 w-5" />
+              <div className="mt-4 flex items-start gap-3 rounded-lg bg-muted p-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                  {user.selectedCharacterId ? (
+                    (() => {
+                      const character = getCharacterById(
+                        user.selectedCharacterId,
+                      );
+                      return character ? (
+                        <img
+                          src={getCharacterImagePath(character)}
+                          alt={character.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = "none";
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.className =
+                                "flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground";
+                              parent.innerHTML =
+                                '<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>';
+                            }
+                          }}
+                        />
+                      ) : (
+                        <User className="h-6 w-6 text-primary-foreground" />
+                      );
+                    })()
+                  ) : (
+                    <User className="h-6 w-6 text-primary-foreground" />
+                  )}
                 </div>
-                <div className="flex flex-col overflow-hidden">
+                <div className="flex flex-col overflow-hidden flex-1 min-w-0">
                   <span className="text-sm font-medium truncate">
                     {user.displayName || user.username}
                   </span>
                   <span className="text-xs text-muted-foreground truncate">
                     {user.email}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    Score: {user.totalScore} • Role: {user.role}
-                  </span>
+                  {user.selectedCharacterId &&
+                    (() => {
+                      const character = getCharacterById(
+                        user.selectedCharacterId,
+                      );
+                      return character ? (
+                        <span className="text-xs text-blue-600 font-medium truncate">
+                          Playing as {character.name}
+                        </span>
+                      ) : null;
+                    })()}
+                  <div className="flex flex-col gap-1 mt-1">
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Trophy className="h-3 w-3 text-yellow-600" />
+                      Score: {user.totalScore.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Circle className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                      Rings: {user.totalRings.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-muted-foreground capitalize">
+                      Role: {user.role}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}

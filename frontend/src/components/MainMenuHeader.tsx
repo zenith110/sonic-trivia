@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { getCharacterById, getCharacterImagePath } from "@/data/characters";
 
 interface MainMenuHeaderProps {
   onNavigateToDashboard: () => void;
@@ -39,18 +40,51 @@ export function MainMenuHeader({
           <div className="flex items-center gap-4">
             {user && (
               <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-100 rounded-lg">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm">
-                  {user.username.substring(0, 2).toUpperCase()}
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                  {user.selectedCharacterId ? (
+                    (() => {
+                      const character = getCharacterById(
+                        user.selectedCharacterId,
+                      );
+                      return character ? (
+                        <img
+                          src={getCharacterImagePath(character)}
+                          alt={character.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = "none";
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.className =
+                                "flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm";
+                              parent.textContent = user.username
+                                .substring(0, 2)
+                                .toUpperCase();
+                            }
+                          }}
+                        />
+                      ) : (
+                        <span className="text-sm">
+                          {user.username.substring(0, 2).toUpperCase()}
+                        </span>
+                      );
+                    })()
+                  ) : (
+                    <span className="text-sm">
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-900">
                     {user.username}
                   </span>
                   <div className="flex items-center gap-3 text-xs text-gray-500">
-                    <span>Score: {user.totalScore}</span>
+                    <span>Score: {user.totalScore.toLocaleString()}</span>
                     <span className="flex items-center gap-1">
                       <Coins className="h-3 w-3 text-yellow-500" />
-                      {user.totalRings}
+                      {user.totalRings.toLocaleString()}
                     </span>
                   </div>
                 </div>

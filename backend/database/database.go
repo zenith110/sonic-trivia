@@ -92,8 +92,10 @@ func AutoMigrate() error {
 		&CharacterAbility{},
 		&PlayerCharacter{},
 		&Friendship{},
-		&PlayerAnswer{},
+		&PlayerTriviaAnswer{},
+		&PlayerSongAnswer{},
 		&LeaderboardEntry{},
+		&ApprovalRequest{},
 	)
 
 	if err != nil {
