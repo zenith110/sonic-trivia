@@ -1,0 +1,36 @@
+name: Deploy sonic-trivia dev container to Docker
+# Deploys data based off master branch
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .devcontainer-sonic-trivia/**
+jobs:
+  Dockerizing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Login
+        env:
+          DOCKER_USER: "${{ secrets.DOCKER_USER }}"
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.0.0
+      - run: npm install -g @devcontainers/cli
+      - name: Dockerize dev container
+        env:
+          DH_REPO: "${{ secrets.DH_REPO }}"
+          GITHUB_SHA: "${{ github.sha }}"
+        run: |
+          devcontainer build .devcontainer-sonic-trivia --image-name $DH_REPO:latest
+      - name: Docker push Sonic Trivia dev container
+        env:
+          DH_REPO: "${{ secrets.DH_REPO }}"
+          GITHUB_SHA: "${{ github.sha }}"
+        run: |
+          docker push $DH_REPO:latest
