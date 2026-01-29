@@ -21,7 +21,6 @@
       "dockerDashComposeVersion": "v2",
     },
     "ghcr.io/roul/devcontainer-features/mise-bun:1": {},
-    "./features/k3d": {},
     "ghcr.io/devcontainers/features/python:1": {
       "installedTools": true,
       "version": "latest",
