@@ -78,16 +78,10 @@ export function MainMenuHeader({
               Leaderboard
             </Button>
 
-            {user?.role === "admin" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onNavigateToDashboard}
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Admin Dashboard
-              </Button>
-            )}
+            <Button variant="outline" size="sm" onClick={onNavigateToDashboard}>
+              <Shield className="h-4 w-4 mr-2" />
+              Dashboard
+            </Button>
 
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="h-4 w-4 mr-2" />

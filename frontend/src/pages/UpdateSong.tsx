@@ -25,13 +25,16 @@ import {
   Upload,
   X,
   Image as ImageIcon,
+  Clock,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { getSongCategoryOptions } from "@/lib/categories";
 import { guessThatSongClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import { SongSchema, SongHintSchema } from "@/generated/guessthatsong_pb";
+import { SongCollectionSelector } from "@/components/song/SongCollectionSelector";
 
 interface SongHint {
   id: string;
@@ -52,6 +55,7 @@ interface Song {
   hints: SongHint[];
   includePicture?: boolean;
   pictureUrl?: string;
+  isUnderReview?: boolean;
 }
 
 export function UpdateSong() {
@@ -74,6 +78,9 @@ export function UpdateSong() {
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [picturePreview, setPicturePreview] = useState<string>("");
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | undefined
+  >();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -104,6 +111,7 @@ export function UpdateSong() {
           })),
           includePicture: !!s.pictureUrl,
           pictureUrl: s.pictureUrl,
+          isUnderReview: s.isUnderReview,
         };
 
         setSelectedSong(song);
@@ -246,6 +254,7 @@ export function UpdateSong() {
       // Call the gRPC service
       const response = await guessThatSongClient.updateSong({
         song: songProto,
+        collectionId: selectedCollectionId,
       });
 
       console.log("Song updated successfully:", response);
@@ -274,6 +283,7 @@ export function UpdateSong() {
     }
     setHints([]);
     setSearchQuery("");
+    setSelectedCollectionId(undefined);
     setIncludePicture(false);
     setPictureFile(null);
     setPicturePreview("");
@@ -342,9 +352,18 @@ export function UpdateSong() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
               <div className="rounded-lg bg-muted p-3">
-                <p className="text-sm text-muted-foreground">
-                  Song ID: <span className="font-mono">{selectedSong.id}</span>
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Song ID:{" "}
+                    <span className="font-mono">{selectedSong.id}</span>
+                  </p>
+                  {selectedSong.isUnderReview && (
+                    <Badge variant="secondary">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Under Review
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               {/* Basic Information */}
@@ -685,6 +704,12 @@ export function UpdateSong() {
                 </div>
               </div>
             </CardContent>
+
+            {/* Collection Selector */}
+            <SongCollectionSelector
+              selectedCollectionId={selectedCollectionId}
+              onCollectionChange={setSelectedCollectionId}
+            />
 
             <CardFooter className="flex justify-between">
               <Button type="button" variant="outline" onClick={handleReset}>

@@ -70,5 +70,8 @@ require (
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/gorm v1.31.1 // indirect
 	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000 // indirect
+	sonic-trivia/backend/services/approvalqueue v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/storage v0.0.0-00010101000000-000000000000 // indirect
 )
+
+replace sonic-trivia/backend/services/approvalqueue => ./services/approvalqueue

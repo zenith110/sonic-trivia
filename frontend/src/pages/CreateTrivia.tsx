@@ -29,6 +29,7 @@ import {
   AnswerOptionsSchema,
   HintSchema,
 } from "@/generated/trivia_pb";
+import { CollectionSelector } from "@/components/trivia/CollectionSelector";
 interface Answer {
   id: string;
   text: string;
@@ -57,6 +58,11 @@ export function CreateTrivia() {
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [picturePreview, setPicturePreview] = useState<string>("");
+  const [points, setPoints] = useState("100");
+  const [ring, setRing] = useState("10");
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | undefined
+  >();
 
   const addAnswer = () => {
     const newId = (answers.length + 1).toString();
@@ -160,12 +166,13 @@ export function CreateTrivia() {
             }),
           ),
         pictureForQuestion: pictureBase64,
-        points: 100, // Default points
+        points: BigInt(parseInt(points) || 100),
       });
 
       // Call the gRPC service
       const response = await triviaClient.createQuestion({
         question: questionProto,
+        collectionId: selectedCollectionId,
       });
 
       console.log("Question created successfully:", response);
@@ -185,6 +192,9 @@ export function CreateTrivia() {
       ]);
       setIncludePicture(false);
       removePictureFile();
+      setPoints("100");
+      setRing("10");
+      setSelectedCollectionId(undefined);
     } catch (error) {
       console.error("Error creating trivia question:", error);
       alert("Failed to create trivia question. Please try again.");
@@ -212,6 +222,32 @@ export function CreateTrivia() {
                 required
                 rows={3}
               />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="points">Points</Label>
+                <Input
+                  id="points"
+                  type="text"
+                  placeholder="100"
+                  value={points}
+                  onChange={(e) => setPoints(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ring">Ring</Label>
+                <Input
+                  id="ring"
+                  type="text"
+                  placeholder="10"
+                  value={ring}
+                  onChange={(e) => setRing(e.target.value)}
+                  required
+                />
+              </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -434,6 +470,12 @@ export function CreateTrivia() {
               </div>
             </div>
           </CardContent>
+
+          {/* Collection Selector */}
+          <CollectionSelector
+            selectedCollectionId={selectedCollectionId}
+            onCollectionChange={setSelectedCollectionId}
+          />
 
           <CardFooter className="flex justify-between">
             <Button type="button" variant="outline">

@@ -227,3 +227,126 @@ func (r *Repository) UpdateSong(ctx context.Context, song *database.Song) error 
 func (r *Repository) DeleteSong(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&database.Song{}, "id = ?", id).Error
 }
+
+// CreateSongCollection creates a new song collection in the database
+func (r *Repository) CreateSongCollection(ctx context.Context, collection *database.SongCollection) error {
+	return r.db.WithContext(ctx).Create(collection).Error
+}
+
+// GetSongCollectionByID retrieves a collection by ID with all related songs
+func (r *Repository) GetSongCollectionByID(ctx context.Context, id string) (*database.SongCollection, error) {
+	var collection database.SongCollection
+	err := r.db.WithContext(ctx).
+		Preload("Songs").
+		Preload("Songs.Hints").
+		First(&collection, "id = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &collection, nil
+}
+
+// UpdateSongCollection updates an existing song collection
+func (r *Repository) UpdateSongCollection(ctx context.Context, collection *database.SongCollection) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Update collection basic fields
+		if err := tx.Model(&database.SongCollection{}).
+			Where("id = ?", collection.ID).
+			Updates(map[string]interface{}{
+				"name":        collection.Name,
+				"description": collection.Description,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+// DeleteSongCollection deletes a song collection from the database
+func (r *Repository) DeleteSongCollection(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&database.SongCollection{}, "id = ?", id).Error
+}
+
+// AddSongToCollection adds a song to a collection
+func (r *Repository) AddSongToCollection(ctx context.Context, songID, collectionID string) error {
+	return r.db.WithContext(ctx).
+		Model(&database.Song{}).
+		Where("id = ?", songID).
+		Update("collection_id", collectionID).Error
+}
+
+// GetSongCollections retrieves collections with pagination
+func (r *Repository) GetSongCollections(ctx context.Context, userID string, page, pageSize int) ([]database.SongCollection, int64, error) {
+	var collections []database.SongCollection
+	var total int64
+
+	// Count total collections for this user
+	countQuery := r.db.WithContext(ctx).Model(&database.SongCollection{})
+	if userID != "" {
+		countQuery = countQuery.Where("created_by = ?", userID)
+	}
+	if err := countQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Calculate offset
+	offset := (page - 1) * pageSize
+	if offset < 0 {
+		offset = 0
+	}
+
+	// Fetch paginated collections
+	query := r.db.WithContext(ctx).
+		Preload("Songs").
+		Preload("Songs.Hints").
+		Order("created_at DESC")
+
+	if userID != "" {
+		query = query.Where("created_by = ?", userID)
+	}
+
+	err := query.
+		Limit(pageSize).
+		Offset(offset).
+		Find(&collections).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return collections, total, nil
+}
+
+// AddSongToApprovalQueue adds a song to the approval queue
+func (r *Repository) AddSongToApprovalQueue(ctx context.Context, userID, songID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID: userID,
+		SongID: &songID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// AddSongCollectionToApprovalQueue adds a song collection to the approval queue
+func (r *Repository) AddSongCollectionToApprovalQueue(ctx context.Context, userID, collectionID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID:           userID,
+		SongCollectionID: &collectionID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// GetUserRole gets a user's role from the database
+func (r *Repository) GetUserRole(ctx context.Context, userID string) (string, error) {
+	var player database.Player
+	err := r.db.WithContext(ctx).
+		Select("role").
+		Where("id = ?", userID).
+		First(&player).Error
+	
+	if err != nil {
+		return "", err
+	}
+	return player.Role, nil
+}

@@ -3,9 +3,11 @@ import { Dashboard } from "@/components/Dashboard";
 import { CreateTrivia } from "@/pages/CreateTrivia";
 import { UpdateTrivia } from "@/pages/UpdateTrivia";
 import { DeleteTrivia } from "@/pages/DeleteTrivia";
+import { TriviaCollections } from "@/pages/TriviaCollections";
 import { CreateSong } from "@/pages/CreateSong";
 import { UpdateSong } from "@/pages/UpdateSong";
 import { DeleteSong } from "@/pages/DeleteSong";
+import { SongCollections } from "@/pages/SongCollections";
 import { Leaderboard } from "@/pages/Leaderboard";
 import { MainMenu } from "@/pages/MainMenu";
 import { ProfilePage } from "@/pages/ProfilePage";
@@ -18,9 +20,11 @@ type PageType =
   | "trivia-create"
   | "trivia-update"
   | "trivia-delete"
+  | "trivia-collections"
   | "guess-song-create"
   | "guess-song-update"
   | "guess-song-delete"
+  | "guess-song-collections"
   | "leaderboard"
   | "profile";
 
@@ -78,12 +82,16 @@ function App() {
         return <UpdateTrivia />;
       case "trivia-delete":
         return <DeleteTrivia />;
+      case "trivia-collections":
+        return <TriviaCollections />;
       case "guess-song-create":
         return <CreateSong />;
       case "guess-song-update":
         return <UpdateSong />;
       case "guess-song-delete":
         return <DeleteSong />;
+      case "guess-song-collections":
+        return <SongCollections />;
       case "leaderboard":
         return <Leaderboard />;
       default:

@@ -24,6 +24,7 @@ import { getSongCategoryOptions } from "@/lib/categories";
 import { guessThatSongClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import { SongSchema, SongHintSchema } from "@/generated/guessthatsong_pb";
+import { SongCollectionSelector } from "@/components/song/SongCollectionSelector";
 
 interface SongHint {
   id: string;
@@ -51,6 +52,9 @@ export function CreateSong() {
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [picturePreview, setPicturePreview] = useState<string>("");
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | undefined
+  >();
 
   const handleAudioFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -162,6 +166,7 @@ export function CreateSong() {
       // Call the gRPC service
       const response = await guessThatSongClient.createSong({
         song: songProto,
+        collectionId: selectedCollectionId,
       });
 
       console.log("Song created successfully:", response);
@@ -184,6 +189,7 @@ export function CreateSong() {
       ]);
       setIncludePicture(false);
       removePictureFile();
+      setSelectedCollectionId(undefined);
     } catch (error) {
       console.error("Error creating song:", error);
       alert("Failed to create song challenge. Please try again.");
@@ -518,6 +524,12 @@ export function CreateSong() {
               </div>
             </div>
           </CardContent>
+
+          {/* Collection Selector */}
+          <SongCollectionSelector
+            selectedCollectionId={selectedCollectionId}
+            onCollectionChange={setSelectedCollectionId}
+          />
 
           <CardFooter className="flex justify-between">
             <Button type="button" variant="outline">

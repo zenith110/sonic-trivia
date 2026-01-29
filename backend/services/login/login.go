@@ -60,10 +60,11 @@ func playerToProto(player *database.Player) *pb.Player {
 }
 
 // generateJWT generates a JWT token for a user
-func (s *Server) generateJWT(userID, email string) (string, error) {
+func (s *Server) generateJWT(userID, email, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		"email":   email,
+		"role":    role,
 		"exp":     time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days
 		"iat":     time.Now().Unix(),
 	}
@@ -114,7 +115,7 @@ func (s *Server) Login(
 	}
 
 	// Generate JWT token
-	token, err := s.generateJWT(user.ID, user.Email)
+	token, err := s.generateJWT(user.ID, user.Email, user.Role)
 	if err != nil {
 		log.Printf("Error generating JWT: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate token"))
@@ -173,7 +174,7 @@ func (s *Server) SocialMediaLogin(
 	}
 
 	// Generate JWT token
-	jwtToken, err := s.generateJWT(user.ID, user.Email)
+	jwtToken, err := s.generateJWT(user.ID, user.Email, user.Role)
 	if err != nil {
 		log.Printf("Error generating JWT: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate token"))
@@ -237,7 +238,7 @@ func (s *Server) SignUpUsernameOrEmail(
 	}
 
 	// Generate JWT token
-	token, err := s.generateJWT(user.ID, user.Email)
+	token, err := s.generateJWT(user.ID, user.Email, user.Role)
 	if err != nil {
 		log.Printf("Error generating JWT: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate token"))

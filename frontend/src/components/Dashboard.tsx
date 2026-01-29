@@ -10,6 +10,7 @@ import {
   ListChecks,
   Music,
   User,
+  FolderPlus,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -38,9 +39,11 @@ type PageType =
   | "trivia-create"
   | "trivia-update"
   | "trivia-delete"
+  | "trivia-collections"
   | "guess-song-create"
   | "guess-song-update"
   | "guess-song-delete"
+  | "guess-song-collections"
   | "leaderboard"
   | "profile";
 
@@ -171,6 +174,16 @@ export function Dashboard({
                           <span>Delete Trivia</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          onClick={() => handlePageChange("trivia-collections")}
+                          isActive={activePage === "trivia-collections"}
+                        >
+                          <FolderPlus className="h-4 w-4" />
+                          <span>Collections</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
                     </CollapsibleContent>
                   </Collapsible>
 
@@ -224,6 +237,18 @@ export function Dashboard({
                         >
                           <Trash2 className="h-4 w-4" />
                           <span>Delete Song</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          onClick={() =>
+                            handlePageChange("guess-song-collections")
+                          }
+                          isActive={activePage === "guess-song-collections"}
+                        >
+                          <FolderPlus className="h-4 w-4" />
+                          <span>Collections</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     </CollapsibleContent>

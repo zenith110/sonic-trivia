@@ -22,6 +22,7 @@ message Song {
   string audio_url = 10;
   repeated SongHint hints = 11;
   optional string picture_url = 12;
+  bool is_under_review = 13;
 }
 
 service GuessThatSongService {
@@ -32,6 +33,71 @@ service GuessThatSongService {
   rpc UpdateSong(UpdateSongRequest) returns (UpdateSongResponse) {}
   rpc DeleteSong(DeleteSongRequest) returns (DeleteSongResponse) {}
   rpc SearchSong(SearchSongRequest) returns (SearchSongResponse) {}
+  rpc CreateSongCollection(CreateSongCollectionRequest) returns (CreateSongCollectionResponse) {}
+  rpc DeleteSongCollection(DeleteSongCollectionRequest) returns (DeleteSongCollectionResponse) {}
+  rpc UpdateSongCollection(UpdateSongCollectionRequest) returns (UpdateSongCollectionResponse) {}
+  rpc GetSongCollections(GetSongCollectionsRequest) returns (GetSongCollectionsResponse) {}
+}
+
+message GetSongCollectionsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message GetSongCollectionsResponse {
+  repeated SongCollection collections = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message SongCollection {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_by = 4;
+  repeated Song songs = 5;
+  bool is_under_review = 6;
+}
+
+message UpdateSongCollectionRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string song_ids = 4;
+}
+
+message UpdateSongCollectionResponse {
+  bool is_success = 1;
+}
+
+message CreateSongCollectionRequest {
+  string name = 1;
+  string description = 2;
+  string created_by = 3;
+  string size_of_collection = 4;
+  repeated string song_ids = 5;
+}
+
+message CreateSongCollectionResponse {
+  string id = 1;
+}
+
+message DeleteSongCollectionRequest {
+  string id = 1;
+}
+
+message DeleteSongCollectionResponse {
+  bool is_success = 1;
+}
+
+message CreateSongsRequest {
+  repeated Song songs = 1;
+}
+
+message CreateSongsResponse {
+  bool is_success = 1;
 }
 
 message GetRandomSongsRequest {
@@ -46,6 +112,7 @@ message GetRandomSongsResponse {
 
 message CreateSongRequest {
   Song song = 1;
+  optional string collection_id = 2;
 }
 
 message CreateSongResponse {
@@ -70,6 +137,7 @@ message GetRandomSongResponse {
 
 message UpdateSongRequest {
   Song song = 1;
+  optional string collection_id = 2;
 }
 
 message UpdateSongResponse {

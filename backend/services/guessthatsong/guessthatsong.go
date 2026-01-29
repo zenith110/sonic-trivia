@@ -66,6 +66,12 @@ func (s *Server) CreateSong(
 	dbSong.CreatedBy = userID
 	log.Printf("Song will be created by user: %s", userID)
 
+	// Handle collection_id if provided
+	if req.Msg.CollectionId != nil && *req.Msg.CollectionId != "" {
+		dbSong.CollectionID = req.Msg.CollectionId
+		log.Printf("Song will be added to collection: %s", *req.Msg.CollectionId)
+	}
+
 	// Handle audio URL - in production, upload audio file to storage
 	// For now, we assume audio_url is already set in the proto
 	if dbSong.AudioURL == "" {
@@ -78,11 +84,37 @@ func (s *Server) CreateSong(
 		dbSong.PictureURL = song.PictureUrl
 	}
 
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "user" // Default to user role
+		}
+	}
+
+	// If user has "user" role, set is_under_review to true
+	if userRole == "user" {
+		dbSong.IsUnderReview = true
+		log.Printf("Song marked for review as user has 'user' role")
+	}
+
 	// Create in database
 	err = s.repo.CreateSong(ctx, dbSong)
 	if err != nil {
 		log.Printf("Error creating song: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create song"))
+	}
+
+	// If user has "user" role, add to approval queue
+	if userRole == "user" {
+		err = s.repo.AddSongToApprovalQueue(ctx, userID, dbSong.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add song to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		}
 	}
 
 	// Convert back to proto
@@ -199,6 +231,13 @@ func (s *Server) UpdateSong(
 	song := req.Msg.GetSong()
 	log.Printf("UpdateSong request received for ID: %s", song.GetId())
 
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
+
 	// Check if song exists
 	existingSong, err := s.repo.GetSongByID(ctx, song.GetId())
 	if err != nil {
@@ -218,6 +257,12 @@ func (s *Server) UpdateSong(
 	existingSong.Difficulty = song.GetDifficulty()
 	existingSong.PlaysPerRound = song.GetPlaysPerRound()
 	existingSong.ClipDuration = song.GetClipDuration()
+
+	// Handle collection_id if provided
+	if req.Msg.CollectionId != nil && *req.Msg.CollectionId != "" {
+		existingSong.CollectionID = req.Msg.CollectionId
+		log.Printf("Song will be added to collection: %s", *req.Msg.CollectionId)
+	}
 
 	// Update audio URL if provided
 	if song.GetAudioUrl() != "" {
@@ -244,11 +289,40 @@ func (s *Server) UpdateSong(
 		existingSong.Hints = hints
 	}
 
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "user" // Default to user role
+		}
+	}
+
+	// Track if song was already under review
+	wasUnderReview := existingSong.IsUnderReview
+
+	// If user has "user" role, set is_under_review to true
+	if userRole == "user" {
+		existingSong.IsUnderReview = true
+		log.Printf("Song marked for review as user has 'user' role")
+	}
+
 	// Update in database
 	err = s.repo.UpdateSong(ctx, existingSong)
 	if err != nil {
 		log.Printf("Error updating song: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update song"))
+	}
+
+	// If user has "user" role and song wasn't already under review, add to approval queue
+	if userRole == "user" && !wasUnderReview {
+		err = s.repo.AddSongToApprovalQueue(ctx, userID, existingSong.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add song to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		}
 	}
 
 	// Convert back to proto
@@ -304,6 +378,221 @@ func (s *Server) SearchSong(
 
 	res := connect.NewResponse(&pb.SearchSongResponse{
 		Songs: protoSongs,
+	})
+
+	return res, nil
+}
+
+// CreateSongCollection creates a new song collection
+func (s *Server) CreateSongCollection(
+	ctx context.Context,
+	req *connect.Request[pb.CreateSongCollectionRequest],
+) (*connect.Response[pb.CreateSongCollectionResponse], error) {
+	log.Printf("CreateSongCollection request received: %s", req.Msg.GetName())
+
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
+
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "user" // Default to user role
+		}
+	}
+
+	// Create collection
+	collection := &database.SongCollection{
+		Name:          req.Msg.GetName(),
+		Description:   req.Msg.GetDescription(),
+		CreatedBy:     userID,
+		IsUnderReview: userRole == "user",
+	}
+
+	if userRole == "user" {
+		log.Printf("Song collection marked for review as user has 'user' role")
+	}
+
+	err = s.repo.CreateSongCollection(ctx, collection)
+	if err != nil {
+		log.Printf("Error creating song collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create song collection"))
+	}
+
+	// If user has "user" role, add to approval queue
+	if userRole == "user" {
+		err = s.repo.AddSongCollectionToApprovalQueue(ctx, userID, collection.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add song collection to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		}
+	}
+
+	// Add songs to collection if song IDs provided
+	for _, songID := range req.Msg.GetSongIds() {
+		if songID != "" {
+			err = s.repo.AddSongToCollection(ctx, songID, collection.ID)
+			if err != nil {
+				log.Printf("Warning: Failed to add song %s to collection: %v", songID, err)
+			}
+		}
+	}
+
+	res := connect.NewResponse(&pb.CreateSongCollectionResponse{
+		Id: collection.ID,
+	})
+
+	return res, nil
+}
+
+// UpdateSongCollection updates an existing song collection
+func (s *Server) UpdateSongCollection(
+	ctx context.Context,
+	req *connect.Request[pb.UpdateSongCollectionRequest],
+) (*connect.Response[pb.UpdateSongCollectionResponse], error) {
+	log.Printf("UpdateSongCollection request received for ID: %s", req.Msg.GetId())
+
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
+
+	// Check if collection exists
+	existingCollection, err := s.repo.GetSongCollectionByID(ctx, req.Msg.GetId())
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("collection not found"))
+		}
+		log.Printf("Error fetching collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch collection"))
+	}
+
+	// Update fields
+	existingCollection.Name = req.Msg.GetName()
+	existingCollection.Description = req.Msg.GetDescription()
+
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "user" // Default to user role
+		}
+	}
+
+	// Track if collection was already under review
+	wasUnderReview := existingCollection.IsUnderReview
+
+	// If user has "user" role, set is_under_review to true
+	if userRole == "user" {
+		existingCollection.IsUnderReview = true
+		log.Printf("Song collection marked for review as user has 'user' role")
+	}
+
+	// Update in database
+	err = s.repo.UpdateSongCollection(ctx, existingCollection)
+	if err != nil {
+		log.Printf("Error updating collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update collection"))
+	}
+
+	// If user has "user" role and collection wasn't already under review, add to approval queue
+	if userRole == "user" && !wasUnderReview {
+		err = s.repo.AddSongCollectionToApprovalQueue(ctx, userID, existingCollection.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add song collection to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		}
+	}
+
+	res := connect.NewResponse(&pb.UpdateSongCollectionResponse{
+		IsSuccess: true,
+	})
+
+	return res, nil
+}
+
+// GetSongCollections retrieves song collections with pagination
+func (s *Server) GetSongCollections(
+	ctx context.Context,
+	req *connect.Request[pb.GetSongCollectionsRequest],
+) (*connect.Response[pb.GetSongCollectionsResponse], error) {
+	userID := req.Msg.GetUserId()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
+
+	// Set defaults
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 5
+	}
+
+	log.Printf("GetSongCollections request received - userID: %s, page: %d, pageSize: %d",
+		userID, page, pageSize)
+
+	// Query database for collections
+	collections, total, err := s.repo.GetSongCollections(ctx, userID, int(page), int(pageSize))
+	if err != nil {
+		log.Printf("Error fetching song collections: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch song collections"))
+	}
+
+	// Convert to proto
+	protoCollections := make([]*pb.SongCollection, len(collections))
+	for i, c := range collections {
+		protoSongs := make([]*pb.Song, len(c.Songs))
+		for j, s := range c.Songs {
+			protoSongs[j] = SongToProto(&s)
+		}
+
+		protoCollections[i] = &pb.SongCollection{
+			Id:          c.ID,
+			Name:        c.Name,
+			Description: c.Description,
+			CreatedBy:   c.CreatedBy,
+			Songs:       protoSongs,
+		}
+	}
+
+	res := connect.NewResponse(&pb.GetSongCollectionsResponse{
+		Collections: protoCollections,
+		Total:       int32(total),
+		Page:        page,
+		PageSize:    pageSize,
+	})
+
+	return res, nil
+}
+
+// DeleteSongCollection deletes a song collection
+func (s *Server) DeleteSongCollection(
+	ctx context.Context,
+	req *connect.Request[pb.DeleteSongCollectionRequest],
+) (*connect.Response[pb.DeleteSongCollectionResponse], error) {
+	log.Printf("DeleteSongCollection request received for ID: %s", req.Msg.GetId())
+
+	// Delete from database
+	err := s.repo.DeleteSongCollection(ctx, req.Msg.GetId())
+	if err != nil {
+		log.Printf("Error deleting collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to delete collection"))
+	}
+
+	res := connect.NewResponse(&pb.DeleteSongCollectionResponse{
+		IsSuccess: true,
 	})
 
 	return res, nil

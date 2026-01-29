@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "sonic-trivia/backend/protos";
+
+service ApprovalQueueService {
+  rpc AddToQueue(AddToQueueRequest) returns (AddToQueueResponse) {}
+  rpc RemoveFromQueue(RemoveFromQueueRequest) returns (RemoveFromQueueResponse) {}
+  rpc GetAllApprovalRequests(GetAllApprovalRequestsRequest) returns (GetAllApprovalRequestsResponse) {}
+  rpc ApproveRequest(ApproveRequestRequest) returns (ApproveRequestResponse) {}
+}
+message ApproveRequestRequest {
+  string user_id = 1;
+  optional string question_id = 2;
+  optional string question_collection_id = 3;
+  optional string song_id = 4;
+  optional string song_collection_id = 5;
+}
+message ApproveRequestResponse {
+  bool success = 1;
+}
+message GetAllApprovalRequestsRequest {
+  int32 page = 2;
+  int32 page_size = 3;
+}
+message ApprovalRequest {
+  string user_id = 1;
+  optional string question_id = 2;
+  optional string question_collection_id = 3;
+  optional string song_id = 4;
+  optional string song_collection_id = 5;
+  string created_at = 6;
+}
+
+message GetAllApprovalRequestsResponse {
+  repeated ApprovalRequest approval_requests = 1;
+}
+
+message AddToQueueRequest {
+  string user_id = 1;
+  optional string question_id = 2;
+  optional string question_collection_id = 3;
+  optional string song_id = 4;
+  optional string song_collection_id = 5;
+  string created_at = 6;
+}
+
+message AddToQueueResponse {
+  bool success = 1;
+}
+
+message RemoveFromQueueRequest {
+  string user_id = 1;
+  string question_id = 2;
+}
+
+message RemoveFromQueueResponse {
+  bool success = 1;
+}

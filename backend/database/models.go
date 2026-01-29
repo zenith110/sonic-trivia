@@ -17,11 +17,27 @@ type Question struct {
 	PictureURL         *string `gorm:"type:text"`                                         // Optional picture URL
 	CreatedBy          string  `gorm:"type:uuid;index"`                                   // Player ID who created the question
 	Creator            Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
+	IsUnderReview      bool    `gorm:"not null;default:false"`                            // Whether the question is under review
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
 	Answers            []Answer       `gorm:"foreignKey:QuestionID;constraint:OnDelete:CASCADE"`
 	Hints              []Hint         `gorm:"foreignKey:QuestionID;constraint:OnDelete:CASCADE"`
+	CollectionID       *string        `gorm:"type:uuid;index"` // Optional collection this question belongs to
+}
+
+// QuestionCollection represents a collection of trivia questions
+type QuestionCollection struct {
+	ID            string     `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Name          string     `gorm:"not null;type:varchar(255)"`
+	Description   string     `gorm:"type:text"`
+	CreatedBy     string     `gorm:"type:uuid;index;not null"`
+	Creator       Player     `gorm:"foreignKey:CreatedBy;constraint:OnDelete:CASCADE"`
+	Questions     []Question `gorm:"foreignKey:CollectionID;constraint:OnDelete:SET NULL"`
+	IsUnderReview bool       `gorm:"not null;default:false"` // Whether the collection is under review
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 // Answer represents a possible answer for a question
@@ -59,10 +75,26 @@ type Song struct {
 	PictureURL    *string `gorm:"type:text"`                                         // Optional picture URL
 	CreatedBy     string  `gorm:"type:uuid;index"`                                   // Player ID who created the song
 	Creator       Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
+	IsUnderReview bool    `gorm:"not null;default:false"`                            // Whether the song is under review
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 	Hints         []SongHint     `gorm:"foreignKey:SongID;constraint:OnDelete:CASCADE"`
+	CollectionID  *string        `gorm:"type:uuid;index"` // Optional collection this song belongs to
+}
+
+// SongCollection represents a collection of songs
+type SongCollection struct {
+	ID            string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Name          string `gorm:"not null;type:varchar(255)"`
+	Description   string `gorm:"type:text"`
+	CreatedBy     string `gorm:"type:uuid;index;not null"`
+	Creator       Player `gorm:"foreignKey:CreatedBy;constraint:OnDelete:CASCADE"`
+	Songs         []Song `gorm:"foreignKey:CollectionID;constraint:OnDelete:SET NULL"`
+	IsUnderReview bool   `gorm:"not null;default:false"` // Whether the collection is under review
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 // SongHint represents a hint for a song
@@ -223,4 +255,22 @@ func (PlayerAnswer) TableName() string {
 
 func (LeaderboardEntry) TableName() string {
 	return "leaderboard_entries"
+}
+
+// ApprovalRequest represents a request for content approval
+type ApprovalRequest struct {
+	ID                   string  `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	UserID               string  `gorm:"not null;type:uuid;index"`
+	User                 Player  `gorm:"foreignKey:UserID"`
+	QuestionID           *string `gorm:"type:uuid;index"`
+	QuestionCollectionID *string `gorm:"type:uuid;index"`
+	SongID               *string `gorm:"type:uuid;index"`
+	SongCollectionID     *string `gorm:"type:uuid;index"`
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+	DeletedAt            gorm.DeletedAt `gorm:"index"`
+}
+
+func (ApprovalRequest) TableName() string {
+	return "approval_requests"
 }
