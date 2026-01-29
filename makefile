@@ -25,7 +25,7 @@ install-deps:
 	@echo "Go plugins installation complete!"
 	@echo ""
 	@echo "Installing frontend dependencies..."
-	cd frontend && npm install
+	cd frontend && bun install
 	@echo "Installation complete!"
 
 # Export all proto files for both backend and frontend
