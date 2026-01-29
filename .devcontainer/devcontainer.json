@@ -1,5 +1,5 @@
 {
   "name": "storm-devcontainer",
   "image": "zenith110/sonic-trivia-devcontainer",
-  "initalizeCommand": "docker pull zenith110/sonic-trivia-devcontainer ",
+  "initalizeCommand": "docker pull zenith110/sonic-trivia-devcontainer",
 }
