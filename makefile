@@ -54,15 +54,16 @@ export-protos-backend:
 	@echo "Compiling proto files for backend (Go)..."
 	@cd backend && PATH="$(GO_BIN):$$PATH" buf generate
 	@echo "Creating go.mod files..."
-	@echo "module sonic-trivia/backend/protos\n\ngo 1.25.5\n\nrequire google.golang.org/protobuf v1.36.11" > $(GO_OUT)/go.mod
-	@echo "module sonic-trivia/backend/protos/protosconnect\n\ngo 1.25.5\n\nrequire (\n\tconnectrpc.com/connect v1.19.1\n\tsonic-trivia/backend/protos v0.0.0-00010101000000-000000000000\n)\n\nrequire google.golang.org/protobuf v1.36.11 // indirect\n\nreplace sonic-trivia/backend/protos => ../" > $(GO_OUT)/protosconnect/go.mod
+	@printf "module sonic-trivia/backend/protos\n\ngo 1.23\n\nrequire google.golang.org/protobuf v1.36.11\n" > $(GO_OUT)/go.mod
+	@printf "module sonic-trivia/backend/protos/protosconnect\n\ngo 1.23\n\nrequire (\n\tconnectrpc.com/connect v1.19.1\n\tsonic-trivia/backend/protos v0.0.0-00010101000000-000000000000\n)\n\nrequire google.golang.org/protobuf v1.36.11 // indirect\n\nreplace sonic-trivia/backend/protos => ...\n" > $(GO_OUT)/protosconnect/go.mod
 	@echo "Backend proto compilation complete! Generated files are in $(GO_OUT)"
 
 # Export proto files for frontend (TypeScript) using buf
 export-protos-frontend:
 	@echo ""
 	@echo "Compiling proto files for frontend (TypeScript)..."
-	@mkdir -p $(TS_OUT) && echo "# Generated files" > $(TS_OUT)/.gitkeep
+	@powershell -Command "if (-not (Test-Path '$(TS_OUT)')) { New-Item -ItemType Directory -Path '$(TS_OUT)' -Force | Out-Null }"
+	@powershell -Command "Set-Content -Path '$(TS_OUT)/.gitkeep' -Value '# Generated files'"
 	@cd frontend && PATH="$$PATH:./node_modules/.bin" buf generate
 	@echo "Frontend proto compilation complete! Generated files are in $(TS_OUT)"
 

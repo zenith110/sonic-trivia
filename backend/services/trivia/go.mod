@@ -1,6 +1,6 @@
 module sonic-trivia/backend/services/trivia
 
-go 1.25.5
+go 1.24.0
 
 replace sonic-trivia/backend/protos => ../../protos
 

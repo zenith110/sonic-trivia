@@ -1,1 +1,5 @@
-"module sonic-trivia/backend/protos\n\ngo 1.25.5\n\nrequire google.golang.org/protobuf v1.36.11" 
+module sonic-trivia/backend/protos
+
+go 1.24.0
+
+require google.golang.org/protobuf v1.36.11

@@ -8,7 +8,7 @@ replace sonic-trivia/backend/protos => ../../protos
 
 replace sonic-trivia/backend/middleware => ../../middleware
 
-go 1.25.5
+go 1.24.0
 
 require (
 	connectrpc.com/connect v1.19.1
