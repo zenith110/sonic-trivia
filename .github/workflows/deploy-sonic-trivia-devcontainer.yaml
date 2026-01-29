@@ -1,4 +1,4 @@
-name: Deploy Storm dev container to Docker
+name: Deploy sonic-trivia dev container to Docker
 # Deploys data based off master branch
 on:
   workflow_dispatch:
