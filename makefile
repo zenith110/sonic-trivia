@@ -54,23 +54,35 @@ export-protos-backend:
 	@echo "Compiling proto files for backend (Go)..."
 	@cd backend && PATH="$(GO_BIN):$$PATH" buf generate
 	@echo "Creating go.mod files..."
-	@echo module sonic-trivia/backend/protos > $(GO_OUT)/go.mod
-	@echo >> $(GO_OUT)/go.mod
-	@echo go 1.24.0 >> $(GO_OUT)/go.mod
-	@echo >> $(GO_OUT)/go.mod
-	@echo require google.golang.org/protobuf v1.36.11 >> $(GO_OUT)/go.mod
-	@echo module sonic-trivia/backend/protos/protosconnect > $(GO_OUT)/protosconnect/go.mod
-	@echo >> $(GO_OUT)/protosconnect/go.mod
-	@echo go 1.24.0 >> $(GO_OUT)/protosconnect/go.mod
-	@echo >> $(GO_OUT)/protosconnect/go.mod
-	@echo require \( >> $(GO_OUT)/protosconnect/go.mod
-	@echo $$'\t'connectrpc.com/connect v1.19.1 >> $(GO_OUT)/protosconnect/go.mod
-	@echo $$'\t'sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000 >> $(GO_OUT)/protosconnect/go.mod
-	@echo \) >> $(GO_OUT)/protosconnect/go.mod
-	@echo >> $(GO_OUT)/protosconnect/go.mod
-	@echo require google.golang.org/protobuf v1.36.11 // indirect >> $(GO_OUT)/protosconnect/go.mod
-	@echo >> $(GO_OUT)/protosconnect/go.mod
-	@echo replace sonic-trivia/backend/protos =\> .. >> $(GO_OUT)/protosconnect/go.mod
+ifeq ($(OS),Windows_NT)
+	@powershell -Command "Set-Content -Path '$(GO_OUT)/go.mod' -Value @('module sonic-trivia/backend/protos', '', 'go 1.24.0', '', 'require google.golang.org/protobuf v1.36.11')"
+	@powershell -Command "Set-Content -Path '$(GO_OUT)/protosconnect/go.mod' -Value @('module sonic-trivia/backend/protos/protosconnect', '', 'go 1.24.0', '', 'require (', '	connectrpc.com/connect v1.19.1', '	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000', ')', '', 'require google.golang.org/protobuf v1.36.11 // indirect', '', 'replace sonic-trivia/backend/protos => ..')"
+else
+	@cat > $(GO_OUT)/go.mod << 'EOF'
+module sonic-trivia/backend/protos
+
+go 1.24.0
+
+require google.golang.org/protobuf v1.36.11
+EOF
+	@cat > $(GO_OUT)/protosconnect/go.mod << 'EOF'
+module sonic-trivia/backend/protos/protosconnect
+
+go 1.24.0
+
+require (
+	connectrpc.com/connect v1.19.1
+	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000
+)
+
+require google.golang.org/protobuf v1.36.11 // indirect
+
+replace sonic-trivia/backend/protos => ..
+EOF
+endif
+	@echo "Running go mod tidy..."
+	@cd $(GO_OUT) && go mod tidy
+	@cd $(GO_OUT)/protosconnect && go mod tidy
 	@echo "Backend proto compilation complete! Generated files are in $(GO_OUT)"
 
 # Export proto files for frontend (TypeScript) using buf
