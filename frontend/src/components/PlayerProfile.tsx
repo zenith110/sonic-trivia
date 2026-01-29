@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
 import { Trophy, Zap, Target, Award, Coins } from "lucide-react";
 import { usePlayer } from "@/hooks/usePlayer";
 import { toNumber } from "@/lib/protobuf-utils";

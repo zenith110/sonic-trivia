@@ -10,3 +10,4 @@ export { Leaderboard } from "./Leaderboard";
 export { Login } from "./Login";
 export { MainMenu } from "./MainMenu";
 export { MultiplayerLobby } from "./MultiplayerLobby";
+export { ApprovalQueue } from "./ApprovalQueue";

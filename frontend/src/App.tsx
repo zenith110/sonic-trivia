@@ -11,6 +11,7 @@ import { SongCollections } from "@/pages/SongCollections";
 import { Leaderboard } from "@/pages/Leaderboard";
 import { MainMenu } from "@/pages/MainMenu";
 import { ProfilePage } from "@/pages/ProfilePage";
+import { ApprovalQueue } from "@/pages/ApprovalQueue";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import "./App.css";
 
@@ -26,7 +27,8 @@ type PageType =
   | "guess-song-delete"
   | "guess-song-collections"
   | "leaderboard"
-  | "profile";
+  | "profile"
+  | "approval-queue";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("main-menu");
@@ -94,6 +96,8 @@ function App() {
         return <SongCollections />;
       case "leaderboard":
         return <Leaderboard />;
+      case "approval-queue":
+        return <ApprovalQueue />;
       default:
         return <CreateTrivia />;
     }

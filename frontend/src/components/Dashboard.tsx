@@ -11,6 +11,7 @@ import {
   Music,
   User,
   FolderPlus,
+  Shield,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -45,7 +46,8 @@ type PageType =
   | "guess-song-delete"
   | "guess-song-collections"
   | "leaderboard"
-  | "profile";
+  | "profile"
+  | "approval-queue";
 
 interface DashboardProps {
   children?: React.ReactNode;
@@ -74,6 +76,10 @@ export function Dashboard({
   };
 
   const { user, logout } = useAuth();
+
+  // Check if user has admin/moderator permissions
+  const hasApprovalPermissions =
+    user?.role === "admin" || user?.role === "moderator";
 
   const handleSignOut = () => {
     logout();
@@ -264,6 +270,20 @@ export function Dashboard({
                       <span>Leaderboard</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
+
+                  {/* Approval Queue - Only for admin/moderator */}
+                  {hasApprovalPermissions && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        onClick={() => handlePageChange("approval-queue")}
+                        isActive={activePage === "approval-queue"}
+                        className="text-orange-600 hover:text-orange-700"
+                      >
+                        <Shield className="h-4 w-4" />
+                        <span>Approval Queue</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
 
                   <Separator className="my-2" />
 
