@@ -307,17 +307,17 @@ func (s *Server) UpdateQuestion(
 		userRole, err = s.repo.GetUserRole(ctx, userID)
 		if err != nil {
 			log.Printf("Error fetching user role: %v", err)
-			userRole = "user" // Default to user role
+			userRole = "player" // Default to player role
 		}
 	}
 
 	// Track if question was already under review
 	wasUnderReview := existingQuestion.IsUnderReview
 
-	// If user has "user" role, set is_under_review to true
-	if userRole == "user" {
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
 		existingQuestion.IsUnderReview = true
-		log.Printf("Question marked for review as user has 'user' role")
+		log.Printf("Question marked for review as user has 'player' role")
 	}
 
 	// Update in database
@@ -327,8 +327,8 @@ func (s *Server) UpdateQuestion(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update question"))
 	}
 
-	// If user has "user" role and question wasn't already under review, add to approval queue
-	if userRole == "user" && !wasUnderReview {
+	// If user has "player" role and question wasn't already under review, add to approval queue
+	if userRole == "player" && !wasUnderReview {
 		err = s.repo.AddQuestionToApprovalQueue(ctx, userID, existingQuestion.ID)
 		if err != nil {
 			log.Printf("Warning: Failed to add question to approval queue: %v", err)
@@ -413,14 +413,14 @@ func (s *Server) CreateQuestion(
 		userRole, err = s.repo.GetUserRole(ctx, userID)
 		if err != nil {
 			log.Printf("Error fetching user role: %v", err)
-			userRole = "user" // Default to user role
+			userRole = "player" // Default to player role
 		}
 	}
 
-	// If user has "user" role, set is_under_review to true
-	if userRole == "user" {
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
 		dbQuestion.IsUnderReview = true
-		log.Printf("Question marked for review as user has 'user' role")
+		log.Printf("Question marked for review as user has 'player' role")
 	}
 
 	// Create in database
@@ -430,8 +430,8 @@ func (s *Server) CreateQuestion(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create question"))
 	}
 
-	// If user has "user" role, add to approval queue
-	if userRole == "user" {
+	// If user has "player" role, add to approval queue
+	if userRole == "player" {
 		err = s.repo.AddQuestionToApprovalQueue(ctx, userID, dbQuestion.ID)
 		if err != nil {
 			log.Printf("Warning: Failed to add question to approval queue: %v", err)
@@ -579,7 +579,7 @@ func (s *Server) CreateQuestionCollection(
 		userRole, err = s.repo.GetUserRole(ctx, userID)
 		if err != nil {
 			log.Printf("Error fetching user role: %v", err)
-			userRole = "user" // Default to user role
+			userRole = "player" // Default to player role
 		}
 	}
 
@@ -588,11 +588,11 @@ func (s *Server) CreateQuestionCollection(
 		Name:          req.Msg.GetName(),
 		Description:   req.Msg.GetDescription(),
 		CreatedBy:     userID,
-		IsUnderReview: userRole == "user",
+		IsUnderReview: userRole == "player",
 	}
 
-	if userRole == "user" {
-		log.Printf("Question collection marked for review as user has 'user' role")
+	if userRole == "player" {
+		log.Printf("Question collection marked for review as user has 'player' role")
 	}
 
 	err = s.repo.CreateQuestionCollection(ctx, collection)
@@ -601,8 +601,8 @@ func (s *Server) CreateQuestionCollection(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create question collection"))
 	}
 
-	// If user has "user" role, add to approval queue
-	if userRole == "user" {
+	// If user has "player" role, add to approval queue
+	if userRole == "player" {
 		err = s.repo.AddQuestionCollectionToApprovalQueue(ctx, userID, collection.ID)
 		if err != nil {
 			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)
@@ -665,17 +665,17 @@ func (s *Server) UpdateQuestionCollection(
 		userRole, err = s.repo.GetUserRole(ctx, userID)
 		if err != nil {
 			log.Printf("Error fetching user role: %v", err)
-			userRole = "user" // Default to user role
+			userRole = "player" // Default to player role
 		}
 	}
 
 	// Track if collection was already under review
 	wasUnderReview := existingCollection.IsUnderReview
 
-	// If user has "user" role, set is_under_review to true
-	if userRole == "user" {
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
 		existingCollection.IsUnderReview = true
-		log.Printf("Question collection marked for review as user has 'user' role")
+		log.Printf("Question collection marked for review as user has 'player' role")
 	}
 
 	// Update in database
@@ -685,8 +685,8 @@ func (s *Server) UpdateQuestionCollection(
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update collection"))
 	}
 
-	// If user has "user" role and collection wasn't already under review, add to approval queue
-	if userRole == "user" && !wasUnderReview {
+	// If user has "player" role and collection wasn't already under review, add to approval queue
+	if userRole == "player" && !wasUnderReview {
 		err = s.repo.AddQuestionCollectionToApprovalQueue(ctx, userID, existingCollection.ID)
 		if err != nil {
 			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)

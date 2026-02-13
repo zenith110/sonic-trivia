@@ -169,6 +169,12 @@ export const useApprovalQueueStream = (): UseApprovalQueueStreamResult => {
     });
   }, []);
 
+  // Use ref to store handleUpdate so it doesn't cause reconnections
+  const handleUpdateRef = useRef(handleUpdate);
+  useEffect(() => {
+    handleUpdateRef.current = handleUpdate;
+  }, [handleUpdate]);
+
   const connectStream = useCallback(async () => {
     if (!hasApprovalPermissions) {
       setError("Insufficient permissions to access approval queue");
@@ -207,7 +213,7 @@ export const useApprovalQueueStream = (): UseApprovalQueueStreamResult => {
           break;
         }
 
-        handleUpdate(update);
+        handleUpdateRef.current(update);
       }
 
       console.log("Stream ended normally");
@@ -238,7 +244,7 @@ export const useApprovalQueueStream = (): UseApprovalQueueStreamResult => {
         }, 5000);
       }
     }
-  }, [hasApprovalPermissions, handleUpdate]);
+  }, [hasApprovalPermissions]);
 
   const reconnect = useCallback(() => {
     console.log("Manual reconnect requested");
@@ -255,21 +261,110 @@ export const useApprovalQueueStream = (): UseApprovalQueueStreamResult => {
 
   // Connect to stream on mount
   useEffect(() => {
-    if (hasApprovalPermissions) {
-      connectStream();
+    if (!hasApprovalPermissions) {
+      console.log("No approval permissions, skipping stream connection");
+      return;
     }
 
-    // Cleanup on unmount
+    let isActive = true;
+    console.log("Setting up approval queue stream");
+
+    // Initial connection with small delay to avoid React Strict Mode race condition
+    const initialConnect = async () => {
+      // Small delay to let any pending cleanup finish (React Strict Mode)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Check if effect is still active (handles React Strict Mode)
+      if (!isActive) {
+        console.log("Effect no longer active, skipping connection");
+        return;
+      }
+
+      // Create new abort controller for this stream
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+      const signal = abortController.signal;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const request = create(StreamApprovalQueueRequestSchema, {});
+
+        console.log("Connecting to approval queue stream...");
+
+        const stream = approvalQueueServiceClient.streamApprovalQueue(request, {
+          signal,
+        });
+
+        setIsConnected(true);
+        setLoading(false);
+        console.log("Stream connected successfully");
+
+        // Process incoming updates
+        for await (const update of stream) {
+          if (signal.aborted || !isActive) {
+            console.log("Stream aborted by client or effect cleaned up");
+            break;
+          }
+
+          console.log("Received update:", update.action);
+          handleUpdateRef.current(update);
+        }
+
+        console.log("Stream ended normally");
+        if (isActive) {
+          setIsConnected(false);
+        }
+      } catch (err) {
+        console.error("Stream error:", err);
+
+        // Don't show error if stream was intentionally aborted or effect cleaned up
+        if (signal.aborted || !isActive) {
+          console.log("Stream was aborted, not showing error");
+          if (isActive) {
+            setIsConnected(false);
+            setLoading(false);
+          }
+          return;
+        }
+
+        setError(
+          err instanceof Error ? err.message : "Failed to connect to stream",
+        );
+        setIsConnected(false);
+        setLoading(false);
+
+        // Attempt to reconnect after a delay
+        if (isActive) {
+          console.log("Scheduling reconnect in 5 seconds...");
+          reconnectTimeoutRef.current = setTimeout(() => {
+            if (isActive) {
+              console.log("Attempting to reconnect...");
+              connectStream();
+            }
+          }, 5000);
+        }
+      }
+    };
+
+    initialConnect();
+
+    // Cleanup on unmount or when hasApprovalPermissions changes
     return () => {
       console.log("Cleaning up approval queue stream");
+      isActive = false;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
+        abortControllerRef.current = null;
       }
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
       }
+      setIsConnected(false);
     };
-  }, [hasApprovalPermissions, connectStream]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasApprovalPermissions]);
 
   return {
     items,
