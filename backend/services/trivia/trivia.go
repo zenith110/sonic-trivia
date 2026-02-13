@@ -7,6 +7,7 @@ import (
 
 	"sonic-trivia/backend/database"
 	"sonic-trivia/backend/middleware"
+	"sonic-trivia/backend/notification"
 	pb "sonic-trivia/backend/protos"
 	"sonic-trivia/backend/storage"
 
@@ -106,11 +107,42 @@ func (s *Server) GetRandomQuestions(
 	category := req.Msg.GetCategory()
 	difficulty := req.Msg.GetDifficulty()
 	howManyRounds := req.Msg.GetHowManyRounds()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
 
-	log.Printf("GetRandomQuestions request received - category: %s, difficulty: %s, rounds: %d",
-		category, difficulty, howManyRounds)
+	log.Printf("GetRandomQuestions request received - category: %s, difficulty: %s, rounds: %d, page: %d, pageSize: %d",
+		category, difficulty, howManyRounds, page, pageSize)
 
-	// Default to 5 questions if not specified
+	// Check if pagination is requested
+	if page > 0 && pageSize > 0 {
+		// Use paginated approach
+		questions, total, err := s.repo.GetRandomQuestionsPaginated(ctx, category, difficulty, page, pageSize)
+		if err != nil {
+			log.Printf("Error fetching random questions: %v", err)
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch random questions"))
+		}
+
+		// Convert to proto
+		protoQuestions := make([]*pb.Question, len(questions))
+		for i, q := range questions {
+			protoQuestions[i] = QuestionToProto(&q)
+		}
+
+		// Calculate pagination metadata
+		hasMore := int32(page*pageSize) < total
+
+		res := connect.NewResponse(&pb.GetRandomQuestionsResponse{
+			Questions: protoQuestions,
+			Total:     total,
+			Page:      page,
+			PageSize:  pageSize,
+			HasMore:   hasMore,
+		})
+
+		return res, nil
+	}
+
+	// Legacy behavior: use howManyRounds as limit
 	limit := int(howManyRounds)
 	if limit <= 0 {
 		limit = 5
@@ -135,6 +167,56 @@ func (s *Server) GetRandomQuestions(
 
 	res := connect.NewResponse(&pb.GetRandomQuestionsResponse{
 		Questions: protoQuestions,
+		Total:     int32(len(protoQuestions)),
+		Page:      1,
+		PageSize:  int32(len(protoQuestions)),
+		HasMore:   false,
+	})
+
+	return res, nil
+}
+
+// GetQuestions retrieves questions with pagination
+func (s *Server) GetQuestions(
+	ctx context.Context,
+	req *connect.Request[pb.GetQuestionsRequest],
+) (*connect.Response[pb.GetQuestionsResponse], error) {
+	userID := req.Msg.GetUserId()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
+
+	log.Printf("GetQuestions request received - userID: %s, page: %d, pageSize: %d", userID, page, pageSize)
+
+	// Set defaults
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	// Query database for questions with pagination
+	questions, total, err := s.repo.GetQuestions(ctx, userID, page, pageSize)
+	if err != nil {
+		log.Printf("Error fetching questions: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch questions"))
+	}
+
+	// Convert to proto
+	protoQuestions := make([]*pb.Question, len(questions))
+	for i, q := range questions {
+		protoQuestions[i] = QuestionToProto(&q)
+	}
+
+	// Calculate pagination metadata
+	hasMore := int32(page*pageSize) < total
+
+	res := connect.NewResponse(&pb.GetQuestionsResponse{
+		Questions: protoQuestions,
+		Total:     total,
+		Page:      page,
+		PageSize:  pageSize,
+		HasMore:   hasMore,
 	})
 
 	return res, nil
@@ -146,6 +228,13 @@ func (s *Server) UpdateQuestion(
 	req *connect.Request[pb.UpdateQuestionRequest],
 ) (*connect.Response[pb.UpdateQuestionResponse], error) {
 	log.Printf("UpdateQuestion request received for ID: %s", req.Msg.GetId())
+
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
 
 	// Check if question exists
 	existingQuestion, err := s.repo.GetQuestionByID(ctx, req.Msg.GetId())
@@ -161,7 +250,13 @@ func (s *Server) UpdateQuestion(
 	existingQuestion.Text = req.Msg.GetText()
 	existingQuestion.Category = req.Msg.GetCategory()
 	existingQuestion.Difficulty = req.Msg.GetDifficulty()
-	existingQuestion.Points = req.Msg.GetPoints()
+	existingQuestion.Points = int32(req.Msg.GetPoints())
+
+	// Handle collection_id if provided
+	if req.Msg.CollectionId != nil && *req.Msg.CollectionId != "" {
+		existingQuestion.CollectionID = req.Msg.CollectionId
+		log.Printf("Question will be added to collection: %s", *req.Msg.CollectionId)
+	}
 
 	// Handle picture file upload if provided
 	if len(req.Msg.PictureFile) > 0 && s.storage != nil {
@@ -205,11 +300,43 @@ func (s *Server) UpdateQuestion(
 		existingQuestion.Hints = hints
 	}
 
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "player" // Default to player role
+		}
+	}
+
+	// Track if question was already under review
+	wasUnderReview := existingQuestion.IsUnderReview
+
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
+		existingQuestion.IsUnderReview = true
+		log.Printf("Question marked for review as user has 'player' role")
+	}
+
 	// Update in database
 	err = s.repo.UpdateQuestion(ctx, existingQuestion)
 	if err != nil {
 		log.Printf("Error updating question: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update question"))
+	}
+
+	// If user has "player" role and question wasn't already under review, add to approval queue
+	if userRole == "player" && !wasUnderReview {
+		err = s.repo.AddQuestionToApprovalQueue(ctx, userID, existingQuestion.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add question to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionAdded(userID, existingQuestion.ID)
+		}
 	}
 
 	// Convert to proto
@@ -265,6 +392,12 @@ func (s *Server) CreateQuestion(
 	dbQuestion.CreatedBy = userID
 	log.Printf("Question will be created by user: %s", userID)
 
+	// Handle collection_id if provided
+	if req.Msg.CollectionId != nil && *req.Msg.CollectionId != "" {
+		dbQuestion.CollectionID = req.Msg.CollectionId
+		log.Printf("Question will be added to collection: %s", *req.Msg.CollectionId)
+	}
+
 	// Handle picture if provided in the question object
 	if question.PictureUrl != nil && *question.PictureUrl != "" && s.storage != nil {
 		log.Printf("Picture URL provided in question")
@@ -273,11 +406,40 @@ func (s *Server) CreateQuestion(
 		dbQuestion.PictureURL = question.PictureUrl
 	}
 
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "player" // Default to player role
+		}
+	}
+
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
+		dbQuestion.IsUnderReview = true
+		log.Printf("Question marked for review as user has 'player' role")
+	}
+
 	// Create in database
 	err = s.repo.CreateQuestion(ctx, dbQuestion)
 	if err != nil {
 		log.Printf("Error creating question: %v", err)
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create question"))
+	}
+
+	// If user has "player" role, add to approval queue
+	if userRole == "player" {
+		err = s.repo.AddQuestionToApprovalQueue(ctx, userID, dbQuestion.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add question to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionAdded(userID, dbQuestion.ID)
+		}
 	}
 
 	// Convert back to proto
@@ -337,6 +499,227 @@ func (s *Server) CheckAnswer(
 
 	res := connect.NewResponse(&pb.CheckAnswerResponse{
 		IsCorrect: isCorrect,
+	})
+
+	return res, nil
+}
+
+// GetQuestionCollections retrieves question collections with pagination
+func (s *Server) GetQuestionCollections(
+	ctx context.Context,
+	req *connect.Request[pb.GetQuestionCollectionsRequest],
+) (*connect.Response[pb.GetQuestionCollectionsResponse], error) {
+	userID := req.Msg.GetUserId()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
+
+	// Set defaults
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 5
+	}
+
+	log.Printf("GetQuestionCollections request received - userID: %s, page: %d, pageSize: %d",
+		userID, page, pageSize)
+
+	// Query database for collections
+	collections, total, err := s.repo.GetQuestionCollections(ctx, userID, int(page), int(pageSize))
+	if err != nil {
+		log.Printf("Error fetching question collections: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch question collections"))
+	}
+
+	// Convert to proto
+	protoCollections := make([]*pb.QuestionCollection, len(collections))
+	for i, c := range collections {
+		protoQuestions := make([]*pb.Question, len(c.Questions))
+		for j, q := range c.Questions {
+			protoQuestions[j] = QuestionToProto(&q)
+		}
+
+		protoCollections[i] = &pb.QuestionCollection{
+			Id:          c.ID,
+			Name:        c.Name,
+			Description: c.Description,
+			CreatedBy:   c.CreatedBy,
+			Questions:   protoQuestions,
+		}
+	}
+
+	res := connect.NewResponse(&pb.GetQuestionCollectionsResponse{
+		Collections: protoCollections,
+		Total:       int32(total),
+		Page:        page,
+		PageSize:    pageSize,
+	})
+
+	return res, nil
+}
+
+// CreateQuestionCollection creates a new question collection
+func (s *Server) CreateQuestionCollection(
+	ctx context.Context,
+	req *connect.Request[pb.CreateQuestionCollectionRequest],
+) (*connect.Response[pb.CreateQuestionCollectionResponse], error) {
+	log.Printf("CreateQuestionCollection request received: %s", req.Msg.GetName())
+
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
+
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "player" // Default to player role
+		}
+	}
+
+	// Create collection
+	collection := &database.QuestionCollection{
+		Name:          req.Msg.GetName(),
+		Description:   req.Msg.GetDescription(),
+		CreatedBy:     userID,
+		IsUnderReview: userRole == "player",
+	}
+
+	if userRole == "player" {
+		log.Printf("Question collection marked for review as user has 'player' role")
+	}
+
+	err = s.repo.CreateQuestionCollection(ctx, collection)
+	if err != nil {
+		log.Printf("Error creating question collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create question collection"))
+	}
+
+	// If user has "player" role, add to approval queue
+	if userRole == "player" {
+		err = s.repo.AddQuestionCollectionToApprovalQueue(ctx, userID, collection.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionCollectionAdded(userID, collection.ID)
+		}
+	}
+
+	// Add questions to collection if question IDs provided
+	for _, questionID := range req.Msg.GetQuestionIds() {
+		if questionID != "" {
+			err = s.repo.AddQuestionToCollection(ctx, questionID, collection.ID)
+			if err != nil {
+				log.Printf("Warning: Failed to add question %s to collection: %v", questionID, err)
+			}
+		}
+	}
+
+	res := connect.NewResponse(&pb.CreateQuestionCollectionResponse{
+		Id: collection.ID,
+	})
+
+	return res, nil
+}
+
+// UpdateQuestionCollection updates an existing question collection
+func (s *Server) UpdateQuestionCollection(
+	ctx context.Context,
+	req *connect.Request[pb.UpdateQuestionCollectionRequest],
+) (*connect.Response[pb.UpdateQuestionCollectionResponse], error) {
+	log.Printf("UpdateQuestionCollection request received for ID: %s", req.Msg.GetId())
+
+	// Extract user ID from context
+	userID, err := middleware.GetUserIDFromContext(ctx)
+	if err != nil {
+		log.Printf("Error extracting user ID: %v", err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("authentication required"))
+	}
+
+	// Check if collection exists
+	existingCollection, err := s.repo.GetQuestionCollectionByID(ctx, req.Msg.GetId())
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("collection not found"))
+		}
+		log.Printf("Error fetching collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch collection"))
+	}
+
+	// Update fields
+	existingCollection.Name = req.Msg.GetName()
+	existingCollection.Description = req.Msg.GetDescription()
+
+	// Extract user role from context
+	userRole, err := middleware.GetRoleFromContext(ctx)
+	if err != nil {
+		// If role is not in context, fetch from database
+		userRole, err = s.repo.GetUserRole(ctx, userID)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			userRole = "player" // Default to player role
+		}
+	}
+
+	// Track if collection was already under review
+	wasUnderReview := existingCollection.IsUnderReview
+
+	// If user has "player" role, set is_under_review to true
+	if userRole == "player" {
+		existingCollection.IsUnderReview = true
+		log.Printf("Question collection marked for review as user has 'player' role")
+	}
+
+	// Update in database
+	err = s.repo.UpdateQuestionCollection(ctx, existingCollection)
+	if err != nil {
+		log.Printf("Error updating collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update collection"))
+	}
+
+	// If user has "player" role and collection wasn't already under review, add to approval queue
+	if userRole == "player" && !wasUnderReview {
+		err = s.repo.AddQuestionCollectionToApprovalQueue(ctx, userID, existingCollection.ID)
+		if err != nil {
+			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)
+			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionCollectionAdded(userID, existingCollection.ID)
+		}
+	}
+
+	res := connect.NewResponse(&pb.UpdateQuestionCollectionResponse{
+		IsSuccess: true,
+	})
+
+	return res, nil
+}
+
+// DeleteQuestionCollection deletes a question collection
+func (s *Server) DeleteQuestionCollection(
+	ctx context.Context,
+	req *connect.Request[pb.DeleteQuestionCollectionRequest],
+) (*connect.Response[pb.DeleteQuestionCollectionResponse], error) {
+	log.Printf("DeleteQuestionCollection request received for ID: %s", req.Msg.GetId())
+
+	// Delete from database
+	err := s.repo.DeleteQuestionCollection(ctx, req.Msg.GetId())
+	if err != nil {
+		log.Printf("Error deleting collection: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to delete collection"))
+	}
+
+	res := connect.NewResponse(&pb.DeleteQuestionCollectionResponse{
+		IsSuccess: true,
 	})
 
 	return res, nil

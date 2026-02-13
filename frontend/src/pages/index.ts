@@ -1,10 +1,16 @@
 export { CreateTrivia } from "./CreateTrivia";
 export { UpdateTrivia } from "./UpdateTrivia";
 export { DeleteTrivia } from "./DeleteTrivia";
+export { TriviaCollections } from "./TriviaCollections";
 export { CreateSong } from "./CreateSong";
 export { UpdateSong } from "./UpdateSong";
 export { DeleteSong } from "./DeleteSong";
+export { SongCollections } from "./SongCollections";
 export { Leaderboard } from "./Leaderboard";
 export { Login } from "./Login";
 export { MainMenu } from "./MainMenu";
 export { MultiplayerLobby } from "./MultiplayerLobby";
+export { ApprovalQueue } from "./ApprovalQueue";
+export { SearchPage } from "./SearchPage";
+export { BrowseQuestions } from "./BrowseQuestions";
+export { BrowseSongs } from "./BrowseSongs";

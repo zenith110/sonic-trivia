@@ -167,6 +167,43 @@ func (r *Repository) GetRandomSongs(ctx context.Context, category string, diffic
 	return songs, nil
 }
 
+// GetRandomSongsPaginated retrieves random songs with pagination
+func (r *Repository) GetRandomSongsPaginated(ctx context.Context, category string, difficulty string, page, pageSize int32) ([]database.Song, int32, error) {
+	var songs []database.Song
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Song{})
+
+	if category != "" {
+		baseQuery = baseQuery.Where("category = ?", category)
+	}
+
+	if difficulty != "" {
+		baseQuery = baseQuery.Where("difficulty = ?", difficulty)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results with random ordering
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Hints").
+		Order("RANDOM()").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Find(&songs).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return songs, int32(total), nil
+}
+
 // SearchSongs searches for songs by query string
 func (r *Repository) SearchSongs(ctx context.Context, query string) ([]database.Song, error) {
 	var songs []database.Song
@@ -226,4 +263,163 @@ func (r *Repository) UpdateSong(ctx context.Context, song *database.Song) error 
 // DeleteSong deletes a song from the database
 func (r *Repository) DeleteSong(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&database.Song{}, "id = ?", id).Error
+}
+
+// CreateSongCollection creates a new song collection in the database
+func (r *Repository) CreateSongCollection(ctx context.Context, collection *database.SongCollection) error {
+	return r.db.WithContext(ctx).Create(collection).Error
+}
+
+// GetSongCollectionByID retrieves a collection by ID with all related songs
+func (r *Repository) GetSongCollectionByID(ctx context.Context, id string) (*database.SongCollection, error) {
+	var collection database.SongCollection
+	err := r.db.WithContext(ctx).
+		Preload("Songs").
+		Preload("Songs.Hints").
+		First(&collection, "id = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &collection, nil
+}
+
+// UpdateSongCollection updates an existing song collection
+func (r *Repository) UpdateSongCollection(ctx context.Context, collection *database.SongCollection) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Update collection basic fields
+		if err := tx.Model(&database.SongCollection{}).
+			Where("id = ?", collection.ID).
+			Updates(map[string]interface{}{
+				"name":        collection.Name,
+				"description": collection.Description,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+// DeleteSongCollection deletes a song collection from the database
+func (r *Repository) DeleteSongCollection(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&database.SongCollection{}, "id = ?", id).Error
+}
+
+// AddSongToCollection adds a song to a collection
+func (r *Repository) AddSongToCollection(ctx context.Context, songID, collectionID string) error {
+	return r.db.WithContext(ctx).
+		Model(&database.Song{}).
+		Where("id = ?", songID).
+		Update("collection_id", collectionID).Error
+}
+
+// GetSongCollections retrieves collections with pagination
+func (r *Repository) GetSongCollections(ctx context.Context, userID string, page, pageSize int) ([]database.SongCollection, int64, error) {
+	var collections []database.SongCollection
+	var total int64
+
+	// Count total collections for this user
+	countQuery := r.db.WithContext(ctx).Model(&database.SongCollection{})
+	if userID != "" {
+		countQuery = countQuery.Where("created_by = ?", userID)
+	}
+	if err := countQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Calculate offset
+	offset := (page - 1) * pageSize
+	if offset < 0 {
+		offset = 0
+	}
+
+	// Fetch paginated collections
+	query := r.db.WithContext(ctx).
+		Preload("Songs").
+		Preload("Songs.Hints").
+		Order("created_at DESC")
+
+	if userID != "" {
+		query = query.Where("created_by = ?", userID)
+	}
+
+	err := query.
+		Limit(pageSize).
+		Offset(offset).
+		Find(&collections).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return collections, total, nil
+}
+
+// AddSongToApprovalQueue adds a song to the approval queue
+func (r *Repository) AddSongToApprovalQueue(ctx context.Context, userID, songID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID: userID,
+		SongID: &songID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// AddSongCollectionToApprovalQueue adds a song collection to the approval queue
+func (r *Repository) AddSongCollectionToApprovalQueue(ctx context.Context, userID, collectionID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID:           userID,
+		SongCollectionID: &collectionID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// GetUserRole gets a user's role from the database
+func (r *Repository) GetUserRole(ctx context.Context, userID string) (string, error) {
+	var player database.Player
+	err := r.db.WithContext(ctx).
+		Select("role").
+		Where("id = ?", userID).
+		First(&player).Error
+
+	if err != nil {
+		return "", err
+	}
+	return player.Role, nil
+}
+
+// GetSongs retrieves songs with pagination
+
+// GetSongs retrieves songs with pagination
+func (r *Repository) GetSongs(ctx context.Context, userID string, page, pageSize int32) ([]database.Song, int32, error) {
+	var songs []database.Song
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Song{})
+
+	// If userID is provided, filter by created_by
+	if userID != "" {
+		baseQuery = baseQuery.Where("created_by = ?", userID)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Hints").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Order("created_at DESC").
+		Find(&songs).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return songs, int32(total), nil
 }

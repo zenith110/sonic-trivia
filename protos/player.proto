@@ -62,7 +62,21 @@ service PlayerService {
   rpc UpdateSonicCharacter(SonicCharacter) returns (SonicCharacter) {}
   rpc GetSonicCharacters(GetSonicCharactersRequest) returns (GetSonicCharactersResponse) {}
   rpc SelectCharacter(SelectCharacterRequest) returns (SelectCharacterResponse) {}
+  rpc GetPlayerStats(GetPlayerStatsRequest) returns (GetPlayerStatsResponse) {}
 }
+message GetPlayerStatsRequest {
+  string player_id = 1;
+}
+message GetPlayerStatsResponse {
+  int64 total_points = 1;
+  int64 total_successful_trivia_answers = 2;
+  int64 total_trivia_answers = 3;
+  int64 total_successful_song_answers = 4;
+  int64 total_song_answers = 5;
+  int64 total_rings = 6;
+  int64 accuracy_rate = 7;
+}
+
 message GetPlayerRequest {
   string id = 1;
 }

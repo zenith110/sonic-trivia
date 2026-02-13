@@ -17,11 +17,27 @@ type Question struct {
 	PictureURL         *string `gorm:"type:text"`                                         // Optional picture URL
 	CreatedBy          string  `gorm:"type:uuid;index"`                                   // Player ID who created the question
 	Creator            Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
+	IsUnderReview      bool    `gorm:"not null;default:false"`                            // Whether the question is under review
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
 	Answers            []Answer       `gorm:"foreignKey:QuestionID;constraint:OnDelete:CASCADE"`
 	Hints              []Hint         `gorm:"foreignKey:QuestionID;constraint:OnDelete:CASCADE"`
+	CollectionID       *string        `gorm:"type:uuid;index"` // Optional collection this question belongs to
+}
+
+// QuestionCollection represents a collection of trivia questions
+type QuestionCollection struct {
+	ID            string     `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Name          string     `gorm:"not null;type:varchar(255)"`
+	Description   string     `gorm:"type:text"`
+	CreatedBy     string     `gorm:"type:uuid;index;not null"`
+	Creator       Player     `gorm:"foreignKey:CreatedBy;constraint:OnDelete:CASCADE"`
+	Questions     []Question `gorm:"foreignKey:CollectionID;constraint:OnDelete:SET NULL"`
+	IsUnderReview bool       `gorm:"not null;default:false"` // Whether the collection is under review
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 // Answer represents a possible answer for a question
@@ -59,10 +75,26 @@ type Song struct {
 	PictureURL    *string `gorm:"type:text"`                                         // Optional picture URL
 	CreatedBy     string  `gorm:"type:uuid;index"`                                   // Player ID who created the song
 	Creator       Player  `gorm:"foreignKey:CreatedBy;constraint:OnDelete:SET NULL"` // Foreign key to Player
+	IsUnderReview bool    `gorm:"not null;default:false"`                            // Whether the song is under review
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 	Hints         []SongHint     `gorm:"foreignKey:SongID;constraint:OnDelete:CASCADE"`
+	CollectionID  *string        `gorm:"type:uuid;index"` // Optional collection this song belongs to
+}
+
+// SongCollection represents a collection of songs
+type SongCollection struct {
+	ID            string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Name          string `gorm:"not null;type:varchar(255)"`
+	Description   string `gorm:"type:text"`
+	CreatedBy     string `gorm:"type:uuid;index;not null"`
+	Creator       Player `gorm:"foreignKey:CreatedBy;constraint:OnDelete:CASCADE"`
+	Songs         []Song `gorm:"foreignKey:CollectionID;constraint:OnDelete:SET NULL"`
+	IsUnderReview bool   `gorm:"not null;default:false"` // Whether the collection is under review
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 // SongHint represents a hint for a song
@@ -119,10 +151,11 @@ type Player struct {
 	CorrectAnswers      int64  `gorm:"not null;default:0"`
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
-	DeletedAt           gorm.DeletedAt    `gorm:"index"`
-	AnsweredQuestions   []PlayerAnswer    `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
-	UnlockedCharacters  []PlayerCharacter `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
-	Friends             []Friendship      `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	DeletedAt           gorm.DeletedAt       `gorm:"index"`
+	AnsweredQuestions   []PlayerTriviaAnswer `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	AnsweredSongs       []PlayerSongAnswer   `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	UnlockedCharacters  []PlayerCharacter    `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
+	Friends             []Friendship         `gorm:"foreignKey:PlayerID;constraint:OnDelete:CASCADE"`
 }
 
 // PlayerCharacter represents a many-to-many relationship between players and characters
@@ -149,8 +182,8 @@ type Friendship struct {
 	UpdatedAt time.Time
 }
 
-// PlayerAnswer represents a player's answer to a question
-type PlayerAnswer struct {
+// PlayerTriviaAnswer represents a player's answer to a trivia question
+type PlayerTriviaAnswer struct {
 	ID           string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	PlayerID     string    `gorm:"not null;type:uuid;index"`
 	QuestionID   string    `gorm:"not null;type:uuid;index"`
@@ -160,6 +193,20 @@ type PlayerAnswer struct {
 	AnsweredAt   time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+// PlayerSongAnswer represents a player's answer to a song
+type PlayerSongAnswer struct {
+	ID            string    `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	PlayerID      string    `gorm:"not null;type:uuid;index"`
+	SongID        string    `gorm:"not null;type:uuid;index"`
+	GuessedTitle  string    `gorm:"type:text"`
+	GuessedArtist string    `gorm:"type:text"`
+	IsCorrect     bool      `gorm:"not null"`
+	PointsEarned  int32     `gorm:"not null;default:0"`
+	AnsweredAt    time.Time `gorm:"not null;default:CURRENT_TIMESTAMP"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 // LeaderboardEntry represents a leaderboard entry
@@ -217,10 +264,32 @@ func (Friendship) TableName() string {
 	return "friendships"
 }
 
-func (PlayerAnswer) TableName() string {
-	return "player_answers"
+func (PlayerTriviaAnswer) TableName() string {
+	return "player_trivia_answers"
+}
+
+func (PlayerSongAnswer) TableName() string {
+	return "player_song_answers"
 }
 
 func (LeaderboardEntry) TableName() string {
 	return "leaderboard_entries"
+}
+
+// ApprovalRequest represents a request for content approval
+type ApprovalRequest struct {
+	ID                   string  `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	UserID               string  `gorm:"not null;type:uuid;index"`
+	User                 Player  `gorm:"foreignKey:UserID"`
+	QuestionID           *string `gorm:"type:uuid;index"`
+	QuestionCollectionID *string `gorm:"type:uuid;index"`
+	SongID               *string `gorm:"type:uuid;index"`
+	SongCollectionID     *string `gorm:"type:uuid;index"`
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+	DeletedAt            gorm.DeletedAt `gorm:"index"`
+}
+
+func (ApprovalRequest) TableName() string {
+	return "approval_requests"
 }

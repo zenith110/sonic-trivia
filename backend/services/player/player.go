@@ -313,6 +313,63 @@ func (s *Server) GetSonicCharacters(
 	return res, nil
 }
 
+// GetPlayerStats retrieves player statistics
+func (s *Server) GetPlayerStats(
+	ctx context.Context,
+	req *connect.Request[pb.GetPlayerStatsRequest],
+) (*connect.Response[pb.GetPlayerStatsResponse], error) {
+	log.Printf("GetPlayerStats request received for player ID: %s", req.Msg.GetPlayerId())
+
+	playerID := req.Msg.GetPlayerId()
+	if playerID == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("player ID is required"))
+	}
+
+	// Get player from database
+	player, err := s.repo.GetPlayerByID(ctx, playerID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("player not found"))
+		}
+		log.Printf("Error fetching player: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch player"))
+	}
+
+	// Get trivia statistics
+	totalTriviaAnswers, correctTriviaAnswers, err := s.repo.GetPlayerTriviaStats(ctx, playerID)
+	if err != nil {
+		log.Printf("Error fetching trivia stats: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch trivia statistics"))
+	}
+
+	// Get song statistics
+	totalSongAnswers, correctSongAnswers, err := s.repo.GetPlayerSongStats(ctx, playerID)
+	if err != nil {
+		log.Printf("Error fetching song stats: %v", err)
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch song statistics"))
+	}
+
+	// Calculate overall accuracy rate
+	var accuracyRate int64 = 0
+	totalAnswers := totalTriviaAnswers + totalSongAnswers
+	totalCorrectAnswers := correctTriviaAnswers + correctSongAnswers
+	if totalAnswers > 0 {
+		accuracyRate = (totalCorrectAnswers * 100) / totalAnswers
+	}
+
+	res := connect.NewResponse(&pb.GetPlayerStatsResponse{
+		TotalPoints:                  player.TotalScore,
+		TotalSuccessfulTriviaAnswers: correctTriviaAnswers,
+		TotalTriviaAnswers:           totalTriviaAnswers,
+		TotalSuccessfulSongAnswers:   correctSongAnswers,
+		TotalSongAnswers:             totalSongAnswers,
+		TotalRings:                   player.TotalRings,
+		AccuracyRate:                 accuracyRate,
+	})
+
+	return res, nil
+}
+
 // SelectCharacter updates the player's currently selected Sonic character
 func (s *Server) SelectCharacter(
 	ctx context.Context,

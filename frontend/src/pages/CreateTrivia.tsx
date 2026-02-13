@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -20,7 +21,11 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X, Upload, Image as ImageIcon } from "lucide-react";
-import { getTriviaCategoryOptions } from "@/lib/categories";
+import {
+  getTriviaCategoryOptions,
+  getDifficultyOptions,
+} from "@/lib/categories";
+import { toast } from "@/hooks/use-toast";
 import { triviaClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import {
@@ -29,6 +34,7 @@ import {
   AnswerOptionsSchema,
   HintSchema,
 } from "@/generated/trivia_pb";
+import { CollectionSelector } from "@/components/trivia/CollectionSelector";
 interface Answer {
   id: string;
   text: string;
@@ -42,24 +48,30 @@ interface Hint {
 
 export function CreateTrivia() {
   const triviaCategories = getTriviaCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const [question, setQuestion] = useState("");
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [answers, setAnswers] = useState<Answer[]>([
-    { id: "1", text: "", isCorrect: false },
-    { id: "2", text: "", isCorrect: false },
+    { id: generateUUID(), text: "", isCorrect: false },
+    { id: generateUUID(), text: "", isCorrect: false },
   ]);
   const [hints, setHints] = useState<Hint[]>([
-    { id: "1", text: "" },
-    { id: "2", text: "" },
+    { id: generateUUID(), text: "" },
+    { id: generateUUID(), text: "" },
   ]);
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [picturePreview, setPicturePreview] = useState<string>("");
+  const [points, setPoints] = useState("100");
+  const [ring, setRing] = useState("10");
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | undefined
+  >();
 
   const addAnswer = () => {
-    const newId = (answers.length + 1).toString();
+    const newId = generateUUID();
     setAnswers([...answers, { id: newId, text: "", isCorrect: false }]);
   };
 
@@ -86,7 +98,7 @@ export function CreateTrivia() {
   };
 
   const addHint = () => {
-    const newId = (hints.length + 1).toString();
+    const newId = generateUUID();
     setHints([...hints, { id: newId, text: "" }]);
   };
 
@@ -160,34 +172,45 @@ export function CreateTrivia() {
             }),
           ),
         pictureForQuestion: pictureBase64,
-        points: 100, // Default points
+        points: BigInt(parseInt(points) || 100),
       });
 
       // Call the gRPC service
       const response = await triviaClient.createQuestion({
         question: questionProto,
+        collectionId: selectedCollectionId,
       });
 
       console.log("Question created successfully:", response);
-      alert("Trivia question created successfully!");
+      toast({
+        title: "Success!",
+        description: "Trivia question created successfully!",
+      });
 
       // Reset form
       setQuestion("");
       setCategory("");
       setDifficulty("");
       setAnswers([
-        { id: "1", text: "", isCorrect: false },
-        { id: "2", text: "", isCorrect: false },
+        { id: generateUUID(), text: "", isCorrect: false },
+        { id: generateUUID(), text: "", isCorrect: false },
       ]);
       setHints([
-        { id: "1", text: "" },
-        { id: "2", text: "" },
+        { id: generateUUID(), text: "" },
+        { id: generateUUID(), text: "" },
       ]);
       setIncludePicture(false);
       removePictureFile();
+      setPoints("100");
+      setRing("10");
+      setSelectedCollectionId(undefined);
     } catch (error) {
       console.error("Error creating trivia question:", error);
-      alert("Failed to create trivia question. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to create trivia question. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -216,6 +239,32 @@ export function CreateTrivia() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
+                <Label htmlFor="points">Points</Label>
+                <Input
+                  id="points"
+                  type="text"
+                  placeholder="100"
+                  value={points}
+                  onChange={(e) => setPoints(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ring">Ring</Label>
+                <Input
+                  id="ring"
+                  type="text"
+                  placeholder="10"
+                  value={ring}
+                  onChange={(e) => setRing(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
                 <Select value={category} onValueChange={setCategory} required>
                   <SelectTrigger>
@@ -233,13 +282,22 @@ export function CreateTrivia() {
 
               <div className="space-y-2">
                 <Label htmlFor="difficulty">Difficulty</Label>
-                <Input
-                  id="difficulty"
-                  placeholder="e.g., Easy, Medium, Hard"
+                <Select
                   value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
+                  onValueChange={setDifficulty}
                   required
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select difficulty level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {difficultyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -434,6 +492,12 @@ export function CreateTrivia() {
               </div>
             </div>
           </CardContent>
+
+          {/* Collection Selector */}
+          <CollectionSelector
+            selectedCollectionId={selectedCollectionId}
+            onCollectionChange={setSelectedCollectionId}
+          />
 
           <CardFooter className="flex justify-between">
             <Button type="button" variant="outline">

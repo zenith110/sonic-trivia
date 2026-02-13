@@ -19,6 +19,8 @@ const (
 	UserIDKey ContextKey = "user_id"
 	// EmailKey is the context key for email
 	EmailKey ContextKey = "email"
+	// RoleKey is the context key for role
+	RoleKey ContextKey = "role"
 )
 
 // AuthInterceptor creates a Connect interceptor for JWT authentication
@@ -79,10 +81,12 @@ func AuthInterceptor() connect.UnaryInterceptorFunc {
 			}
 
 			email, _ := claims["email"].(string)
+			role, _ := claims["role"].(string)
 
 			// Add user info to context
 			ctx = context.WithValue(ctx, UserIDKey, userID)
 			ctx = context.WithValue(ctx, EmailKey, email)
+			ctx = context.WithValue(ctx, RoleKey, role)
 
 			// Continue with the authenticated context
 			return next(ctx, req)
@@ -108,6 +112,15 @@ func GetEmailFromContext(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("email not found in context")
 	}
 	return email, nil
+}
+
+// GetRoleFromContext extracts the role from the context
+func GetRoleFromContext(ctx context.Context) (string, error) {
+	role, ok := ctx.Value(RoleKey).(string)
+	if !ok || role == "" {
+		return "", fmt.Errorf("role not found in context")
+	}
+	return role, nil
 }
 
 // RequireAuth is a helper to ensure a user is authenticated

@@ -15,6 +15,7 @@ import (
 	"sonic-trivia/backend/database"
 	"sonic-trivia/backend/middleware"
 	"sonic-trivia/backend/protos/protosconnect"
+	"sonic-trivia/backend/services/approvalqueue"
 	"sonic-trivia/backend/services/guessthatsong"
 	"sonic-trivia/backend/services/leaderboard"
 	"sonic-trivia/backend/services/login"
@@ -75,6 +76,7 @@ func main() {
 	triviaServer := trivia.NewServer()
 	guessThatSongServer := guessthatsong.NewServer()
 	playerServer := player.NewServer()
+	approvalQueueServer := approvalqueue.NewServer()
 
 	// Create authentication interceptor
 	authInterceptor := middleware.AuthInterceptor()
@@ -103,6 +105,10 @@ func main() {
 	playerPath, playerHandler := protosconnect.NewPlayerServiceHandler(playerServer, interceptors)
 	mux.Handle(playerPath, playerHandler)
 	log.Printf("Registered PlayerService at %s", playerPath)
+
+	approvalQueuePath, approvalQueueHandler := protosconnect.NewApprovalQueueServiceHandler(approvalQueueServer, interceptors)
+	mux.Handle(approvalQueuePath, approvalQueueHandler)
+	log.Printf("Registered ApprovalQueueService at %s", approvalQueuePath)
 
 	// Add a health check endpoint
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

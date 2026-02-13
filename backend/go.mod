@@ -1,6 +1,6 @@
 module sonic-trivia/backend
 
-go 1.25.5
+go 1.25.4
 
 require (
 	connectrpc.com/connect v1.19.1
@@ -14,6 +14,8 @@ require (
 	sonic-trivia/backend/services/player v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/services/trivia v0.0.0-00010101000000-000000000000
 )
+
+require sonic-trivia/backend/notification v0.0.0-00010101000000-000000000000 // indirect
 
 replace sonic-trivia/backend/protos => ./protos
 
@@ -34,6 +36,8 @@ replace sonic-trivia/backend/storage => ./storage
 replace sonic-trivia/backend/database => ./database
 
 replace sonic-trivia/backend/services/player => ./services/player
+
+replace sonic-trivia/backend/notification => ./notification
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.1 // indirect
@@ -69,6 +73,9 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/gorm v1.31.1 // indirect
-	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000 // indirect
+	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000 //indirect
+	sonic-trivia/backend/services/approvalqueue v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/storage v0.0.0-00010101000000-000000000000 // indirect
 )
+
+replace sonic-trivia/backend/services/approvalqueue => ./services/approvalqueue

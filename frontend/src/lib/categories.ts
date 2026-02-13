@@ -96,6 +96,20 @@ export function getCategoryLabel(enumKey: string): string {
 /**
  * Get all unique categories (combined from both trivia and songs)
  */
+/**
+ * Get all difficulty options as dropdown options
+ */
+export function getDifficultyOptions(): Array<{
+  value: string;
+  label: string;
+}> {
+  return [
+    { value: "Easy", label: "Easy" },
+    { value: "Medium", label: "Medium" },
+    { value: "Hard", label: "Hard" },
+  ];
+}
+
 export function getAllCategoryOptions(): Array<{
   value: string;
   label: string;

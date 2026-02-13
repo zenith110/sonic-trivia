@@ -8,7 +8,9 @@ replace sonic-trivia/backend/protos => ../../protos
 
 replace sonic-trivia/backend/middleware => ../../middleware
 
-go 1.25.5
+replace sonic-trivia/backend/notification => ../../notification
+
+go 1.25.4
 
 require (
 	connectrpc.com/connect v1.19.1
@@ -16,6 +18,7 @@ require (
 	gorm.io/gorm v1.31.1
 	sonic-trivia/backend/database v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/middleware v0.0.0-00010101000000-000000000000
+	sonic-trivia/backend/notification v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/storage v0.0.0-00010101000000-000000000000
 )

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -19,16 +20,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
-  Search,
-  Edit,
   Plus,
   X,
   Upload,
   Image as ImageIcon,
+  Search,
+  Clock,
+  Edit,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTriviaCategoryOptions } from "@/lib/categories";
+import {
+  getTriviaCategoryOptions,
+  getDifficultyOptions,
+} from "@/lib/categories";
+import { toast } from "@/hooks/use-toast";
 import { triviaClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import {
@@ -36,6 +43,7 @@ import {
   AnswerOptionsSchema,
   HintSchema,
 } from "@/generated/trivia_pb";
+import { CollectionSelector } from "@/components/trivia/CollectionSelector";
 
 interface Answer {
   id: string;
@@ -57,10 +65,14 @@ interface TriviaQuestion {
   hints: Hint[];
   includePicture?: boolean;
   pictureUrl?: string;
+  points?: string;
+  ring?: string;
+  isUnderReview?: boolean;
 }
 
 export function UpdateTrivia() {
   const triviaCategories = getTriviaCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedQuestion, setSelectedQuestion] =
@@ -74,10 +86,19 @@ export function UpdateTrivia() {
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [picturePreview, setPicturePreview] = useState<string>("");
+  const [points, setPoints] = useState("100");
+  const [ring, setRing] = useState("10");
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | undefined
+  >();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      alert("Please enter a question ID to search");
+      toast({
+        title: "Missing Question ID",
+        description: "Please enter a question ID to search",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -104,6 +125,8 @@ export function UpdateTrivia() {
           })),
           includePicture: !!q.pictureUrl,
           pictureUrl: q.pictureUrl,
+          points: q.points ? q.points.toString() : "100",
+          isUnderReview: q.isUnderReview,
         };
 
         setSelectedQuestion(triviaQuestion);
@@ -113,23 +136,32 @@ export function UpdateTrivia() {
         setAnswers(triviaQuestion.answers);
         setHints(triviaQuestion.hints);
         setIncludePicture(triviaQuestion.includePicture || false);
+        setPoints(triviaQuestion.points || "100");
 
         if (triviaQuestion.pictureUrl) {
           setPicturePreview(triviaQuestion.pictureUrl);
         }
       } else {
-        alert("Question not found");
+        toast({
+          title: "Not Found",
+          description: "Question not found",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error fetching question:", error);
-      alert("Failed to fetch question. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to fetch question. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const addAnswer = () => {
-    const newId = (answers.length + 1).toString();
+    const newId = generateUUID();
     setAnswers([...answers, { id: newId, text: "", isCorrect: false }]);
   };
 
@@ -156,7 +188,7 @@ export function UpdateTrivia() {
   };
 
   const addHint = () => {
-    const newId = (hints.length + 1).toString();
+    const newId = generateUUID();
     setHints([...hints, { id: newId, text: "" }]);
   };
 
@@ -191,7 +223,11 @@ export function UpdateTrivia() {
     e.preventDefault();
 
     if (!selectedQuestion) {
-      alert("Please search and select a question first");
+      toast({
+        title: "No Question Selected",
+        description: "Please search and select a question first",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -233,16 +269,24 @@ export function UpdateTrivia() {
               text: hint.text,
             }),
           ),
-        points: 100,
+        points: BigInt(parseInt(points) || 100),
         pictureFile: pictureBytes,
+        collectionId: selectedCollectionId,
       });
 
       console.log("Question updated successfully:", response);
-      alert("Trivia question updated successfully!");
+      toast({
+        title: "Success!",
+        description: "Trivia question updated successfully!",
+      });
       handleReset();
     } catch (error) {
       console.error("Error updating trivia question:", error);
-      alert("Failed to update trivia question. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to update trivia question. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -257,6 +301,9 @@ export function UpdateTrivia() {
     setIncludePicture(false);
     setPictureFile(null);
     setPicturePreview("");
+    setPoints("100");
+    setRing("10");
+    setSelectedCollectionId(undefined);
   };
 
   return (
@@ -319,10 +366,18 @@ export function UpdateTrivia() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
               <div className="rounded-lg bg-muted p-3">
-                <p className="text-sm text-muted-foreground">
-                  Question ID:{" "}
-                  <span className="font-mono">{selectedQuestion.id}</span>
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Question ID:{" "}
+                    <span className="font-mono">{selectedQuestion.id}</span>
+                  </p>
+                  {selectedQuestion.isUnderReview && (
+                    <Badge variant="secondary">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Under Review
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -356,11 +411,46 @@ export function UpdateTrivia() {
 
                 <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty</Label>
-                  <Input
-                    id="difficulty"
-                    placeholder="e.g., Easy, Medium, Hard"
+                  <Select
                     value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
+                    onValueChange={setDifficulty}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {difficultyOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="points">Points</Label>
+                  <Input
+                    id="points"
+                    type="text"
+                    placeholder="100"
+                    value={points}
+                    onChange={(e) => setPoints(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="ring">Ring</Label>
+                  <Input
+                    id="ring"
+                    type="text"
+                    placeholder="10"
+                    value={ring}
+                    onChange={(e) => setRing(e.target.value)}
                     required
                   />
                 </div>
@@ -563,6 +653,12 @@ export function UpdateTrivia() {
                 </div>
               </div>
             </CardContent>
+
+            {/* Collection Selector */}
+            <CollectionSelector
+              selectedCollectionId={selectedCollectionId}
+              onCollectionChange={setSelectedCollectionId}
+            />
 
             <CardFooter className="flex justify-between">
               <Button type="button" variant="outline" onClick={handleReset}>
