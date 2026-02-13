@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"sonic-trivia/backend/database"
-	notification "sonic-trivia/backend/notifications"
+	notification "sonic-trivia/backend/notification"
 	pb "sonic-trivia/backend/protos"
 
 	"connectrpc.com/connect"

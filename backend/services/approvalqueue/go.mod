@@ -8,14 +8,14 @@ replace sonic-trivia/backend/database => ../../database
 
 replace sonic-trivia/backend/middleware => ../../middleware
 
-replace sonic-trivia/backend/notifications => ../../notification
+replace sonic-trivia/backend/notification => ../../notification
 
 require (
 	connectrpc.com/connect v1.19.1
 	github.com/google/uuid v1.6.0
 	gorm.io/gorm v1.31.1
 	sonic-trivia/backend/database v0.0.0-00010101000000-000000000000
-	sonic-trivia/backend/notifications v0.0.0-00010101000000-000000000000
+	sonic-trivia/backend/notification v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000
 )
 
