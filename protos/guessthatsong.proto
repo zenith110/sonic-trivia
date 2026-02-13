@@ -117,10 +117,16 @@ message GetRandomSongsRequest {
   string category = 1;
   int32 how_many_rounds = 2;
   string difficulty = 3;
+  int32 page = 4;
+  int32 page_size = 5;
 }
 
 message GetRandomSongsResponse {
   repeated Song songs = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  bool has_more = 5;
 }
 
 message CreateSongRequest {

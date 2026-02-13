@@ -7,6 +7,7 @@ import (
 
 	"sonic-trivia/backend/database"
 	"sonic-trivia/backend/middleware"
+	"sonic-trivia/backend/notification"
 	pb "sonic-trivia/backend/protos"
 	"sonic-trivia/backend/storage"
 
@@ -114,6 +115,9 @@ func (s *Server) CreateSong(
 		if err != nil {
 			log.Printf("Warning: Failed to add song to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifySongAdded(userID, dbSong.ID)
 		}
 	}
 
@@ -189,11 +193,42 @@ func (s *Server) GetRandomSongs(
 	category := req.Msg.GetCategory()
 	difficulty := req.Msg.GetDifficulty()
 	howManyRounds := req.Msg.GetHowManyRounds()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
 
-	log.Printf("GetRandomSongs request received - category: %s, difficulty: %s, rounds: %d",
-		category, difficulty, howManyRounds)
+	log.Printf("GetRandomSongs request received - category: %s, difficulty: %s, rounds: %d, page: %d, pageSize: %d",
+		category, difficulty, howManyRounds, page, pageSize)
 
-	// Default to 5 songs if not specified
+	// Check if pagination is requested
+	if page > 0 && pageSize > 0 {
+		// Use paginated approach
+		songs, total, err := s.repo.GetRandomSongsPaginated(ctx, category, difficulty, page, pageSize)
+		if err != nil {
+			log.Printf("Error fetching random songs: %v", err)
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch random songs"))
+		}
+
+		// Convert to proto
+		protoSongs := make([]*pb.Song, len(songs))
+		for i, song := range songs {
+			protoSongs[i] = SongToProto(&song)
+		}
+
+		// Calculate pagination metadata
+		hasMore := int32(page*pageSize) < total
+
+		res := connect.NewResponse(&pb.GetRandomSongsResponse{
+			Songs:    protoSongs,
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
+			HasMore:  hasMore,
+		})
+
+		return res, nil
+	}
+
+	// Legacy behavior: use howManyRounds as limit
 	limit := int(howManyRounds)
 	if limit <= 0 {
 		limit = 5
@@ -368,6 +403,9 @@ func (s *Server) UpdateSong(
 		if err != nil {
 			log.Printf("Warning: Failed to add song to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifySongAdded(userID, existingSong.ID)
 		}
 	}
 
@@ -478,6 +516,9 @@ func (s *Server) CreateSongCollection(
 		if err != nil {
 			log.Printf("Warning: Failed to add song collection to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifySongCollectionAdded(userID, collection.ID)
 		}
 	}
 
@@ -559,6 +600,9 @@ func (s *Server) UpdateSongCollection(
 		if err != nil {
 			log.Printf("Warning: Failed to add song collection to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifySongCollectionAdded(userID, existingCollection.ID)
 		}
 	}
 

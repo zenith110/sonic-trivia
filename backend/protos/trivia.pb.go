@@ -990,6 +990,8 @@ type GetRandomQuestionsRequest struct {
 	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
 	HowManyRounds int32                  `protobuf:"varint,2,opt,name=how_many_rounds,json=howManyRounds,proto3" json:"how_many_rounds,omitempty"`
 	Difficulty    string                 `protobuf:"bytes,3,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
+	Page          int32                  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,5,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1045,9 +1047,27 @@ func (x *GetRandomQuestionsRequest) GetDifficulty() string {
 	return ""
 }
 
+func (x *GetRandomQuestionsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomQuestionsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
 type GetRandomQuestionsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Questions     []*Question            `protobuf:"bytes,1,rep,name=questions,proto3" json:"questions,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	HasMore       bool                   `protobuf:"varint,5,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1087,6 +1107,34 @@ func (x *GetRandomQuestionsResponse) GetQuestions() []*Question {
 		return x.Questions
 	}
 	return nil
+}
+
+func (x *GetRandomQuestionsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetRandomQuestionsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomQuestionsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetRandomQuestionsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
 }
 
 type CheckAnswerRequest struct {
@@ -1816,15 +1864,21 @@ const file_trivia_proto_rawDesc = "" +
 	"\x12size_of_collection\x18\x04 \x01(\tR\x10sizeOfCollection\x12!\n" +
 	"\fquestion_ids\x18\x05 \x03(\tR\vquestionIds\"2\n" +
 	" CreateQuestionCollectionResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x7f\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb0\x01\n" +
 	"\x19GetRandomQuestionsRequest\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12&\n" +
 	"\x0fhow_many_rounds\x18\x02 \x01(\x05R\rhowManyRounds\x12\x1e\n" +
 	"\n" +
 	"difficulty\x18\x03 \x01(\tR\n" +
-	"difficulty\"L\n" +
+	"difficulty\x12\x12\n" +
+	"\x04page\x18\x04 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x05 \x01(\x05R\bpageSize\"\xae\x01\n" +
 	"\x1aGetRandomQuestionsResponse\x12.\n" +
-	"\tquestions\x18\x01 \x03(\v2\x10.protos.QuestionR\tquestions\"R\n" +
+	"\tquestions\x18\x01 \x03(\v2\x10.protos.QuestionR\tquestions\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12\x19\n" +
+	"\bhas_more\x18\x05 \x01(\bR\ahasMore\"R\n" +
 	"\x12CheckAnswerRequest\x12\x1f\n" +
 	"\vquestion_id\x18\x01 \x01(\tR\n" +
 	"questionId\x12\x1b\n" +

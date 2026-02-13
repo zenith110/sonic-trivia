@@ -7,6 +7,7 @@ import (
 
 	"sonic-trivia/backend/database"
 	"sonic-trivia/backend/middleware"
+	"sonic-trivia/backend/notification"
 	pb "sonic-trivia/backend/protos"
 	"sonic-trivia/backend/storage"
 
@@ -106,11 +107,42 @@ func (s *Server) GetRandomQuestions(
 	category := req.Msg.GetCategory()
 	difficulty := req.Msg.GetDifficulty()
 	howManyRounds := req.Msg.GetHowManyRounds()
+	page := req.Msg.GetPage()
+	pageSize := req.Msg.GetPageSize()
 
-	log.Printf("GetRandomQuestions request received - category: %s, difficulty: %s, rounds: %d",
-		category, difficulty, howManyRounds)
+	log.Printf("GetRandomQuestions request received - category: %s, difficulty: %s, rounds: %d, page: %d, pageSize: %d",
+		category, difficulty, howManyRounds, page, pageSize)
 
-	// Default to 5 questions if not specified
+	// Check if pagination is requested
+	if page > 0 && pageSize > 0 {
+		// Use paginated approach
+		questions, total, err := s.repo.GetRandomQuestionsPaginated(ctx, category, difficulty, page, pageSize)
+		if err != nil {
+			log.Printf("Error fetching random questions: %v", err)
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch random questions"))
+		}
+
+		// Convert to proto
+		protoQuestions := make([]*pb.Question, len(questions))
+		for i, q := range questions {
+			protoQuestions[i] = QuestionToProto(&q)
+		}
+
+		// Calculate pagination metadata
+		hasMore := int32(page*pageSize) < total
+
+		res := connect.NewResponse(&pb.GetRandomQuestionsResponse{
+			Questions: protoQuestions,
+			Total:     total,
+			Page:      page,
+			PageSize:  pageSize,
+			HasMore:   hasMore,
+		})
+
+		return res, nil
+	}
+
+	// Legacy behavior: use howManyRounds as limit
 	limit := int(howManyRounds)
 	if limit <= 0 {
 		limit = 5
@@ -135,6 +167,10 @@ func (s *Server) GetRandomQuestions(
 
 	res := connect.NewResponse(&pb.GetRandomQuestionsResponse{
 		Questions: protoQuestions,
+		Total:     int32(len(protoQuestions)),
+		Page:      1,
+		PageSize:  int32(len(protoQuestions)),
+		HasMore:   false,
 	})
 
 	return res, nil
@@ -297,6 +333,9 @@ func (s *Server) UpdateQuestion(
 		if err != nil {
 			log.Printf("Warning: Failed to add question to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionAdded(userID, existingQuestion.ID)
 		}
 	}
 
@@ -397,6 +436,9 @@ func (s *Server) CreateQuestion(
 		if err != nil {
 			log.Printf("Warning: Failed to add question to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionAdded(userID, dbQuestion.ID)
 		}
 	}
 
@@ -565,6 +607,9 @@ func (s *Server) CreateQuestionCollection(
 		if err != nil {
 			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionCollectionAdded(userID, collection.ID)
 		}
 	}
 
@@ -646,6 +691,9 @@ func (s *Server) UpdateQuestionCollection(
 		if err != nil {
 			log.Printf("Warning: Failed to add question collection to approval queue: %v", err)
 			// Don't fail the request if approval queue addition fails
+		} else {
+			// Notify all connected clients via global notification manager
+			notification.GetGlobalManager().NotifyQuestionCollectionAdded(userID, existingCollection.ID)
 		}
 	}
 

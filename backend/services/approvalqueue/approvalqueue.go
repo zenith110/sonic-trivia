@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"sonic-trivia/backend/database"
+	notification "sonic-trivia/backend/notifications"
 	pb "sonic-trivia/backend/protos"
 
 	"connectrpc.com/connect"
@@ -64,6 +66,15 @@ func (s *Server) AddToQueue(
 		Success: true,
 	})
 
+	// Broadcast the update to all connected clients via global notification manager
+	protoApprovalRequest := ApprovalRequestToProto(approvalRequest)
+	update := &pb.ApprovalQueueUpdate{
+		Action:          "added",
+		ApprovalRequest: protoApprovalRequest,
+		Timestamp:       time.Now().Format(time.RFC3339),
+	}
+	notification.GetGlobalManager().Broadcast(update)
+
 	return res, nil
 }
 
@@ -90,6 +101,17 @@ func (s *Server) RemoveFromQueue(
 	res := connect.NewResponse(&pb.RemoveFromQueueResponse{
 		Success: true,
 	})
+
+	// Broadcast the removal to all connected clients via global notification manager
+	update := &pb.ApprovalQueueUpdate{
+		Action: "removed",
+		ApprovalRequest: &pb.ApprovalRequest{
+			UserId:     req.Msg.GetUserId(),
+			QuestionId: &req.Msg.QuestionId,
+		},
+		Timestamp: time.Now().Format(time.RFC3339),
+	}
+	notification.GetGlobalManager().Broadcast(update)
 
 	return res, nil
 }
@@ -177,9 +199,78 @@ func (s *Server) ApproveRequest(
 		_ = s.repo.DeleteApprovalRequest(ctx, req.Msg.GetUserId(), *req.Msg.QuestionId)
 	}
 
+	// Broadcast the approval to all connected clients
+	protoApprovalRequest := &pb.ApprovalRequest{
+		UserId:               req.Msg.GetUserId(),
+		QuestionId:           req.Msg.QuestionId,
+		QuestionCollectionId: req.Msg.QuestionCollectionId,
+		SongId:               req.Msg.SongId,
+		SongCollectionId:     req.Msg.SongCollectionId,
+	}
+	update := &pb.ApprovalQueueUpdate{
+		Action:          "approved",
+		ApprovalRequest: protoApprovalRequest,
+		Timestamp:       time.Now().Format(time.RFC3339),
+	}
+	notification.GetGlobalManager().Broadcast(update)
+
 	res := connect.NewResponse(&pb.ApproveRequestResponse{
 		Success: true,
 	})
 
 	return res, nil
+}
+
+// StreamApprovalQueue streams real-time updates for the approval queue
+func (s *Server) StreamApprovalQueue(
+	ctx context.Context,
+	req *connect.Request[pb.StreamApprovalQueueRequest],
+	stream *connect.ServerStream[pb.ApprovalQueueUpdate],
+) error {
+	// Generate a unique client ID for this stream
+	clientID := fmt.Sprintf("client-%d", time.Now().UnixNano())
+	log.Printf("New approval queue stream connected: %s", clientID)
+
+	// Register this client with the global notification manager
+	notificationManager := notification.GetGlobalManager()
+	updateChan := notificationManager.Register(clientID)
+	defer notificationManager.Unregister(clientID)
+
+	// Send initial state - get all current approval requests
+	approvalRequests, err := s.repo.GetAllApprovalRequests(ctx, 1, 100)
+	if err != nil {
+		log.Printf("Error fetching initial approval requests for stream: %v", err)
+	} else {
+		// Send each existing approval request as an "added" update
+		for _, ar := range approvalRequests {
+			protoAR := ApprovalRequestToProto(&ar)
+			initialUpdate := &pb.ApprovalQueueUpdate{
+				Action:          "initial",
+				ApprovalRequest: protoAR,
+				Timestamp:       time.Now().Format(time.RFC3339),
+			}
+			if err := stream.Send(initialUpdate); err != nil {
+				log.Printf("Error sending initial update to stream %s: %v", clientID, err)
+				return err
+			}
+		}
+	}
+
+	// Keep streaming updates until context is canceled
+	for {
+		select {
+		case <-ctx.Done():
+			log.Printf("Stream %s context canceled", clientID)
+			return ctx.Err()
+		case update, ok := <-updateChan:
+			if !ok {
+				log.Printf("Stream %s channel closed", clientID)
+				return nil
+			}
+			if err := stream.Send(update); err != nil {
+				log.Printf("Error sending update to stream %s: %v", clientID, err)
+				return err
+			}
+		}
+	}
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -30,7 +31,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { getSongCategoryOptions } from "@/lib/categories";
+import { getSongCategoryOptions, getDifficultyOptions } from "@/lib/categories";
 import { guessThatSongClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import { SongSchema, SongHintSchema } from "@/generated/guessthatsong_pb";
@@ -60,6 +61,7 @@ interface Song {
 
 export function UpdateSong() {
   const songCategories = getSongCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
@@ -175,7 +177,7 @@ export function UpdateSong() {
   };
 
   const addHint = () => {
-    const newId = (hints.length + 1).toString();
+    const newId = generateUUID();
     setHints([...hints, { id: newId, text: "" }]);
   };
 
@@ -440,13 +442,22 @@ export function UpdateSong() {
 
                   <div className="space-y-2">
                     <Label htmlFor="difficulty">Difficulty *</Label>
-                    <Input
-                      id="difficulty"
-                      placeholder="Easy, Medium, Hard"
+                    <Select
                       value={difficulty}
-                      onChange={(e) => setDifficulty(e.target.value)}
+                      onValueChange={setDifficulty}
                       required
-                    />
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select difficulty level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {difficultyOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>

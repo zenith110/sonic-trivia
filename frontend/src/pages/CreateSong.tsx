@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -20,7 +21,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Music, Upload, X, Image as ImageIcon } from "lucide-react";
-import { getSongCategoryOptions } from "@/lib/categories";
+import { getSongCategoryOptions, getDifficultyOptions } from "@/lib/categories";
+import { toast } from "@/hooks/use-toast";
 import { guessThatSongClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import { SongSchema, SongHintSchema } from "@/generated/guessthatsong_pb";
@@ -33,6 +35,7 @@ interface SongHint {
 
 export function CreateSong() {
   const songCategories = getSongCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const [songTitle, setSongTitle] = useState("");
   const [artist, setArtist] = useState("");
@@ -45,9 +48,9 @@ export function CreateSong() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioPreview, setAudioPreview] = useState<string>("");
   const [hints, setHints] = useState<SongHint[]>([
-    { id: "1", text: "" },
-    { id: "2", text: "" },
-    { id: "3", text: "" },
+    { id: generateUUID(), text: "" },
+    { id: generateUUID(), text: "" },
+    { id: generateUUID(), text: "" },
   ]);
   const [includePicture, setIncludePicture] = useState(false);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
@@ -91,7 +94,7 @@ export function CreateSong() {
   };
 
   const addHint = () => {
-    const newId = (hints.length + 1).toString();
+    const newId = generateUUID();
     setHints([...hints, { id: newId, text: "" }]);
   };
 
@@ -111,7 +114,11 @@ export function CreateSong() {
     try {
       // Convert audio file to base64
       if (!audioFile) {
-        alert("Please upload an audio file");
+        toast({
+          title: "Missing Audio File",
+          description: "Please upload an audio file",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -170,7 +177,10 @@ export function CreateSong() {
       });
 
       console.log("Song created successfully:", response);
-      alert("Song challenge created successfully!");
+      toast({
+        title: "Success!",
+        description: "Song challenge created successfully!",
+      });
 
       // Reset form
       setSongTitle("");
@@ -183,16 +193,20 @@ export function CreateSong() {
       setClipDuration("15");
       removeAudioFile();
       setHints([
-        { id: "1", text: "" },
-        { id: "2", text: "" },
-        { id: "3", text: "" },
+        { id: generateUUID(), text: "" },
+        { id: generateUUID(), text: "" },
+        { id: generateUUID(), text: "" },
       ]);
       setIncludePicture(false);
       removePictureFile();
       setSelectedCollectionId(undefined);
     } catch (error) {
       console.error("Error creating song:", error);
-      alert("Failed to create song challenge. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to create song challenge. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -280,13 +294,22 @@ export function CreateSong() {
 
                 <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty *</Label>
-                  <Input
-                    id="difficulty"
-                    placeholder="Easy, Medium, Hard"
+                  <Select
                     value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
+                    onValueChange={setDifficulty}
                     required
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {difficultyOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

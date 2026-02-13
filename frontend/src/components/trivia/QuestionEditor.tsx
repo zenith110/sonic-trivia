@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -18,7 +19,10 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X, Upload, Image as ImageIcon } from "lucide-react";
-import { getTriviaCategoryOptions } from "@/lib/categories";
+import {
+  getTriviaCategoryOptions,
+  getDifficultyOptions,
+} from "@/lib/categories";
 
 interface Answer {
   id: string;
@@ -64,9 +68,10 @@ export function QuestionEditor({
   showNavigation = false,
 }: QuestionEditorProps) {
   const triviaCategories = getTriviaCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const addAnswer = () => {
-    const newId = (question.answers.length + 1).toString();
+    const newId = generateUUID();
     onUpdate({
       answers: [...question.answers, { id: newId, text: "", isCorrect: false }],
     });
@@ -96,7 +101,7 @@ export function QuestionEditor({
   };
 
   const addHint = () => {
-    const newId = (question.hints.length + 1).toString();
+    const newId = generateUUID();
     onUpdate({
       hints: [...question.hints, { id: newId, text: "" }],
     });
@@ -219,13 +224,22 @@ export function QuestionEditor({
 
           <div className="space-y-2">
             <Label htmlFor="difficulty">Difficulty</Label>
-            <Input
-              id="difficulty"
-              placeholder="e.g., Easy, Medium, Hard"
+            <Select
               value={question.difficulty}
-              onChange={(e) => onUpdate({ difficulty: e.target.value })}
+              onValueChange={(value) => onUpdate({ difficulty: value })}
               required
-            />
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty level" />
+              </SelectTrigger>
+              <SelectContent>
+                {difficultyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

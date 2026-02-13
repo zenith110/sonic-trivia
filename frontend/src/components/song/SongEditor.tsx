@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X, Upload, Image as ImageIcon, Music } from "lucide-react";
-import { getSongCategoryOptions } from "@/lib/categories";
+import { getSongCategoryOptions, getDifficultyOptions } from "@/lib/categories";
 
 interface SongHint {
   id: string;
@@ -62,9 +63,10 @@ export function SongEditor({
   showNavigation = false,
 }: SongEditorProps) {
   const songCategories = getSongCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const addHint = () => {
-    const newId = (song.hints.length + 1).toString();
+    const newId = generateUUID();
     onUpdate({
       hints: [...song.hints, { id: newId, text: "" }],
     });
@@ -245,13 +247,22 @@ export function SongEditor({
 
           <div className="space-y-2">
             <Label htmlFor="difficulty">Difficulty</Label>
-            <Input
-              id="difficulty"
-              placeholder="e.g., Easy, Medium, Hard"
+            <Select
               value={song.difficulty}
-              onChange={(e) => onUpdate({ difficulty: e.target.value })}
+              onValueChange={(value) => onUpdate({ difficulty: value })}
               required
-            />
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty level" />
+              </SelectTrigger>
+              <SelectContent>
+                {difficultyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

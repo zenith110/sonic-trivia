@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { generateUUID } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -30,7 +31,11 @@ import {
   Edit,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTriviaCategoryOptions } from "@/lib/categories";
+import {
+  getTriviaCategoryOptions,
+  getDifficultyOptions,
+} from "@/lib/categories";
+import { toast } from "@/hooks/use-toast";
 import { triviaClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
 import {
@@ -67,6 +72,7 @@ interface TriviaQuestion {
 
 export function UpdateTrivia() {
   const triviaCategories = getTriviaCategoryOptions();
+  const difficultyOptions = getDifficultyOptions();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedQuestion, setSelectedQuestion] =
@@ -88,7 +94,11 @@ export function UpdateTrivia() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      alert("Please enter a question ID to search");
+      toast({
+        title: "Missing Question ID",
+        description: "Please enter a question ID to search",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -132,18 +142,26 @@ export function UpdateTrivia() {
           setPicturePreview(triviaQuestion.pictureUrl);
         }
       } else {
-        alert("Question not found");
+        toast({
+          title: "Not Found",
+          description: "Question not found",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error fetching question:", error);
-      alert("Failed to fetch question. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to fetch question. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const addAnswer = () => {
-    const newId = (answers.length + 1).toString();
+    const newId = generateUUID();
     setAnswers([...answers, { id: newId, text: "", isCorrect: false }]);
   };
 
@@ -170,7 +188,7 @@ export function UpdateTrivia() {
   };
 
   const addHint = () => {
-    const newId = (hints.length + 1).toString();
+    const newId = generateUUID();
     setHints([...hints, { id: newId, text: "" }]);
   };
 
@@ -205,7 +223,11 @@ export function UpdateTrivia() {
     e.preventDefault();
 
     if (!selectedQuestion) {
-      alert("Please search and select a question first");
+      toast({
+        title: "No Question Selected",
+        description: "Please search and select a question first",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -253,11 +275,18 @@ export function UpdateTrivia() {
       });
 
       console.log("Question updated successfully:", response);
-      alert("Trivia question updated successfully!");
+      toast({
+        title: "Success!",
+        description: "Trivia question updated successfully!",
+      });
       handleReset();
     } catch (error) {
       console.error("Error updating trivia question:", error);
-      alert("Failed to update trivia question. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to update trivia question. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -382,13 +411,22 @@ export function UpdateTrivia() {
 
                 <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty</Label>
-                  <Input
-                    id="difficulty"
-                    placeholder="e.g., Easy, Medium, Hard"
+                  <Select
                     value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
+                    onValueChange={setDifficulty}
                     required
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {difficultyOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

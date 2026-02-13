@@ -1,6 +1,6 @@
 module sonic-trivia/backend/services/approvalqueue
 
-go 1.24.0
+go 1.25.4
 
 replace sonic-trivia/backend/protos => ../../protos
 
@@ -8,11 +8,14 @@ replace sonic-trivia/backend/database => ../../database
 
 replace sonic-trivia/backend/middleware => ../../middleware
 
+replace sonic-trivia/backend/notifications => ../../notification
+
 require (
 	connectrpc.com/connect v1.19.1
 	github.com/google/uuid v1.6.0
 	gorm.io/gorm v1.31.1
 	sonic-trivia/backend/database v0.0.0-00010101000000-000000000000
+	sonic-trivia/backend/notifications v0.0.0-00010101000000-000000000000
 	sonic-trivia/backend/protos v0.0.0-00010101000000-000000000000
 )
 

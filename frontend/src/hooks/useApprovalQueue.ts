@@ -176,34 +176,9 @@ export const useApprovalQueue = (): UseApprovalQueueResult => {
     [hasApprovalPermissions, pageSize, currentPage],
   );
 
-  const createApproveRequestData = (
-    userId: string,
-    itemId: string,
-    itemType: "trivia" | "song" | "collection",
-  ): ApproveRequestData => {
-    const requestData: ApproveRequestData = {
-      userId,
-    };
-
-    if (itemType === "trivia") {
-      requestData.questionId = itemId;
-    } else if (itemType === "song") {
-      requestData.songId = itemId;
-    } else if (itemType === "collection") {
-      // Determine if it's a trivia or song collection
-      const item = items.find(
-        (i) =>
-          i.questionCollectionId === itemId || i.songCollectionId === itemId,
-      );
-      if (item?.questionCollectionId) {
-        requestData.questionCollectionId = itemId;
-      } else if (item?.songCollectionId) {
-        requestData.songCollectionId = itemId;
-      }
-    }
-
-    return requestData;
-  };
+  const refreshData = useCallback(async () => {
+    await fetchApprovalRequests(currentPage);
+  }, [fetchApprovalRequests, currentPage]);
 
   const approveRequest = useCallback(
     async (
@@ -219,7 +194,27 @@ export const useApprovalQueue = (): UseApprovalQueueResult => {
       setError(null);
 
       try {
-        const requestData = createApproveRequestData(userId, itemId, itemType);
+        // Inline the request data creation
+        const requestData: ApproveRequestData = { userId };
+
+        if (itemType === "trivia") {
+          requestData.questionId = itemId;
+        } else if (itemType === "song") {
+          requestData.songId = itemId;
+        } else if (itemType === "collection") {
+          // Determine if it's a trivia or song collection
+          const item = items.find(
+            (i) =>
+              i.questionCollectionId === itemId ||
+              i.songCollectionId === itemId,
+          );
+          if (item?.questionCollectionId) {
+            requestData.questionCollectionId = itemId;
+          } else if (item?.songCollectionId) {
+            requestData.songCollectionId = itemId;
+          }
+        }
+
         const request = create(ApproveRequestRequestSchema, requestData);
         await approvalQueueServiceClient.approveRequest(request);
 
@@ -235,7 +230,7 @@ export const useApprovalQueue = (): UseApprovalQueueResult => {
         setLoading(false);
       }
     },
-    [hasApprovalPermissions, items],
+    [hasApprovalPermissions, items, refreshData],
   );
 
   const rejectRequest = useCallback(
@@ -267,12 +262,8 @@ export const useApprovalQueue = (): UseApprovalQueueResult => {
         setLoading(false);
       }
     },
-    [hasApprovalPermissions],
+    [hasApprovalPermissions, refreshData],
   );
-
-  const refreshData = useCallback(async () => {
-    await fetchApprovalRequests(currentPage);
-  }, [fetchApprovalRequests, currentPage]);
 
   const setPage = useCallback(
     (page: number) => {

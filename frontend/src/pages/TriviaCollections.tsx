@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { triviaClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
+import { generateUUID } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 import {
   QuestionSchema,
   AnswerSchema,
@@ -119,12 +121,12 @@ export function TriviaCollections() {
     category: "",
     difficulty: "",
     answers: [
-      { id: "1", text: "", isCorrect: false },
-      { id: "2", text: "", isCorrect: false },
+      { id: generateUUID(), text: "", isCorrect: false },
+      { id: generateUUID(), text: "", isCorrect: false },
     ],
     hints: [
-      { id: "1", text: "" },
-      { id: "2", text: "" },
+      { id: generateUUID(), text: "" },
+      { id: generateUUID(), text: "" },
     ],
     includePicture: false,
     pictureFile: null,
@@ -180,31 +182,48 @@ export function TriviaCollections() {
   const handleSubmitCollection = async () => {
     try {
       if (!user) {
-        alert("You must be logged in to create a collection");
+        toast({
+          title: "Authentication Required",
+          description: "You must be logged in to create a collection",
+          variant: "destructive",
+        });
         return;
       }
 
-      // Validate collection metadata
       if (!collectionName || !collectionDescription) {
-        alert("Please fill in collection name and description");
+        toast({
+          title: "Missing Information",
+          description: "Please fill in collection name and description",
+          variant: "destructive",
+        });
         return;
+      }
+
+      // Validate questions
+      for (const q of questions) {
+        if (!q.question || !q.category || !q.difficulty) {
+          toast({
+            title: "Incomplete Questions",
+            description: "Please fill in all required fields for all questions",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (q.answers.filter((a) => a.isCorrect).length === 0) {
+          toast({
+            title: "Missing Correct Answers",
+            description: "Each question must have at least one correct answer",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Create all questions first and collect their IDs
       const questionIds: string[] = [];
 
       for (const q of questions) {
-        // Validate question
-        if (!q.question || !q.category || !q.difficulty) {
-          alert("Please fill in all required fields for all questions");
-          return;
-        }
-
-        if (q.answers.filter((a) => a.isCorrect).length === 0) {
-          alert("Each question must have at least one correct answer");
-          return;
-        }
-
         // Convert picture file to base64 if included
         let pictureBase64 = "";
         if (q.includePicture && q.pictureFile) {
@@ -271,9 +290,10 @@ export function TriviaCollections() {
         await triviaClient.createQuestionCollection(collectionRequest);
 
       console.log("Collection created successfully:", collectionResponse);
-      alert(
-        `Collection "${collectionName}" created successfully with ${questionIds.length} questions!`,
-      );
+      toast({
+        title: "Success!",
+        description: `Collection "${collectionName}" created successfully with ${questionIds.length} questions!`,
+      });
 
       // Reset form and go back to list view
       resetForm();
@@ -282,7 +302,11 @@ export function TriviaCollections() {
       await loadCollections();
     } catch (error) {
       console.error("Error creating collection:", error);
-      alert("Failed to create collection. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to create collection. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -297,12 +321,19 @@ export function TriviaCollections() {
   const handleDeleteCollection = async (id: string) => {
     try {
       await triviaClient.deleteQuestionCollection({ id });
-      alert("Collection deleted successfully");
+      toast({
+        title: "Success!",
+        description: "Collection deleted successfully",
+      });
       // Reload collections after deletion
       await loadCollections();
     } catch (error) {
       console.error("Error deleting collection:", error);
-      alert("Failed to delete collection");
+      toast({
+        title: "Error",
+        description: "Failed to delete collection",
+        variant: "destructive",
+      });
     } finally {
       setDeleteDialogOpen(false);
       setCollectionToDelete(null);

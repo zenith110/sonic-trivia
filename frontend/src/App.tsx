@@ -12,7 +12,11 @@ import { Leaderboard } from "@/pages/Leaderboard";
 import { MainMenu } from "@/pages/MainMenu";
 import { ProfilePage } from "@/pages/ProfilePage";
 import { ApprovalQueue } from "@/pages/ApprovalQueue";
+import { SearchPage } from "@/pages/SearchPage";
+import { BrowseQuestions } from "@/pages/BrowseQuestions";
+import { BrowseSongs } from "@/pages/BrowseSongs";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
 
 type PageType =
@@ -28,7 +32,10 @@ type PageType =
   | "guess-song-collections"
   | "leaderboard"
   | "profile"
-  | "approval-queue";
+  | "approval-queue"
+  | "search"
+  | "browse-questions"
+  | "browse-songs";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("main-menu");
@@ -65,6 +72,36 @@ function App() {
         );
       case "leaderboard":
         return <Leaderboard onBack={() => setCurrentPage("main-menu")} />;
+      case "search":
+        return (
+          <Dashboard
+            currentPage="search"
+            onPageChange={handleDashboardPageChange}
+            onBackToMenu={() => setCurrentPage("main-menu")}
+          >
+            <SearchPage />
+          </Dashboard>
+        );
+      case "browse-questions":
+        return (
+          <Dashboard
+            currentPage="browse-questions"
+            onPageChange={handleDashboardPageChange}
+            onBackToMenu={() => setCurrentPage("main-menu")}
+          >
+            <BrowseQuestions />
+          </Dashboard>
+        );
+      case "browse-songs":
+        return (
+          <Dashboard
+            currentPage="browse-songs"
+            onPageChange={handleDashboardPageChange}
+            onBackToMenu={() => setCurrentPage("main-menu")}
+          >
+            <BrowseSongs />
+          </Dashboard>
+        );
       default:
         return (
           <MainMenu
@@ -98,12 +135,23 @@ function App() {
         return <Leaderboard />;
       case "approval-queue":
         return <ApprovalQueue />;
+      case "search":
+        return <SearchPage />;
+      case "browse-questions":
+        return <BrowseQuestions />;
+      case "browse-songs":
+        return <BrowseSongs />;
       default:
         return <CreateTrivia />;
     }
   };
 
-  return <ProtectedRoute>{renderPage()}</ProtectedRoute>;
+  return (
+    <ProtectedRoute>
+      {renderPage()}
+      <Toaster />
+    </ProtectedRoute>
+  );
 }
 
 export default App;

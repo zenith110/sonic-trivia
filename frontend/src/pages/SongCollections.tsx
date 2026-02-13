@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { guessThatSongClient } from "@/grpc";
 import { create } from "@bufbuild/protobuf";
+import { generateUUID } from "@/lib/utils";
 import {
   SongSchema,
   SongHintSchema,
@@ -124,9 +125,9 @@ export function SongCollections() {
     audioFile: null,
     audioPreview: "",
     hints: [
-      { id: "1", text: "" },
-      { id: "2", text: "" },
-      { id: "3", text: "" },
+      { id: generateUUID(), text: "" },
+      { id: generateUUID(), text: "" },
+      { id: generateUUID(), text: "" },
     ],
     includePicture: false,
     pictureFile: null,

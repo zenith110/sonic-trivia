@@ -974,6 +974,8 @@ type GetRandomSongsRequest struct {
 	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
 	HowManyRounds int32                  `protobuf:"varint,2,opt,name=how_many_rounds,json=howManyRounds,proto3" json:"how_many_rounds,omitempty"`
 	Difficulty    string                 `protobuf:"bytes,3,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
+	Page          int32                  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,5,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1029,9 +1031,27 @@ func (x *GetRandomSongsRequest) GetDifficulty() string {
 	return ""
 }
 
+func (x *GetRandomSongsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomSongsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
 type GetRandomSongsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Songs         []*Song                `protobuf:"bytes,1,rep,name=songs,proto3" json:"songs,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	HasMore       bool                   `protobuf:"varint,5,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1071,6 +1091,34 @@ func (x *GetRandomSongsResponse) GetSongs() []*Song {
 		return x.Songs
 	}
 	return nil
+}
+
+func (x *GetRandomSongsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
 }
 
 type CreateSongRequest struct {
@@ -1698,15 +1746,21 @@ const file_guessthatsong_proto_rawDesc = "" +
 	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\"4\n" +
 	"\x13CreateSongsResponse\x12\x1d\n" +
 	"\n" +
-	"is_success\x18\x01 \x01(\bR\tisSuccess\"{\n" +
+	"is_success\x18\x01 \x01(\bR\tisSuccess\"\xac\x01\n" +
 	"\x15GetRandomSongsRequest\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12&\n" +
 	"\x0fhow_many_rounds\x18\x02 \x01(\x05R\rhowManyRounds\x12\x1e\n" +
 	"\n" +
 	"difficulty\x18\x03 \x01(\tR\n" +
-	"difficulty\"<\n" +
+	"difficulty\x12\x12\n" +
+	"\x04page\x18\x04 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x05 \x01(\x05R\bpageSize\"\x9e\x01\n" +
 	"\x16GetRandomSongsResponse\x12\"\n" +
-	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\"q\n" +
+	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12\x19\n" +
+	"\bhas_more\x18\x05 \x01(\bR\ahasMore\"q\n" +
 	"\x11CreateSongRequest\x12 \n" +
 	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\x12(\n" +
 	"\rcollection_id\x18\x02 \x01(\tH\x00R\fcollectionId\x88\x01\x01B\x10\n" +

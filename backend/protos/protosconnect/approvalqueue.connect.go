@@ -45,6 +45,9 @@ const (
 	// ApprovalQueueServiceApproveRequestProcedure is the fully-qualified name of the
 	// ApprovalQueueService's ApproveRequest RPC.
 	ApprovalQueueServiceApproveRequestProcedure = "/protos.ApprovalQueueService/ApproveRequest"
+	// ApprovalQueueServiceStreamApprovalQueueProcedure is the fully-qualified name of the
+	// ApprovalQueueService's StreamApprovalQueue RPC.
+	ApprovalQueueServiceStreamApprovalQueueProcedure = "/protos.ApprovalQueueService/StreamApprovalQueue"
 )
 
 // ApprovalQueueServiceClient is a client for the protos.ApprovalQueueService service.
@@ -53,6 +56,7 @@ type ApprovalQueueServiceClient interface {
 	RemoveFromQueue(context.Context, *connect.Request[protos.RemoveFromQueueRequest]) (*connect.Response[protos.RemoveFromQueueResponse], error)
 	GetAllApprovalRequests(context.Context, *connect.Request[protos.GetAllApprovalRequestsRequest]) (*connect.Response[protos.GetAllApprovalRequestsResponse], error)
 	ApproveRequest(context.Context, *connect.Request[protos.ApproveRequestRequest]) (*connect.Response[protos.ApproveRequestResponse], error)
+	StreamApprovalQueue(context.Context, *connect.Request[protos.StreamApprovalQueueRequest]) (*connect.ServerStreamForClient[protos.ApprovalQueueUpdate], error)
 }
 
 // NewApprovalQueueServiceClient constructs a client for the protos.ApprovalQueueService service. By
@@ -90,6 +94,12 @@ func NewApprovalQueueServiceClient(httpClient connect.HTTPClient, baseURL string
 			connect.WithSchema(approvalQueueServiceMethods.ByName("ApproveRequest")),
 			connect.WithClientOptions(opts...),
 		),
+		streamApprovalQueue: connect.NewClient[protos.StreamApprovalQueueRequest, protos.ApprovalQueueUpdate](
+			httpClient,
+			baseURL+ApprovalQueueServiceStreamApprovalQueueProcedure,
+			connect.WithSchema(approvalQueueServiceMethods.ByName("StreamApprovalQueue")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -99,6 +109,7 @@ type approvalQueueServiceClient struct {
 	removeFromQueue        *connect.Client[protos.RemoveFromQueueRequest, protos.RemoveFromQueueResponse]
 	getAllApprovalRequests *connect.Client[protos.GetAllApprovalRequestsRequest, protos.GetAllApprovalRequestsResponse]
 	approveRequest         *connect.Client[protos.ApproveRequestRequest, protos.ApproveRequestResponse]
+	streamApprovalQueue    *connect.Client[protos.StreamApprovalQueueRequest, protos.ApprovalQueueUpdate]
 }
 
 // AddToQueue calls protos.ApprovalQueueService.AddToQueue.
@@ -121,12 +132,18 @@ func (c *approvalQueueServiceClient) ApproveRequest(ctx context.Context, req *co
 	return c.approveRequest.CallUnary(ctx, req)
 }
 
+// StreamApprovalQueue calls protos.ApprovalQueueService.StreamApprovalQueue.
+func (c *approvalQueueServiceClient) StreamApprovalQueue(ctx context.Context, req *connect.Request[protos.StreamApprovalQueueRequest]) (*connect.ServerStreamForClient[protos.ApprovalQueueUpdate], error) {
+	return c.streamApprovalQueue.CallServerStream(ctx, req)
+}
+
 // ApprovalQueueServiceHandler is an implementation of the protos.ApprovalQueueService service.
 type ApprovalQueueServiceHandler interface {
 	AddToQueue(context.Context, *connect.Request[protos.AddToQueueRequest]) (*connect.Response[protos.AddToQueueResponse], error)
 	RemoveFromQueue(context.Context, *connect.Request[protos.RemoveFromQueueRequest]) (*connect.Response[protos.RemoveFromQueueResponse], error)
 	GetAllApprovalRequests(context.Context, *connect.Request[protos.GetAllApprovalRequestsRequest]) (*connect.Response[protos.GetAllApprovalRequestsResponse], error)
 	ApproveRequest(context.Context, *connect.Request[protos.ApproveRequestRequest]) (*connect.Response[protos.ApproveRequestResponse], error)
+	StreamApprovalQueue(context.Context, *connect.Request[protos.StreamApprovalQueueRequest], *connect.ServerStream[protos.ApprovalQueueUpdate]) error
 }
 
 // NewApprovalQueueServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -160,6 +177,12 @@ func NewApprovalQueueServiceHandler(svc ApprovalQueueServiceHandler, opts ...con
 		connect.WithSchema(approvalQueueServiceMethods.ByName("ApproveRequest")),
 		connect.WithHandlerOptions(opts...),
 	)
+	approvalQueueServiceStreamApprovalQueueHandler := connect.NewServerStreamHandler(
+		ApprovalQueueServiceStreamApprovalQueueProcedure,
+		svc.StreamApprovalQueue,
+		connect.WithSchema(approvalQueueServiceMethods.ByName("StreamApprovalQueue")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/protos.ApprovalQueueService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ApprovalQueueServiceAddToQueueProcedure:
@@ -170,6 +193,8 @@ func NewApprovalQueueServiceHandler(svc ApprovalQueueServiceHandler, opts ...con
 			approvalQueueServiceGetAllApprovalRequestsHandler.ServeHTTP(w, r)
 		case ApprovalQueueServiceApproveRequestProcedure:
 			approvalQueueServiceApproveRequestHandler.ServeHTTP(w, r)
+		case ApprovalQueueServiceStreamApprovalQueueProcedure:
+			approvalQueueServiceStreamApprovalQueueHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -193,4 +218,8 @@ func (UnimplementedApprovalQueueServiceHandler) GetAllApprovalRequests(context.C
 
 func (UnimplementedApprovalQueueServiceHandler) ApproveRequest(context.Context, *connect.Request[protos.ApproveRequestRequest]) (*connect.Response[protos.ApproveRequestResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.ApprovalQueueService.ApproveRequest is not implemented"))
+}
+
+func (UnimplementedApprovalQueueServiceHandler) StreamApprovalQueue(context.Context, *connect.Request[protos.StreamApprovalQueueRequest], *connect.ServerStream[protos.ApprovalQueueUpdate]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("protos.ApprovalQueueService.StreamApprovalQueue is not implemented"))
 }

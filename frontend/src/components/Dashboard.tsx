@@ -13,6 +13,7 @@ import {
   FolderPlus,
   Shield,
   Circle,
+  Search,
 } from "lucide-react";
 import { getCharacterById, getCharacterImagePath } from "@/data/characters";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,7 +50,10 @@ type PageType =
   | "guess-song-collections"
   | "leaderboard"
   | "profile"
-  | "approval-queue";
+  | "approval-queue"
+  | "search"
+  | "browse-questions"
+  | "browse-songs";
 
 interface DashboardProps {
   children?: React.ReactNode;
@@ -241,6 +245,16 @@ export function Dashboard({
                           <span>Collections</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          onClick={() => handlePageChange("browse-questions")}
+                          isActive={activePage === "browse-questions"}
+                        >
+                          <Search className="h-4 w-4" />
+                          <span>Search Questions</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
                     </CollapsibleContent>
                   </Collapsible>
 
@@ -308,8 +322,29 @@ export function Dashboard({
                           <span>Collections</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
+
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          onClick={() => handlePageChange("browse-songs")}
+                          isActive={activePage === "browse-songs"}
+                        >
+                          <Search className="h-4 w-4" />
+                          <span>Search Songs</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
                     </CollapsibleContent>
                   </Collapsible>
+
+                  {/* Search & Browse */}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => handlePageChange("search")}
+                      isActive={activePage === "search"}
+                    >
+                      <Search className="h-4 w-4" />
+                      <span>Search & Browse</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
 
                   {/* Leaderboard */}
                   <SidebarMenuItem>

@@ -11,3 +11,6 @@ export { Login } from "./Login";
 export { MainMenu } from "./MainMenu";
 export { MultiplayerLobby } from "./MultiplayerLobby";
 export { ApprovalQueue } from "./ApprovalQueue";
+export { SearchPage } from "./SearchPage";
+export { BrowseQuestions } from "./BrowseQuestions";
+export { BrowseSongs } from "./BrowseSongs";

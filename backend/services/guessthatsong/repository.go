@@ -167,6 +167,43 @@ func (r *Repository) GetRandomSongs(ctx context.Context, category string, diffic
 	return songs, nil
 }
 
+// GetRandomSongsPaginated retrieves random songs with pagination
+func (r *Repository) GetRandomSongsPaginated(ctx context.Context, category string, difficulty string, page, pageSize int32) ([]database.Song, int32, error) {
+	var songs []database.Song
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Song{})
+
+	if category != "" {
+		baseQuery = baseQuery.Where("category = ?", category)
+	}
+
+	if difficulty != "" {
+		baseQuery = baseQuery.Where("difficulty = ?", difficulty)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results with random ordering
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Hints").
+		Order("RANDOM()").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Find(&songs).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return songs, int32(total), nil
+}
+
 // SearchSongs searches for songs by query string
 func (r *Repository) SearchSongs(ctx context.Context, query string) ([]database.Song, error) {
 	var songs []database.Song

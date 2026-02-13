@@ -9,7 +9,18 @@ service ApprovalQueueService {
   rpc RemoveFromQueue(RemoveFromQueueRequest) returns (RemoveFromQueueResponse) {}
   rpc GetAllApprovalRequests(GetAllApprovalRequestsRequest) returns (GetAllApprovalRequestsResponse) {}
   rpc ApproveRequest(ApproveRequestRequest) returns (ApproveRequestResponse) {}
+  rpc StreamApprovalQueue(StreamApprovalQueueRequest) returns (stream ApprovalQueueUpdate) {}
 }
+message StreamApprovalQueueRequest {
+  // Empty request - client just connects to receive updates
+}
+
+message ApprovalQueueUpdate {
+  string action = 1; // "added", "updated", "approved", "removed"
+  ApprovalRequest approval_request = 2;
+  string timestamp = 3;
+}
+
 message ApproveRequestRequest {
   string user_id = 1;
   optional string question_id = 2;

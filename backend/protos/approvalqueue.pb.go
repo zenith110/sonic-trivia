@@ -21,6 +21,102 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type StreamApprovalQueueRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamApprovalQueueRequest) Reset() {
+	*x = StreamApprovalQueueRequest{}
+	mi := &file_approvalqueue_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamApprovalQueueRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamApprovalQueueRequest) ProtoMessage() {}
+
+func (x *StreamApprovalQueueRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_approvalqueue_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamApprovalQueueRequest.ProtoReflect.Descriptor instead.
+func (*StreamApprovalQueueRequest) Descriptor() ([]byte, []int) {
+	return file_approvalqueue_proto_rawDescGZIP(), []int{0}
+}
+
+type ApprovalQueueUpdate struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Action          string                 `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"` // "added", "updated", "approved", "removed"
+	ApprovalRequest *ApprovalRequest       `protobuf:"bytes,2,opt,name=approval_request,json=approvalRequest,proto3" json:"approval_request,omitempty"`
+	Timestamp       string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ApprovalQueueUpdate) Reset() {
+	*x = ApprovalQueueUpdate{}
+	mi := &file_approvalqueue_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ApprovalQueueUpdate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApprovalQueueUpdate) ProtoMessage() {}
+
+func (x *ApprovalQueueUpdate) ProtoReflect() protoreflect.Message {
+	mi := &file_approvalqueue_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApprovalQueueUpdate.ProtoReflect.Descriptor instead.
+func (*ApprovalQueueUpdate) Descriptor() ([]byte, []int) {
+	return file_approvalqueue_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ApprovalQueueUpdate) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *ApprovalQueueUpdate) GetApprovalRequest() *ApprovalRequest {
+	if x != nil {
+		return x.ApprovalRequest
+	}
+	return nil
+}
+
+func (x *ApprovalQueueUpdate) GetTimestamp() string {
+	if x != nil {
+		return x.Timestamp
+	}
+	return ""
+}
+
 type ApproveRequestRequest struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
 	UserId               string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -34,7 +130,7 @@ type ApproveRequestRequest struct {
 
 func (x *ApproveRequestRequest) Reset() {
 	*x = ApproveRequestRequest{}
-	mi := &file_approvalqueue_proto_msgTypes[0]
+	mi := &file_approvalqueue_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +142,7 @@ func (x *ApproveRequestRequest) String() string {
 func (*ApproveRequestRequest) ProtoMessage() {}
 
 func (x *ApproveRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[0]
+	mi := &file_approvalqueue_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +155,7 @@ func (x *ApproveRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApproveRequestRequest.ProtoReflect.Descriptor instead.
 func (*ApproveRequestRequest) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{0}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ApproveRequestRequest) GetUserId() string {
@@ -106,7 +202,7 @@ type ApproveRequestResponse struct {
 
 func (x *ApproveRequestResponse) Reset() {
 	*x = ApproveRequestResponse{}
-	mi := &file_approvalqueue_proto_msgTypes[1]
+	mi := &file_approvalqueue_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -118,7 +214,7 @@ func (x *ApproveRequestResponse) String() string {
 func (*ApproveRequestResponse) ProtoMessage() {}
 
 func (x *ApproveRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[1]
+	mi := &file_approvalqueue_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -131,7 +227,7 @@ func (x *ApproveRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApproveRequestResponse.ProtoReflect.Descriptor instead.
 func (*ApproveRequestResponse) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{1}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ApproveRequestResponse) GetSuccess() bool {
@@ -151,7 +247,7 @@ type GetAllApprovalRequestsRequest struct {
 
 func (x *GetAllApprovalRequestsRequest) Reset() {
 	*x = GetAllApprovalRequestsRequest{}
-	mi := &file_approvalqueue_proto_msgTypes[2]
+	mi := &file_approvalqueue_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -163,7 +259,7 @@ func (x *GetAllApprovalRequestsRequest) String() string {
 func (*GetAllApprovalRequestsRequest) ProtoMessage() {}
 
 func (x *GetAllApprovalRequestsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[2]
+	mi := &file_approvalqueue_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -176,7 +272,7 @@ func (x *GetAllApprovalRequestsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllApprovalRequestsRequest.ProtoReflect.Descriptor instead.
 func (*GetAllApprovalRequestsRequest) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{2}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetAllApprovalRequestsRequest) GetPage() int32 {
@@ -207,7 +303,7 @@ type ApprovalRequest struct {
 
 func (x *ApprovalRequest) Reset() {
 	*x = ApprovalRequest{}
-	mi := &file_approvalqueue_proto_msgTypes[3]
+	mi := &file_approvalqueue_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -219,7 +315,7 @@ func (x *ApprovalRequest) String() string {
 func (*ApprovalRequest) ProtoMessage() {}
 
 func (x *ApprovalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[3]
+	mi := &file_approvalqueue_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -232,7 +328,7 @@ func (x *ApprovalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApprovalRequest.ProtoReflect.Descriptor instead.
 func (*ApprovalRequest) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{3}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ApprovalRequest) GetUserId() string {
@@ -286,7 +382,7 @@ type GetAllApprovalRequestsResponse struct {
 
 func (x *GetAllApprovalRequestsResponse) Reset() {
 	*x = GetAllApprovalRequestsResponse{}
-	mi := &file_approvalqueue_proto_msgTypes[4]
+	mi := &file_approvalqueue_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +394,7 @@ func (x *GetAllApprovalRequestsResponse) String() string {
 func (*GetAllApprovalRequestsResponse) ProtoMessage() {}
 
 func (x *GetAllApprovalRequestsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[4]
+	mi := &file_approvalqueue_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,7 +407,7 @@ func (x *GetAllApprovalRequestsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllApprovalRequestsResponse.ProtoReflect.Descriptor instead.
 func (*GetAllApprovalRequestsResponse) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{4}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetAllApprovalRequestsResponse) GetApprovalRequests() []*ApprovalRequest {
@@ -335,7 +431,7 @@ type AddToQueueRequest struct {
 
 func (x *AddToQueueRequest) Reset() {
 	*x = AddToQueueRequest{}
-	mi := &file_approvalqueue_proto_msgTypes[5]
+	mi := &file_approvalqueue_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -347,7 +443,7 @@ func (x *AddToQueueRequest) String() string {
 func (*AddToQueueRequest) ProtoMessage() {}
 
 func (x *AddToQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[5]
+	mi := &file_approvalqueue_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,7 +456,7 @@ func (x *AddToQueueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddToQueueRequest.ProtoReflect.Descriptor instead.
 func (*AddToQueueRequest) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{5}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AddToQueueRequest) GetUserId() string {
@@ -414,7 +510,7 @@ type AddToQueueResponse struct {
 
 func (x *AddToQueueResponse) Reset() {
 	*x = AddToQueueResponse{}
-	mi := &file_approvalqueue_proto_msgTypes[6]
+	mi := &file_approvalqueue_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -426,7 +522,7 @@ func (x *AddToQueueResponse) String() string {
 func (*AddToQueueResponse) ProtoMessage() {}
 
 func (x *AddToQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[6]
+	mi := &file_approvalqueue_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -439,7 +535,7 @@ func (x *AddToQueueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddToQueueResponse.ProtoReflect.Descriptor instead.
 func (*AddToQueueResponse) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{6}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *AddToQueueResponse) GetSuccess() bool {
@@ -459,7 +555,7 @@ type RemoveFromQueueRequest struct {
 
 func (x *RemoveFromQueueRequest) Reset() {
 	*x = RemoveFromQueueRequest{}
-	mi := &file_approvalqueue_proto_msgTypes[7]
+	mi := &file_approvalqueue_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -471,7 +567,7 @@ func (x *RemoveFromQueueRequest) String() string {
 func (*RemoveFromQueueRequest) ProtoMessage() {}
 
 func (x *RemoveFromQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[7]
+	mi := &file_approvalqueue_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -484,7 +580,7 @@ func (x *RemoveFromQueueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveFromQueueRequest.ProtoReflect.Descriptor instead.
 func (*RemoveFromQueueRequest) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{7}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *RemoveFromQueueRequest) GetUserId() string {
@@ -510,7 +606,7 @@ type RemoveFromQueueResponse struct {
 
 func (x *RemoveFromQueueResponse) Reset() {
 	*x = RemoveFromQueueResponse{}
-	mi := &file_approvalqueue_proto_msgTypes[8]
+	mi := &file_approvalqueue_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -522,7 +618,7 @@ func (x *RemoveFromQueueResponse) String() string {
 func (*RemoveFromQueueResponse) ProtoMessage() {}
 
 func (x *RemoveFromQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_approvalqueue_proto_msgTypes[8]
+	mi := &file_approvalqueue_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -535,7 +631,7 @@ func (x *RemoveFromQueueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveFromQueueResponse.ProtoReflect.Descriptor instead.
 func (*RemoveFromQueueResponse) Descriptor() ([]byte, []int) {
-	return file_approvalqueue_proto_rawDescGZIP(), []int{8}
+	return file_approvalqueue_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RemoveFromQueueResponse) GetSuccess() bool {
@@ -549,7 +645,12 @@ var File_approvalqueue_proto protoreflect.FileDescriptor
 
 const file_approvalqueue_proto_rawDesc = "" +
 	"\n" +
-	"\x13approvalqueue.proto\x12\x06protos\"\xb0\x02\n" +
+	"\x13approvalqueue.proto\x12\x06protos\"\x1c\n" +
+	"\x1aStreamApprovalQueueRequest\"\x8f\x01\n" +
+	"\x13ApprovalQueueUpdate\x12\x16\n" +
+	"\x06action\x18\x01 \x01(\tR\x06action\x12B\n" +
+	"\x10approval_request\x18\x02 \x01(\v2\x17.protos.ApprovalRequestR\x0fapprovalRequest\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\"\xb0\x02\n" +
 	"\x15ApproveRequestRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12$\n" +
 	"\vquestion_id\x18\x02 \x01(\tH\x00R\n" +
@@ -604,13 +705,14 @@ const file_approvalqueue_proto_rawDesc = "" +
 	"\vquestion_id\x18\x02 \x01(\tR\n" +
 	"questionId\"3\n" +
 	"\x17RemoveFromQueueResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xf1\x02\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xcd\x03\n" +
 	"\x14ApprovalQueueService\x12E\n" +
 	"\n" +
 	"AddToQueue\x12\x19.protos.AddToQueueRequest\x1a\x1a.protos.AddToQueueResponse\"\x00\x12T\n" +
 	"\x0fRemoveFromQueue\x12\x1e.protos.RemoveFromQueueRequest\x1a\x1f.protos.RemoveFromQueueResponse\"\x00\x12i\n" +
 	"\x16GetAllApprovalRequests\x12%.protos.GetAllApprovalRequestsRequest\x1a&.protos.GetAllApprovalRequestsResponse\"\x00\x12Q\n" +
-	"\x0eApproveRequest\x12\x1d.protos.ApproveRequestRequest\x1a\x1e.protos.ApproveRequestResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"\x0eApproveRequest\x12\x1d.protos.ApproveRequestRequest\x1a\x1e.protos.ApproveRequestResponse\"\x00\x12Z\n" +
+	"\x13StreamApprovalQueue\x12\".protos.StreamApprovalQueueRequest\x1a\x1b.protos.ApprovalQueueUpdate\"\x000\x01B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_approvalqueue_proto_rawDescOnce sync.Once
@@ -624,33 +726,38 @@ func file_approvalqueue_proto_rawDescGZIP() []byte {
 	return file_approvalqueue_proto_rawDescData
 }
 
-var file_approvalqueue_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_approvalqueue_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_approvalqueue_proto_goTypes = []any{
-	(*ApproveRequestRequest)(nil),          // 0: protos.ApproveRequestRequest
-	(*ApproveRequestResponse)(nil),         // 1: protos.ApproveRequestResponse
-	(*GetAllApprovalRequestsRequest)(nil),  // 2: protos.GetAllApprovalRequestsRequest
-	(*ApprovalRequest)(nil),                // 3: protos.ApprovalRequest
-	(*GetAllApprovalRequestsResponse)(nil), // 4: protos.GetAllApprovalRequestsResponse
-	(*AddToQueueRequest)(nil),              // 5: protos.AddToQueueRequest
-	(*AddToQueueResponse)(nil),             // 6: protos.AddToQueueResponse
-	(*RemoveFromQueueRequest)(nil),         // 7: protos.RemoveFromQueueRequest
-	(*RemoveFromQueueResponse)(nil),        // 8: protos.RemoveFromQueueResponse
+	(*StreamApprovalQueueRequest)(nil),     // 0: protos.StreamApprovalQueueRequest
+	(*ApprovalQueueUpdate)(nil),            // 1: protos.ApprovalQueueUpdate
+	(*ApproveRequestRequest)(nil),          // 2: protos.ApproveRequestRequest
+	(*ApproveRequestResponse)(nil),         // 3: protos.ApproveRequestResponse
+	(*GetAllApprovalRequestsRequest)(nil),  // 4: protos.GetAllApprovalRequestsRequest
+	(*ApprovalRequest)(nil),                // 5: protos.ApprovalRequest
+	(*GetAllApprovalRequestsResponse)(nil), // 6: protos.GetAllApprovalRequestsResponse
+	(*AddToQueueRequest)(nil),              // 7: protos.AddToQueueRequest
+	(*AddToQueueResponse)(nil),             // 8: protos.AddToQueueResponse
+	(*RemoveFromQueueRequest)(nil),         // 9: protos.RemoveFromQueueRequest
+	(*RemoveFromQueueResponse)(nil),        // 10: protos.RemoveFromQueueResponse
 }
 var file_approvalqueue_proto_depIdxs = []int32{
-	3, // 0: protos.GetAllApprovalRequestsResponse.approval_requests:type_name -> protos.ApprovalRequest
-	5, // 1: protos.ApprovalQueueService.AddToQueue:input_type -> protos.AddToQueueRequest
-	7, // 2: protos.ApprovalQueueService.RemoveFromQueue:input_type -> protos.RemoveFromQueueRequest
-	2, // 3: protos.ApprovalQueueService.GetAllApprovalRequests:input_type -> protos.GetAllApprovalRequestsRequest
-	0, // 4: protos.ApprovalQueueService.ApproveRequest:input_type -> protos.ApproveRequestRequest
-	6, // 5: protos.ApprovalQueueService.AddToQueue:output_type -> protos.AddToQueueResponse
-	8, // 6: protos.ApprovalQueueService.RemoveFromQueue:output_type -> protos.RemoveFromQueueResponse
-	4, // 7: protos.ApprovalQueueService.GetAllApprovalRequests:output_type -> protos.GetAllApprovalRequestsResponse
-	1, // 8: protos.ApprovalQueueService.ApproveRequest:output_type -> protos.ApproveRequestResponse
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	5,  // 0: protos.ApprovalQueueUpdate.approval_request:type_name -> protos.ApprovalRequest
+	5,  // 1: protos.GetAllApprovalRequestsResponse.approval_requests:type_name -> protos.ApprovalRequest
+	7,  // 2: protos.ApprovalQueueService.AddToQueue:input_type -> protos.AddToQueueRequest
+	9,  // 3: protos.ApprovalQueueService.RemoveFromQueue:input_type -> protos.RemoveFromQueueRequest
+	4,  // 4: protos.ApprovalQueueService.GetAllApprovalRequests:input_type -> protos.GetAllApprovalRequestsRequest
+	2,  // 5: protos.ApprovalQueueService.ApproveRequest:input_type -> protos.ApproveRequestRequest
+	0,  // 6: protos.ApprovalQueueService.StreamApprovalQueue:input_type -> protos.StreamApprovalQueueRequest
+	8,  // 7: protos.ApprovalQueueService.AddToQueue:output_type -> protos.AddToQueueResponse
+	10, // 8: protos.ApprovalQueueService.RemoveFromQueue:output_type -> protos.RemoveFromQueueResponse
+	6,  // 9: protos.ApprovalQueueService.GetAllApprovalRequests:output_type -> protos.GetAllApprovalRequestsResponse
+	3,  // 10: protos.ApprovalQueueService.ApproveRequest:output_type -> protos.ApproveRequestResponse
+	1,  // 11: protos.ApprovalQueueService.StreamApprovalQueue:output_type -> protos.ApprovalQueueUpdate
+	7,  // [7:12] is the sub-list for method output_type
+	2,  // [2:7] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_approvalqueue_proto_init() }
@@ -658,16 +765,16 @@ func file_approvalqueue_proto_init() {
 	if File_approvalqueue_proto != nil {
 		return
 	}
-	file_approvalqueue_proto_msgTypes[0].OneofWrappers = []any{}
-	file_approvalqueue_proto_msgTypes[3].OneofWrappers = []any{}
+	file_approvalqueue_proto_msgTypes[2].OneofWrappers = []any{}
 	file_approvalqueue_proto_msgTypes[5].OneofWrappers = []any{}
+	file_approvalqueue_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_approvalqueue_proto_rawDesc), len(file_approvalqueue_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
