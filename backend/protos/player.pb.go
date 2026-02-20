@@ -461,6 +461,142 @@ func (x *Player) GetFriends() []*FriendList {
 	return nil
 }
 
+type GetPlayerStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerId      string                 `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerStatsRequest) Reset() {
+	*x = GetPlayerStatsRequest{}
+	mi := &file_player_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerStatsRequest) ProtoMessage() {}
+
+func (x *GetPlayerStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetPlayerStatsRequest) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetPlayerStatsRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+type GetPlayerStatsResponse struct {
+	state                        protoimpl.MessageState `protogen:"open.v1"`
+	TotalPoints                  int64                  `protobuf:"varint,1,opt,name=total_points,json=totalPoints,proto3" json:"total_points,omitempty"`
+	TotalSuccessfulTriviaAnswers int64                  `protobuf:"varint,2,opt,name=total_successful_trivia_answers,json=totalSuccessfulTriviaAnswers,proto3" json:"total_successful_trivia_answers,omitempty"`
+	TotalTriviaAnswers           int64                  `protobuf:"varint,3,opt,name=total_trivia_answers,json=totalTriviaAnswers,proto3" json:"total_trivia_answers,omitempty"`
+	TotalSuccessfulSongAnswers   int64                  `protobuf:"varint,4,opt,name=total_successful_song_answers,json=totalSuccessfulSongAnswers,proto3" json:"total_successful_song_answers,omitempty"`
+	TotalSongAnswers             int64                  `protobuf:"varint,5,opt,name=total_song_answers,json=totalSongAnswers,proto3" json:"total_song_answers,omitempty"`
+	TotalRings                   int64                  `protobuf:"varint,6,opt,name=total_rings,json=totalRings,proto3" json:"total_rings,omitempty"`
+	AccuracyRate                 int64                  `protobuf:"varint,7,opt,name=accuracy_rate,json=accuracyRate,proto3" json:"accuracy_rate,omitempty"`
+	unknownFields                protoimpl.UnknownFields
+	sizeCache                    protoimpl.SizeCache
+}
+
+func (x *GetPlayerStatsResponse) Reset() {
+	*x = GetPlayerStatsResponse{}
+	mi := &file_player_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerStatsResponse) ProtoMessage() {}
+
+func (x *GetPlayerStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetPlayerStatsResponse) Descriptor() ([]byte, []int) {
+	return file_player_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetPlayerStatsResponse) GetTotalPoints() int64 {
+	if x != nil {
+		return x.TotalPoints
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetTotalSuccessfulTriviaAnswers() int64 {
+	if x != nil {
+		return x.TotalSuccessfulTriviaAnswers
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetTotalTriviaAnswers() int64 {
+	if x != nil {
+		return x.TotalTriviaAnswers
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetTotalSuccessfulSongAnswers() int64 {
+	if x != nil {
+		return x.TotalSuccessfulSongAnswers
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetTotalSongAnswers() int64 {
+	if x != nil {
+		return x.TotalSongAnswers
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetTotalRings() int64 {
+	if x != nil {
+		return x.TotalRings
+	}
+	return 0
+}
+
+func (x *GetPlayerStatsResponse) GetAccuracyRate() int64 {
+	if x != nil {
+		return x.AccuracyRate
+	}
+	return 0
+}
+
 type GetPlayerRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -470,7 +606,7 @@ type GetPlayerRequest struct {
 
 func (x *GetPlayerRequest) Reset() {
 	*x = GetPlayerRequest{}
-	mi := &file_player_proto_msgTypes[4]
+	mi := &file_player_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -482,7 +618,7 @@ func (x *GetPlayerRequest) String() string {
 func (*GetPlayerRequest) ProtoMessage() {}
 
 func (x *GetPlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[4]
+	mi := &file_player_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -495,7 +631,7 @@ func (x *GetPlayerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerRequest.ProtoReflect.Descriptor instead.
 func (*GetPlayerRequest) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{4}
+	return file_player_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetPlayerRequest) GetId() string {
@@ -514,7 +650,7 @@ type GetPlayerResponse struct {
 
 func (x *GetPlayerResponse) Reset() {
 	*x = GetPlayerResponse{}
-	mi := &file_player_proto_msgTypes[5]
+	mi := &file_player_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -526,7 +662,7 @@ func (x *GetPlayerResponse) String() string {
 func (*GetPlayerResponse) ProtoMessage() {}
 
 func (x *GetPlayerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[5]
+	mi := &file_player_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -539,7 +675,7 @@ func (x *GetPlayerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerResponse.ProtoReflect.Descriptor instead.
 func (*GetPlayerResponse) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{5}
+	return file_player_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetPlayerResponse) GetPlayer() *Player {
@@ -558,7 +694,7 @@ type GetSonicCharactersRequest struct {
 
 func (x *GetSonicCharactersRequest) Reset() {
 	*x = GetSonicCharactersRequest{}
-	mi := &file_player_proto_msgTypes[6]
+	mi := &file_player_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -570,7 +706,7 @@ func (x *GetSonicCharactersRequest) String() string {
 func (*GetSonicCharactersRequest) ProtoMessage() {}
 
 func (x *GetSonicCharactersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[6]
+	mi := &file_player_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +719,7 @@ func (x *GetSonicCharactersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSonicCharactersRequest.ProtoReflect.Descriptor instead.
 func (*GetSonicCharactersRequest) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{6}
+	return file_player_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetSonicCharactersRequest) GetUserId() string {
@@ -602,7 +738,7 @@ type GetSonicCharactersResponse struct {
 
 func (x *GetSonicCharactersResponse) Reset() {
 	*x = GetSonicCharactersResponse{}
-	mi := &file_player_proto_msgTypes[7]
+	mi := &file_player_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -614,7 +750,7 @@ func (x *GetSonicCharactersResponse) String() string {
 func (*GetSonicCharactersResponse) ProtoMessage() {}
 
 func (x *GetSonicCharactersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[7]
+	mi := &file_player_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -627,7 +763,7 @@ func (x *GetSonicCharactersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSonicCharactersResponse.ProtoReflect.Descriptor instead.
 func (*GetSonicCharactersResponse) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{7}
+	return file_player_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetSonicCharactersResponse) GetCharacters() []*SonicCharacter {
@@ -646,7 +782,7 @@ type DeletePlayerRequest struct {
 
 func (x *DeletePlayerRequest) Reset() {
 	*x = DeletePlayerRequest{}
-	mi := &file_player_proto_msgTypes[8]
+	mi := &file_player_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -658,7 +794,7 @@ func (x *DeletePlayerRequest) String() string {
 func (*DeletePlayerRequest) ProtoMessage() {}
 
 func (x *DeletePlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[8]
+	mi := &file_player_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -671,7 +807,7 @@ func (x *DeletePlayerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePlayerRequest.ProtoReflect.Descriptor instead.
 func (*DeletePlayerRequest) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{8}
+	return file_player_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeletePlayerRequest) GetId() string {
@@ -690,7 +826,7 @@ type DeletePlayerResponse struct {
 
 func (x *DeletePlayerResponse) Reset() {
 	*x = DeletePlayerResponse{}
-	mi := &file_player_proto_msgTypes[9]
+	mi := &file_player_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -702,7 +838,7 @@ func (x *DeletePlayerResponse) String() string {
 func (*DeletePlayerResponse) ProtoMessage() {}
 
 func (x *DeletePlayerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[9]
+	mi := &file_player_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -715,7 +851,7 @@ func (x *DeletePlayerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeletePlayerResponse.ProtoReflect.Descriptor instead.
 func (*DeletePlayerResponse) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{9}
+	return file_player_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeletePlayerResponse) GetMessage() string {
@@ -735,7 +871,7 @@ type SelectCharacterRequest struct {
 
 func (x *SelectCharacterRequest) Reset() {
 	*x = SelectCharacterRequest{}
-	mi := &file_player_proto_msgTypes[10]
+	mi := &file_player_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -747,7 +883,7 @@ func (x *SelectCharacterRequest) String() string {
 func (*SelectCharacterRequest) ProtoMessage() {}
 
 func (x *SelectCharacterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[10]
+	mi := &file_player_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -760,7 +896,7 @@ func (x *SelectCharacterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SelectCharacterRequest.ProtoReflect.Descriptor instead.
 func (*SelectCharacterRequest) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{10}
+	return file_player_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *SelectCharacterRequest) GetPlayerId() string {
@@ -787,7 +923,7 @@ type SelectCharacterResponse struct {
 
 func (x *SelectCharacterResponse) Reset() {
 	*x = SelectCharacterResponse{}
-	mi := &file_player_proto_msgTypes[11]
+	mi := &file_player_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -799,7 +935,7 @@ func (x *SelectCharacterResponse) String() string {
 func (*SelectCharacterResponse) ProtoMessage() {}
 
 func (x *SelectCharacterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_player_proto_msgTypes[11]
+	mi := &file_player_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -812,7 +948,7 @@ func (x *SelectCharacterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SelectCharacterResponse.ProtoReflect.Descriptor instead.
 func (*SelectCharacterResponse) Descriptor() ([]byte, []int) {
-	return file_player_proto_rawDescGZIP(), []int{11}
+	return file_player_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *SelectCharacterResponse) GetPlayer() *Player {
@@ -872,7 +1008,18 @@ const file_player_proto_rawDesc = "" +
 	" \x01(\tR\x04role\x12\x1f\n" +
 	"\vtotal_rings\x18\v \x01(\x03R\n" +
 	"totalRings\x12,\n" +
-	"\afriends\x18\f \x03(\v2\x12.protos.FriendListR\afriends\"\"\n" +
+	"\afriends\x18\f \x03(\v2\x12.protos.FriendListR\afriends\"4\n" +
+	"\x15GetPlayerStatsRequest\x12\x1b\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"\xeb\x02\n" +
+	"\x16GetPlayerStatsResponse\x12!\n" +
+	"\ftotal_points\x18\x01 \x01(\x03R\vtotalPoints\x12E\n" +
+	"\x1ftotal_successful_trivia_answers\x18\x02 \x01(\x03R\x1ctotalSuccessfulTriviaAnswers\x120\n" +
+	"\x14total_trivia_answers\x18\x03 \x01(\x03R\x12totalTriviaAnswers\x12A\n" +
+	"\x1dtotal_successful_song_answers\x18\x04 \x01(\x03R\x1atotalSuccessfulSongAnswers\x12,\n" +
+	"\x12total_song_answers\x18\x05 \x01(\x03R\x10totalSongAnswers\x12\x1f\n" +
+	"\vtotal_rings\x18\x06 \x01(\x03R\n" +
+	"totalRings\x12#\n" +
+	"\raccuracy_rate\x18\a \x01(\x03R\faccuracyRate\"\"\n" +
 	"\x10GetPlayerRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\";\n" +
 	"\x11GetPlayerResponse\x12&\n" +
@@ -898,7 +1045,7 @@ const file_player_proto_rawDesc = "" +
 	"\x17CHARACTER_RARITY_COMMON\x10\x01\x12\x19\n" +
 	"\x15CHARACTER_RARITY_RARE\x10\x02\x12\x19\n" +
 	"\x15CHARACTER_RARITY_EPIC\x10\x03\x12\x1e\n" +
-	"\x1aCHARACTER_RARITY_LEGENDARY\x10\x042\x83\x04\n" +
+	"\x1aCHARACTER_RARITY_LEGENDARY\x10\x042\xd6\x04\n" +
 	"\rPlayerService\x120\n" +
 	"\fCreatePlayer\x12\x0e.protos.Player\x1a\x0e.protos.Player\"\x00\x12B\n" +
 	"\tGetPlayer\x12\x18.protos.GetPlayerRequest\x1a\x19.protos.GetPlayerResponse\"\x00\x120\n" +
@@ -906,7 +1053,8 @@ const file_player_proto_rawDesc = "" +
 	"\fDeletePlayer\x12\x1b.protos.DeletePlayerRequest\x1a\x1c.protos.DeletePlayerResponse\"\x00\x12H\n" +
 	"\x14UpdateSonicCharacter\x12\x16.protos.SonicCharacter\x1a\x16.protos.SonicCharacter\"\x00\x12]\n" +
 	"\x12GetSonicCharacters\x12!.protos.GetSonicCharactersRequest\x1a\".protos.GetSonicCharactersResponse\"\x00\x12T\n" +
-	"\x0fSelectCharacter\x12\x1e.protos.SelectCharacterRequest\x1a\x1f.protos.SelectCharacterResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"\x0fSelectCharacter\x12\x1e.protos.SelectCharacterRequest\x1a\x1f.protos.SelectCharacterResponse\"\x00\x12Q\n" +
+	"\x0eGetPlayerStats\x12\x1d.protos.GetPlayerStatsRequest\x1a\x1e.protos.GetPlayerStatsResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_player_proto_rawDescOnce sync.Once
@@ -921,49 +1069,53 @@ func file_player_proto_rawDescGZIP() []byte {
 }
 
 var file_player_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_player_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_player_proto_goTypes = []any{
 	(CharacterRarity)(0),               // 0: protos.CharacterRarity
 	(*Ability)(nil),                    // 1: protos.Ability
 	(*SonicCharacter)(nil),             // 2: protos.SonicCharacter
 	(*FriendList)(nil),                 // 3: protos.FriendList
 	(*Player)(nil),                     // 4: protos.Player
-	(*GetPlayerRequest)(nil),           // 5: protos.GetPlayerRequest
-	(*GetPlayerResponse)(nil),          // 6: protos.GetPlayerResponse
-	(*GetSonicCharactersRequest)(nil),  // 7: protos.GetSonicCharactersRequest
-	(*GetSonicCharactersResponse)(nil), // 8: protos.GetSonicCharactersResponse
-	(*DeletePlayerRequest)(nil),        // 9: protos.DeletePlayerRequest
-	(*DeletePlayerResponse)(nil),       // 10: protos.DeletePlayerResponse
-	(*SelectCharacterRequest)(nil),     // 11: protos.SelectCharacterRequest
-	(*SelectCharacterResponse)(nil),    // 12: protos.SelectCharacterResponse
-	(*timestamppb.Timestamp)(nil),      // 13: google.protobuf.Timestamp
+	(*GetPlayerStatsRequest)(nil),      // 5: protos.GetPlayerStatsRequest
+	(*GetPlayerStatsResponse)(nil),     // 6: protos.GetPlayerStatsResponse
+	(*GetPlayerRequest)(nil),           // 7: protos.GetPlayerRequest
+	(*GetPlayerResponse)(nil),          // 8: protos.GetPlayerResponse
+	(*GetSonicCharactersRequest)(nil),  // 9: protos.GetSonicCharactersRequest
+	(*GetSonicCharactersResponse)(nil), // 10: protos.GetSonicCharactersResponse
+	(*DeletePlayerRequest)(nil),        // 11: protos.DeletePlayerRequest
+	(*DeletePlayerResponse)(nil),       // 12: protos.DeletePlayerResponse
+	(*SelectCharacterRequest)(nil),     // 13: protos.SelectCharacterRequest
+	(*SelectCharacterResponse)(nil),    // 14: protos.SelectCharacterResponse
+	(*timestamppb.Timestamp)(nil),      // 15: google.protobuf.Timestamp
 }
 var file_player_proto_depIdxs = []int32{
 	1,  // 0: protos.SonicCharacter.abilities:type_name -> protos.Ability
 	0,  // 1: protos.SonicCharacter.rarity:type_name -> protos.CharacterRarity
-	13, // 2: protos.SonicCharacter.unlocked_at:type_name -> google.protobuf.Timestamp
-	13, // 3: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
+	15, // 2: protos.SonicCharacter.unlocked_at:type_name -> google.protobuf.Timestamp
+	15, // 3: protos.SonicCharacter.last_used:type_name -> google.protobuf.Timestamp
 	2,  // 4: protos.Player.unlocked_characters:type_name -> protos.SonicCharacter
 	3,  // 5: protos.Player.friends:type_name -> protos.FriendList
 	4,  // 6: protos.GetPlayerResponse.player:type_name -> protos.Player
 	2,  // 7: protos.GetSonicCharactersResponse.characters:type_name -> protos.SonicCharacter
 	4,  // 8: protos.SelectCharacterResponse.player:type_name -> protos.Player
 	4,  // 9: protos.PlayerService.CreatePlayer:input_type -> protos.Player
-	5,  // 10: protos.PlayerService.GetPlayer:input_type -> protos.GetPlayerRequest
+	7,  // 10: protos.PlayerService.GetPlayer:input_type -> protos.GetPlayerRequest
 	4,  // 11: protos.PlayerService.UpdatePlayer:input_type -> protos.Player
-	9,  // 12: protos.PlayerService.DeletePlayer:input_type -> protos.DeletePlayerRequest
+	11, // 12: protos.PlayerService.DeletePlayer:input_type -> protos.DeletePlayerRequest
 	2,  // 13: protos.PlayerService.UpdateSonicCharacter:input_type -> protos.SonicCharacter
-	7,  // 14: protos.PlayerService.GetSonicCharacters:input_type -> protos.GetSonicCharactersRequest
-	11, // 15: protos.PlayerService.SelectCharacter:input_type -> protos.SelectCharacterRequest
-	4,  // 16: protos.PlayerService.CreatePlayer:output_type -> protos.Player
-	6,  // 17: protos.PlayerService.GetPlayer:output_type -> protos.GetPlayerResponse
-	4,  // 18: protos.PlayerService.UpdatePlayer:output_type -> protos.Player
-	10, // 19: protos.PlayerService.DeletePlayer:output_type -> protos.DeletePlayerResponse
-	2,  // 20: protos.PlayerService.UpdateSonicCharacter:output_type -> protos.SonicCharacter
-	8,  // 21: protos.PlayerService.GetSonicCharacters:output_type -> protos.GetSonicCharactersResponse
-	12, // 22: protos.PlayerService.SelectCharacter:output_type -> protos.SelectCharacterResponse
-	16, // [16:23] is the sub-list for method output_type
-	9,  // [9:16] is the sub-list for method input_type
+	9,  // 14: protos.PlayerService.GetSonicCharacters:input_type -> protos.GetSonicCharactersRequest
+	13, // 15: protos.PlayerService.SelectCharacter:input_type -> protos.SelectCharacterRequest
+	5,  // 16: protos.PlayerService.GetPlayerStats:input_type -> protos.GetPlayerStatsRequest
+	4,  // 17: protos.PlayerService.CreatePlayer:output_type -> protos.Player
+	8,  // 18: protos.PlayerService.GetPlayer:output_type -> protos.GetPlayerResponse
+	4,  // 19: protos.PlayerService.UpdatePlayer:output_type -> protos.Player
+	12, // 20: protos.PlayerService.DeletePlayer:output_type -> protos.DeletePlayerResponse
+	2,  // 21: protos.PlayerService.UpdateSonicCharacter:output_type -> protos.SonicCharacter
+	10, // 22: protos.PlayerService.GetSonicCharacters:output_type -> protos.GetSonicCharactersResponse
+	14, // 23: protos.PlayerService.SelectCharacter:output_type -> protos.SelectCharacterResponse
+	6,  // 24: protos.PlayerService.GetPlayerStats:output_type -> protos.GetPlayerStatsResponse
+	17, // [17:25] is the sub-list for method output_type
+	9,  // [9:17] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
 	9,  // [9:9] is the sub-list for extension extendee
 	0,  // [0:9] is the sub-list for field type_name
@@ -980,7 +1132,7 @@ func file_player_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_player_proto_rawDesc), len(file_player_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

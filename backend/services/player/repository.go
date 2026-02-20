@@ -297,3 +297,49 @@ func (r *Repository) GetFriends(ctx context.Context, playerID string) ([]*databa
 		Find(&friendships).Error
 	return friendships, err
 }
+
+// GetPlayerSongStats retrieves song-specific statistics for a player
+func (r *Repository) GetPlayerSongStats(ctx context.Context, playerID string) (totalSongAnswers, correctSongAnswers int64, err error) {
+	// Get total song answers
+	err = r.db.WithContext(ctx).
+		Model(&database.PlayerSongAnswer{}).
+		Where("player_id = ?", playerID).
+		Count(&totalSongAnswers).Error
+	if err != nil {
+		return 0, 0, err
+	}
+
+	// Get correct song answers
+	err = r.db.WithContext(ctx).
+		Model(&database.PlayerSongAnswer{}).
+		Where("player_id = ? AND is_correct = ?", playerID, true).
+		Count(&correctSongAnswers).Error
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return totalSongAnswers, correctSongAnswers, nil
+}
+
+// GetPlayerTriviaStats retrieves trivia-specific statistics for a player
+func (r *Repository) GetPlayerTriviaStats(ctx context.Context, playerID string) (totalTriviaAnswers, correctTriviaAnswers int64, err error) {
+	// Get total trivia answers
+	err = r.db.WithContext(ctx).
+		Model(&database.PlayerTriviaAnswer{}).
+		Where("player_id = ?", playerID).
+		Count(&totalTriviaAnswers).Error
+	if err != nil {
+		return 0, 0, err
+	}
+
+	// Get correct trivia answers
+	err = r.db.WithContext(ctx).
+		Model(&database.PlayerTriviaAnswer{}).
+		Where("player_id = ? AND is_correct = ?", playerID, true).
+		Count(&correctTriviaAnswers).Error
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return totalTriviaAnswers, correctTriviaAnswers, nil
+}

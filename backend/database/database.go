@@ -80,6 +80,9 @@ func AutoMigrate() error {
 
 	log.Println("Running database migrations...")
 	err := DB.AutoMigrate(
+		&Player{},
+		&QuestionCollection{},
+		&SongCollection{},
 		&Question{},
 		&Answer{},
 		&Hint{},
@@ -87,11 +90,12 @@ func AutoMigrate() error {
 		&SongHint{},
 		&SonicCharacter{},
 		&CharacterAbility{},
-		&Player{},
 		&PlayerCharacter{},
 		&Friendship{},
-		&PlayerAnswer{},
+		&PlayerTriviaAnswer{},
+		&PlayerSongAnswer{},
 		&LeaderboardEntry{},
+		&ApprovalRequest{},
 	)
 
 	if err != nil {

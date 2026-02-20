@@ -225,7 +225,7 @@ func (r *Repository) GetLeaderboardForDateRange(ctx context.Context, startDate, 
 	// Get players who answered questions in the date range
 	subQuery := r.db.
 		Select("player_id, SUM(points_earned) as score").
-		Table("player_answers").
+		Table("player_trivia_answers").
 		Where("answered_at BETWEEN ? AND ?", startDate, endDate).
 		Group("player_id")
 
@@ -248,7 +248,7 @@ func (r *Repository) GetLeaderboardForDateRange(ctx context.Context, startDate, 
 func (r *Repository) RecordUserAnswer(ctx context.Context, userID, questionID, answerID string, isCorrect bool, pointsEarned int32) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// Create player answer record
-		userAnswer := &database.PlayerAnswer{
+		userAnswer := &database.PlayerTriviaAnswer{
 			PlayerID:     userID,
 			QuestionID:   questionID,
 			AnswerID:     answerID,

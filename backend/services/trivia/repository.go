@@ -33,7 +33,7 @@ func QuestionToProto(q *database.Question) *pb.Question {
 		Text:       q.Text,
 		Category:   q.Category,
 		Difficulty: q.Difficulty,
-		Points:     q.Points,
+		Points:     int64(q.Points),
 		PictureUrl: q.PictureURL,
 	}
 
@@ -78,7 +78,7 @@ func ProtoToQuestion(pq *pb.Question) *database.Question {
 		Text:       pq.GetText(),
 		Category:   pq.GetCategory(),
 		Difficulty: pq.GetDifficulty(),
-		Points:     pq.GetPoints(),
+		Points:     int32(pq.GetPoints()),
 		PictureURL: pq.PictureUrl,
 	}
 
@@ -189,6 +189,79 @@ func (r *Repository) GetRandomQuestions(ctx context.Context, category string, di
 	return questions, nil
 }
 
+// GetRandomQuestionsPaginated retrieves random questions with pagination
+func (r *Repository) GetRandomQuestionsPaginated(ctx context.Context, category string, difficulty string, page, pageSize int32) ([]database.Question, int32, error) {
+	var questions []database.Question
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Question{})
+
+	if category != "" {
+		baseQuery = baseQuery.Where("category = ?", category)
+	}
+
+	if difficulty != "" {
+		baseQuery = baseQuery.Where("difficulty = ?", difficulty)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results with random ordering
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Answers").
+		Preload("Hints").
+		Order("RANDOM()").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Find(&questions).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return questions, int32(total), nil
+}
+
+// GetQuestions retrieves questions with pagination
+func (r *Repository) GetQuestions(ctx context.Context, userID string, page, pageSize int32) ([]database.Question, int32, error) {
+	var questions []database.Question
+	var total int64
+
+	// Build base query
+	baseQuery := r.db.WithContext(ctx).Model(&database.Question{})
+
+	// If userID is provided, filter by created_by
+	if userID != "" {
+		baseQuery = baseQuery.Where("created_by = ?", userID)
+	}
+
+	// Get total count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	offset := (page - 1) * pageSize
+	err := baseQuery.
+		Preload("Answers").
+		Preload("Hints").
+		Offset(int(offset)).
+		Limit(int(pageSize)).
+		Order("created_at DESC").
+		Find(&questions).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return questions, int32(total), nil
+}
+
 // UpdateQuestion updates an existing question in the database
 func (r *Repository) UpdateQuestion(ctx context.Context, question *database.Question) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -267,4 +340,129 @@ func (r *Repository) CheckAnswer(ctx context.Context, questionID, answerID strin
 		return false, err
 	}
 	return answer.IsCorrect, nil
+}
+
+// CreateQuestionCollection creates a new question collection in the database
+func (r *Repository) CreateQuestionCollection(ctx context.Context, collection *database.QuestionCollection) error {
+	return r.db.WithContext(ctx).Create(collection).Error
+}
+
+// GetQuestionCollectionByID retrieves a collection by ID with all related questions
+func (r *Repository) GetQuestionCollectionByID(ctx context.Context, id string) (*database.QuestionCollection, error) {
+	var collection database.QuestionCollection
+	err := r.db.WithContext(ctx).
+		Preload("Questions").
+		Preload("Questions.Answers").
+		Preload("Questions.Hints").
+		First(&collection, "id = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &collection, nil
+}
+
+// GetQuestionCollections retrieves collections with pagination
+func (r *Repository) GetQuestionCollections(ctx context.Context, userID string, page, pageSize int) ([]database.QuestionCollection, int64, error) {
+	var collections []database.QuestionCollection
+	var total int64
+
+	// Count total collections for this user
+	countQuery := r.db.WithContext(ctx).Model(&database.QuestionCollection{})
+	if userID != "" {
+		countQuery = countQuery.Where("created_by = ?", userID)
+	}
+	if err := countQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Calculate offset
+	offset := (page - 1) * pageSize
+	if offset < 0 {
+		offset = 0
+	}
+
+	// Fetch paginated collections
+	query := r.db.WithContext(ctx).
+		Preload("Questions").
+		Preload("Questions.Answers").
+		Preload("Questions.Hints").
+		Order("created_at DESC")
+
+	if userID != "" {
+		query = query.Where("created_by = ?", userID)
+	}
+
+	err := query.
+		Limit(pageSize).
+		Offset(offset).
+		Find(&collections).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return collections, total, nil
+}
+
+// UpdateQuestionCollection updates an existing question collection
+func (r *Repository) UpdateQuestionCollection(ctx context.Context, collection *database.QuestionCollection) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Update collection basic fields
+		if err := tx.Model(&database.QuestionCollection{}).
+			Where("id = ?", collection.ID).
+			Updates(map[string]interface{}{
+				"name":        collection.Name,
+				"description": collection.Description,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+// DeleteQuestionCollection deletes a question collection from the database
+func (r *Repository) DeleteQuestionCollection(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&database.QuestionCollection{}, "id = ?", id).Error
+}
+
+// AddQuestionToCollection adds a question to a collection
+func (r *Repository) AddQuestionToCollection(ctx context.Context, questionID, collectionID string) error {
+	return r.db.WithContext(ctx).
+		Model(&database.Question{}).
+		Where("id = ?", questionID).
+		Update("collection_id", collectionID).Error
+}
+
+// AddQuestionToApprovalQueue adds a question to the approval queue
+func (r *Repository) AddQuestionToApprovalQueue(ctx context.Context, userID, questionID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID:     userID,
+		QuestionID: &questionID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// AddQuestionCollectionToApprovalQueue adds a question collection to the approval queue
+func (r *Repository) AddQuestionCollectionToApprovalQueue(ctx context.Context, userID, collectionID string) error {
+	approvalRequest := &database.ApprovalRequest{
+		UserID:               userID,
+		QuestionCollectionID: &collectionID,
+	}
+	return r.db.WithContext(ctx).Create(approvalRequest).Error
+}
+
+// GetUserRole gets a user's role from the database
+func (r *Repository) GetUserRole(ctx context.Context, userID string) (string, error) {
+	var player database.Player
+	err := r.db.WithContext(ctx).
+		Select("role").
+		Where("id = ?", userID).
+		First(&player).Error
+
+	if err != nil {
+		return "", err
+	}
+	return player.Role, nil
 }

@@ -1,6 +1,6 @@
 module sonic-trivia/backend/protos/protosconnect
 
-go 1.25.5
+go 1.24.0
 
 require (
 	connectrpc.com/connect v1.19.1
@@ -9,4 +9,4 @@ require (
 
 require google.golang.org/protobuf v1.36.11 // indirect
 
-replace sonic-trivia/backend/protos => ../
+replace sonic-trivia/backend/protos => ..

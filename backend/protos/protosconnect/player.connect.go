@@ -53,6 +53,9 @@ const (
 	// PlayerServiceSelectCharacterProcedure is the fully-qualified name of the PlayerService's
 	// SelectCharacter RPC.
 	PlayerServiceSelectCharacterProcedure = "/protos.PlayerService/SelectCharacter"
+	// PlayerServiceGetPlayerStatsProcedure is the fully-qualified name of the PlayerService's
+	// GetPlayerStats RPC.
+	PlayerServiceGetPlayerStatsProcedure = "/protos.PlayerService/GetPlayerStats"
 )
 
 // PlayerServiceClient is a client for the protos.PlayerService service.
@@ -64,6 +67,7 @@ type PlayerServiceClient interface {
 	UpdateSonicCharacter(context.Context, *connect.Request[protos.SonicCharacter]) (*connect.Response[protos.SonicCharacter], error)
 	GetSonicCharacters(context.Context, *connect.Request[protos.GetSonicCharactersRequest]) (*connect.Response[protos.GetSonicCharactersResponse], error)
 	SelectCharacter(context.Context, *connect.Request[protos.SelectCharacterRequest]) (*connect.Response[protos.SelectCharacterResponse], error)
+	GetPlayerStats(context.Context, *connect.Request[protos.GetPlayerStatsRequest]) (*connect.Response[protos.GetPlayerStatsResponse], error)
 }
 
 // NewPlayerServiceClient constructs a client for the protos.PlayerService service. By default, it
@@ -119,6 +123,12 @@ func NewPlayerServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(playerServiceMethods.ByName("SelectCharacter")),
 			connect.WithClientOptions(opts...),
 		),
+		getPlayerStats: connect.NewClient[protos.GetPlayerStatsRequest, protos.GetPlayerStatsResponse](
+			httpClient,
+			baseURL+PlayerServiceGetPlayerStatsProcedure,
+			connect.WithSchema(playerServiceMethods.ByName("GetPlayerStats")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -131,6 +141,7 @@ type playerServiceClient struct {
 	updateSonicCharacter *connect.Client[protos.SonicCharacter, protos.SonicCharacter]
 	getSonicCharacters   *connect.Client[protos.GetSonicCharactersRequest, protos.GetSonicCharactersResponse]
 	selectCharacter      *connect.Client[protos.SelectCharacterRequest, protos.SelectCharacterResponse]
+	getPlayerStats       *connect.Client[protos.GetPlayerStatsRequest, protos.GetPlayerStatsResponse]
 }
 
 // CreatePlayer calls protos.PlayerService.CreatePlayer.
@@ -168,6 +179,11 @@ func (c *playerServiceClient) SelectCharacter(ctx context.Context, req *connect.
 	return c.selectCharacter.CallUnary(ctx, req)
 }
 
+// GetPlayerStats calls protos.PlayerService.GetPlayerStats.
+func (c *playerServiceClient) GetPlayerStats(ctx context.Context, req *connect.Request[protos.GetPlayerStatsRequest]) (*connect.Response[protos.GetPlayerStatsResponse], error) {
+	return c.getPlayerStats.CallUnary(ctx, req)
+}
+
 // PlayerServiceHandler is an implementation of the protos.PlayerService service.
 type PlayerServiceHandler interface {
 	CreatePlayer(context.Context, *connect.Request[protos.Player]) (*connect.Response[protos.Player], error)
@@ -177,6 +193,7 @@ type PlayerServiceHandler interface {
 	UpdateSonicCharacter(context.Context, *connect.Request[protos.SonicCharacter]) (*connect.Response[protos.SonicCharacter], error)
 	GetSonicCharacters(context.Context, *connect.Request[protos.GetSonicCharactersRequest]) (*connect.Response[protos.GetSonicCharactersResponse], error)
 	SelectCharacter(context.Context, *connect.Request[protos.SelectCharacterRequest]) (*connect.Response[protos.SelectCharacterResponse], error)
+	GetPlayerStats(context.Context, *connect.Request[protos.GetPlayerStatsRequest]) (*connect.Response[protos.GetPlayerStatsResponse], error)
 }
 
 // NewPlayerServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -228,6 +245,12 @@ func NewPlayerServiceHandler(svc PlayerServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(playerServiceMethods.ByName("SelectCharacter")),
 		connect.WithHandlerOptions(opts...),
 	)
+	playerServiceGetPlayerStatsHandler := connect.NewUnaryHandler(
+		PlayerServiceGetPlayerStatsProcedure,
+		svc.GetPlayerStats,
+		connect.WithSchema(playerServiceMethods.ByName("GetPlayerStats")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/protos.PlayerService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PlayerServiceCreatePlayerProcedure:
@@ -244,6 +267,8 @@ func NewPlayerServiceHandler(svc PlayerServiceHandler, opts ...connect.HandlerOp
 			playerServiceGetSonicCharactersHandler.ServeHTTP(w, r)
 		case PlayerServiceSelectCharacterProcedure:
 			playerServiceSelectCharacterHandler.ServeHTTP(w, r)
+		case PlayerServiceGetPlayerStatsProcedure:
+			playerServiceGetPlayerStatsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -279,4 +304,8 @@ func (UnimplementedPlayerServiceHandler) GetSonicCharacters(context.Context, *co
 
 func (UnimplementedPlayerServiceHandler) SelectCharacter(context.Context, *connect.Request[protos.SelectCharacterRequest]) (*connect.Response[protos.SelectCharacterResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.PlayerService.SelectCharacter is not implemented"))
+}
+
+func (UnimplementedPlayerServiceHandler) GetPlayerStats(context.Context, *connect.Request[protos.GetPlayerStatsRequest]) (*connect.Response[protos.GetPlayerStatsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("protos.PlayerService.GetPlayerStats is not implemented"))
 }

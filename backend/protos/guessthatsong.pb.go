@@ -87,6 +87,7 @@ type Song struct {
 	AudioUrl      string                 `protobuf:"bytes,10,opt,name=audio_url,json=audioUrl,proto3" json:"audio_url,omitempty"`
 	Hints         []*SongHint            `protobuf:"bytes,11,rep,name=hints,proto3" json:"hints,omitempty"`
 	PictureUrl    *string                `protobuf:"bytes,12,opt,name=picture_url,json=pictureUrl,proto3,oneof" json:"picture_url,omitempty"`
+	IsUnderReview bool                   `protobuf:"varint,13,opt,name=is_under_review,json=isUnderReview,proto3" json:"is_under_review,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -205,18 +206,783 @@ func (x *Song) GetPictureUrl() string {
 	return ""
 }
 
+func (x *Song) GetIsUnderReview() bool {
+	if x != nil {
+		return x.IsUnderReview
+	}
+	return false
+}
+
+type GetSongsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSongsRequest) Reset() {
+	*x = GetSongsRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongsRequest) ProtoMessage() {}
+
+func (x *GetSongsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongsRequest.ProtoReflect.Descriptor instead.
+func (*GetSongsRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetSongsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetSongsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetSongsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type GetSongsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Songs         []*Song                `protobuf:"bytes,1,rep,name=songs,proto3" json:"songs,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	HasMore       bool                   `protobuf:"varint,5,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSongsResponse) Reset() {
+	*x = GetSongsResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongsResponse) ProtoMessage() {}
+
+func (x *GetSongsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongsResponse.ProtoReflect.Descriptor instead.
+func (*GetSongsResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetSongsResponse) GetSongs() []*Song {
+	if x != nil {
+		return x.Songs
+	}
+	return nil
+}
+
+func (x *GetSongsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetSongsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetSongsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetSongsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type GetSongCollectionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSongCollectionsRequest) Reset() {
+	*x = GetSongCollectionsRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongCollectionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongCollectionsRequest) ProtoMessage() {}
+
+func (x *GetSongCollectionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongCollectionsRequest.ProtoReflect.Descriptor instead.
+func (*GetSongCollectionsRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetSongCollectionsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetSongCollectionsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetSongCollectionsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type GetSongCollectionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Collections   []*SongCollection      `protobuf:"bytes,1,rep,name=collections,proto3" json:"collections,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSongCollectionsResponse) Reset() {
+	*x = GetSongCollectionsResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSongCollectionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSongCollectionsResponse) ProtoMessage() {}
+
+func (x *GetSongCollectionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSongCollectionsResponse.ProtoReflect.Descriptor instead.
+func (*GetSongCollectionsResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetSongCollectionsResponse) GetCollections() []*SongCollection {
+	if x != nil {
+		return x.Collections
+	}
+	return nil
+}
+
+func (x *GetSongCollectionsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetSongCollectionsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetSongCollectionsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type SongCollection struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	CreatedBy     string                 `protobuf:"bytes,4,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	Songs         []*Song                `protobuf:"bytes,5,rep,name=songs,proto3" json:"songs,omitempty"`
+	IsUnderReview bool                   `protobuf:"varint,6,opt,name=is_under_review,json=isUnderReview,proto3" json:"is_under_review,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SongCollection) Reset() {
+	*x = SongCollection{}
+	mi := &file_guessthatsong_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SongCollection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SongCollection) ProtoMessage() {}
+
+func (x *SongCollection) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SongCollection.ProtoReflect.Descriptor instead.
+func (*SongCollection) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *SongCollection) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SongCollection) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SongCollection) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SongCollection) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *SongCollection) GetSongs() []*Song {
+	if x != nil {
+		return x.Songs
+	}
+	return nil
+}
+
+func (x *SongCollection) GetIsUnderReview() bool {
+	if x != nil {
+		return x.IsUnderReview
+	}
+	return false
+}
+
+type UpdateSongCollectionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	SongIds       []string               `protobuf:"bytes,4,rep,name=song_ids,json=songIds,proto3" json:"song_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSongCollectionRequest) Reset() {
+	*x = UpdateSongCollectionRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSongCollectionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSongCollectionRequest) ProtoMessage() {}
+
+func (x *UpdateSongCollectionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSongCollectionRequest.ProtoReflect.Descriptor instead.
+func (*UpdateSongCollectionRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateSongCollectionRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateSongCollectionRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateSongCollectionRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UpdateSongCollectionRequest) GetSongIds() []string {
+	if x != nil {
+		return x.SongIds
+	}
+	return nil
+}
+
+type UpdateSongCollectionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsSuccess     bool                   `protobuf:"varint,1,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSongCollectionResponse) Reset() {
+	*x = UpdateSongCollectionResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSongCollectionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSongCollectionResponse) ProtoMessage() {}
+
+func (x *UpdateSongCollectionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSongCollectionResponse.ProtoReflect.Descriptor instead.
+func (*UpdateSongCollectionResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateSongCollectionResponse) GetIsSuccess() bool {
+	if x != nil {
+		return x.IsSuccess
+	}
+	return false
+}
+
+type CreateSongCollectionRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Name             string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description      string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	CreatedBy        string                 `protobuf:"bytes,3,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	SizeOfCollection string                 `protobuf:"bytes,4,opt,name=size_of_collection,json=sizeOfCollection,proto3" json:"size_of_collection,omitempty"`
+	SongIds          []string               `protobuf:"bytes,5,rep,name=song_ids,json=songIds,proto3" json:"song_ids,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *CreateSongCollectionRequest) Reset() {
+	*x = CreateSongCollectionRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSongCollectionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSongCollectionRequest) ProtoMessage() {}
+
+func (x *CreateSongCollectionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSongCollectionRequest.ProtoReflect.Descriptor instead.
+func (*CreateSongCollectionRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CreateSongCollectionRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateSongCollectionRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *CreateSongCollectionRequest) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *CreateSongCollectionRequest) GetSizeOfCollection() string {
+	if x != nil {
+		return x.SizeOfCollection
+	}
+	return ""
+}
+
+func (x *CreateSongCollectionRequest) GetSongIds() []string {
+	if x != nil {
+		return x.SongIds
+	}
+	return nil
+}
+
+type CreateSongCollectionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSongCollectionResponse) Reset() {
+	*x = CreateSongCollectionResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSongCollectionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSongCollectionResponse) ProtoMessage() {}
+
+func (x *CreateSongCollectionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSongCollectionResponse.ProtoReflect.Descriptor instead.
+func (*CreateSongCollectionResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateSongCollectionResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteSongCollectionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSongCollectionRequest) Reset() {
+	*x = DeleteSongCollectionRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSongCollectionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSongCollectionRequest) ProtoMessage() {}
+
+func (x *DeleteSongCollectionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSongCollectionRequest.ProtoReflect.Descriptor instead.
+func (*DeleteSongCollectionRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *DeleteSongCollectionRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteSongCollectionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsSuccess     bool                   `protobuf:"varint,1,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSongCollectionResponse) Reset() {
+	*x = DeleteSongCollectionResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSongCollectionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSongCollectionResponse) ProtoMessage() {}
+
+func (x *DeleteSongCollectionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSongCollectionResponse.ProtoReflect.Descriptor instead.
+func (*DeleteSongCollectionResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *DeleteSongCollectionResponse) GetIsSuccess() bool {
+	if x != nil {
+		return x.IsSuccess
+	}
+	return false
+}
+
+type CreateSongsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Songs         []*Song                `protobuf:"bytes,1,rep,name=songs,proto3" json:"songs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSongsRequest) Reset() {
+	*x = CreateSongsRequest{}
+	mi := &file_guessthatsong_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSongsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSongsRequest) ProtoMessage() {}
+
+func (x *CreateSongsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSongsRequest.ProtoReflect.Descriptor instead.
+func (*CreateSongsRequest) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CreateSongsRequest) GetSongs() []*Song {
+	if x != nil {
+		return x.Songs
+	}
+	return nil
+}
+
+type CreateSongsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsSuccess     bool                   `protobuf:"varint,1,opt,name=is_success,json=isSuccess,proto3" json:"is_success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSongsResponse) Reset() {
+	*x = CreateSongsResponse{}
+	mi := &file_guessthatsong_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSongsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSongsResponse) ProtoMessage() {}
+
+func (x *CreateSongsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guessthatsong_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSongsResponse.ProtoReflect.Descriptor instead.
+func (*CreateSongsResponse) Descriptor() ([]byte, []int) {
+	return file_guessthatsong_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CreateSongsResponse) GetIsSuccess() bool {
+	if x != nil {
+		return x.IsSuccess
+	}
+	return false
+}
+
 type GetRandomSongsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
 	HowManyRounds int32                  `protobuf:"varint,2,opt,name=how_many_rounds,json=howManyRounds,proto3" json:"how_many_rounds,omitempty"`
 	Difficulty    string                 `protobuf:"bytes,3,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
+	Page          int32                  `protobuf:"varint,4,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,5,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetRandomSongsRequest) Reset() {
 	*x = GetRandomSongsRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[2]
+	mi := &file_guessthatsong_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +994,7 @@ func (x *GetRandomSongsRequest) String() string {
 func (*GetRandomSongsRequest) ProtoMessage() {}
 
 func (x *GetRandomSongsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[2]
+	mi := &file_guessthatsong_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +1007,7 @@ func (x *GetRandomSongsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomSongsRequest.ProtoReflect.Descriptor instead.
 func (*GetRandomSongsRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{2}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GetRandomSongsRequest) GetCategory() string {
@@ -265,16 +1031,34 @@ func (x *GetRandomSongsRequest) GetDifficulty() string {
 	return ""
 }
 
+func (x *GetRandomSongsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomSongsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
 type GetRandomSongsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Songs         []*Song                `protobuf:"bytes,1,rep,name=songs,proto3" json:"songs,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	HasMore       bool                   `protobuf:"varint,5,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetRandomSongsResponse) Reset() {
 	*x = GetRandomSongsResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[3]
+	mi := &file_guessthatsong_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -286,7 +1070,7 @@ func (x *GetRandomSongsResponse) String() string {
 func (*GetRandomSongsResponse) ProtoMessage() {}
 
 func (x *GetRandomSongsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[3]
+	mi := &file_guessthatsong_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -299,7 +1083,7 @@ func (x *GetRandomSongsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomSongsResponse.ProtoReflect.Descriptor instead.
 func (*GetRandomSongsResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{3}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetRandomSongsResponse) GetSongs() []*Song {
@@ -309,16 +1093,45 @@ func (x *GetRandomSongsResponse) GetSongs() []*Song {
 	return nil
 }
 
+func (x *GetRandomSongsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetRandomSongsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
 type CreateSongRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Song          *Song                  `protobuf:"bytes,1,opt,name=song,proto3" json:"song,omitempty"`
+	CollectionId  *string                `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3,oneof" json:"collection_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateSongRequest) Reset() {
 	*x = CreateSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[4]
+	mi := &file_guessthatsong_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -330,7 +1143,7 @@ func (x *CreateSongRequest) String() string {
 func (*CreateSongRequest) ProtoMessage() {}
 
 func (x *CreateSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[4]
+	mi := &file_guessthatsong_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -343,7 +1156,7 @@ func (x *CreateSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSongRequest.ProtoReflect.Descriptor instead.
 func (*CreateSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{4}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *CreateSongRequest) GetSong() *Song {
@@ -351,6 +1164,13 @@ func (x *CreateSongRequest) GetSong() *Song {
 		return x.Song
 	}
 	return nil
+}
+
+func (x *CreateSongRequest) GetCollectionId() string {
+	if x != nil && x.CollectionId != nil {
+		return *x.CollectionId
+	}
+	return ""
 }
 
 type CreateSongResponse struct {
@@ -362,7 +1182,7 @@ type CreateSongResponse struct {
 
 func (x *CreateSongResponse) Reset() {
 	*x = CreateSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[5]
+	mi := &file_guessthatsong_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -374,7 +1194,7 @@ func (x *CreateSongResponse) String() string {
 func (*CreateSongResponse) ProtoMessage() {}
 
 func (x *CreateSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[5]
+	mi := &file_guessthatsong_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -387,7 +1207,7 @@ func (x *CreateSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSongResponse.ProtoReflect.Descriptor instead.
 func (*CreateSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{5}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CreateSongResponse) GetSong() *Song {
@@ -406,7 +1226,7 @@ type GetSongRequest struct {
 
 func (x *GetSongRequest) Reset() {
 	*x = GetSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[6]
+	mi := &file_guessthatsong_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -418,7 +1238,7 @@ func (x *GetSongRequest) String() string {
 func (*GetSongRequest) ProtoMessage() {}
 
 func (x *GetSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[6]
+	mi := &file_guessthatsong_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -431,7 +1251,7 @@ func (x *GetSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSongRequest.ProtoReflect.Descriptor instead.
 func (*GetSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{6}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetSongRequest) GetId() string {
@@ -450,7 +1270,7 @@ type GetSongResponse struct {
 
 func (x *GetSongResponse) Reset() {
 	*x = GetSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[7]
+	mi := &file_guessthatsong_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -462,7 +1282,7 @@ func (x *GetSongResponse) String() string {
 func (*GetSongResponse) ProtoMessage() {}
 
 func (x *GetSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[7]
+	mi := &file_guessthatsong_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -475,7 +1295,7 @@ func (x *GetSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSongResponse.ProtoReflect.Descriptor instead.
 func (*GetSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{7}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetSongResponse) GetSong() *Song {
@@ -494,7 +1314,7 @@ type GetRandomSongRequest struct {
 
 func (x *GetRandomSongRequest) Reset() {
 	*x = GetRandomSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[8]
+	mi := &file_guessthatsong_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -506,7 +1326,7 @@ func (x *GetRandomSongRequest) String() string {
 func (*GetRandomSongRequest) ProtoMessage() {}
 
 func (x *GetRandomSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[8]
+	mi := &file_guessthatsong_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -519,7 +1339,7 @@ func (x *GetRandomSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomSongRequest.ProtoReflect.Descriptor instead.
 func (*GetRandomSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{8}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GetRandomSongRequest) GetCategory() string {
@@ -538,7 +1358,7 @@ type GetRandomSongResponse struct {
 
 func (x *GetRandomSongResponse) Reset() {
 	*x = GetRandomSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[9]
+	mi := &file_guessthatsong_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -550,7 +1370,7 @@ func (x *GetRandomSongResponse) String() string {
 func (*GetRandomSongResponse) ProtoMessage() {}
 
 func (x *GetRandomSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[9]
+	mi := &file_guessthatsong_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -563,7 +1383,7 @@ func (x *GetRandomSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRandomSongResponse.ProtoReflect.Descriptor instead.
 func (*GetRandomSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{9}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetRandomSongResponse) GetSong() *Song {
@@ -576,13 +1396,14 @@ func (x *GetRandomSongResponse) GetSong() *Song {
 type UpdateSongRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Song          *Song                  `protobuf:"bytes,1,opt,name=song,proto3" json:"song,omitempty"`
+	CollectionId  *string                `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3,oneof" json:"collection_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateSongRequest) Reset() {
 	*x = UpdateSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[10]
+	mi := &file_guessthatsong_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -594,7 +1415,7 @@ func (x *UpdateSongRequest) String() string {
 func (*UpdateSongRequest) ProtoMessage() {}
 
 func (x *UpdateSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[10]
+	mi := &file_guessthatsong_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -607,7 +1428,7 @@ func (x *UpdateSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSongRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{10}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UpdateSongRequest) GetSong() *Song {
@@ -615,6 +1436,13 @@ func (x *UpdateSongRequest) GetSong() *Song {
 		return x.Song
 	}
 	return nil
+}
+
+func (x *UpdateSongRequest) GetCollectionId() string {
+	if x != nil && x.CollectionId != nil {
+		return *x.CollectionId
+	}
+	return ""
 }
 
 type UpdateSongResponse struct {
@@ -626,7 +1454,7 @@ type UpdateSongResponse struct {
 
 func (x *UpdateSongResponse) Reset() {
 	*x = UpdateSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[11]
+	mi := &file_guessthatsong_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -638,7 +1466,7 @@ func (x *UpdateSongResponse) String() string {
 func (*UpdateSongResponse) ProtoMessage() {}
 
 func (x *UpdateSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[11]
+	mi := &file_guessthatsong_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -651,7 +1479,7 @@ func (x *UpdateSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSongResponse.ProtoReflect.Descriptor instead.
 func (*UpdateSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{11}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *UpdateSongResponse) GetSong() *Song {
@@ -670,7 +1498,7 @@ type DeleteSongRequest struct {
 
 func (x *DeleteSongRequest) Reset() {
 	*x = DeleteSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[12]
+	mi := &file_guessthatsong_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -682,7 +1510,7 @@ func (x *DeleteSongRequest) String() string {
 func (*DeleteSongRequest) ProtoMessage() {}
 
 func (x *DeleteSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[12]
+	mi := &file_guessthatsong_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -695,7 +1523,7 @@ func (x *DeleteSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSongRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{12}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DeleteSongRequest) GetId() string {
@@ -714,7 +1542,7 @@ type DeleteSongResponse struct {
 
 func (x *DeleteSongResponse) Reset() {
 	*x = DeleteSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[13]
+	mi := &file_guessthatsong_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -726,7 +1554,7 @@ func (x *DeleteSongResponse) String() string {
 func (*DeleteSongResponse) ProtoMessage() {}
 
 func (x *DeleteSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[13]
+	mi := &file_guessthatsong_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -739,7 +1567,7 @@ func (x *DeleteSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSongResponse.ProtoReflect.Descriptor instead.
 func (*DeleteSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{13}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *DeleteSongResponse) GetSuccess() bool {
@@ -758,7 +1586,7 @@ type SearchSongRequest struct {
 
 func (x *SearchSongRequest) Reset() {
 	*x = SearchSongRequest{}
-	mi := &file_guessthatsong_proto_msgTypes[14]
+	mi := &file_guessthatsong_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -770,7 +1598,7 @@ func (x *SearchSongRequest) String() string {
 func (*SearchSongRequest) ProtoMessage() {}
 
 func (x *SearchSongRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[14]
+	mi := &file_guessthatsong_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -783,7 +1611,7 @@ func (x *SearchSongRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchSongRequest.ProtoReflect.Descriptor instead.
 func (*SearchSongRequest) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{14}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *SearchSongRequest) GetQuery() string {
@@ -802,7 +1630,7 @@ type SearchSongResponse struct {
 
 func (x *SearchSongResponse) Reset() {
 	*x = SearchSongResponse{}
-	mi := &file_guessthatsong_proto_msgTypes[15]
+	mi := &file_guessthatsong_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -814,7 +1642,7 @@ func (x *SearchSongResponse) String() string {
 func (*SearchSongResponse) ProtoMessage() {}
 
 func (x *SearchSongResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guessthatsong_proto_msgTypes[15]
+	mi := &file_guessthatsong_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -827,7 +1655,7 @@ func (x *SearchSongResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchSongResponse.ProtoReflect.Descriptor instead.
 func (*SearchSongResponse) Descriptor() ([]byte, []int) {
-	return file_guessthatsong_proto_rawDescGZIP(), []int{15}
+	return file_guessthatsong_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *SearchSongResponse) GetSongs() []*Song {
@@ -844,7 +1672,7 @@ const file_guessthatsong_proto_rawDesc = "" +
 	"\x13guessthatsong.proto\x12\x06protos\".\n" +
 	"\bSongHint\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04text\x18\x02 \x01(\tR\x04text\"\x8a\x03\n" +
+	"\x04text\x18\x02 \x01(\tR\x04text\"\xb2\x03\n" +
 	"\x04Song\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
@@ -862,18 +1690,81 @@ const file_guessthatsong_proto_rawDesc = "" +
 	" \x01(\tR\baudioUrl\x12&\n" +
 	"\x05hints\x18\v \x03(\v2\x10.protos.SongHintR\x05hints\x12$\n" +
 	"\vpicture_url\x18\f \x01(\tH\x00R\n" +
-	"pictureUrl\x88\x01\x01B\x0e\n" +
-	"\f_picture_url\"{\n" +
+	"pictureUrl\x88\x01\x01\x12&\n" +
+	"\x0fis_under_review\x18\r \x01(\bR\risUnderReviewB\x0e\n" +
+	"\f_picture_url\"[\n" +
+	"\x0fGetSongsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\x98\x01\n" +
+	"\x10GetSongsResponse\x12\"\n" +
+	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12\x19\n" +
+	"\bhas_more\x18\x05 \x01(\bR\ahasMore\"e\n" +
+	"\x19GetSongCollectionsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\x9d\x01\n" +
+	"\x1aGetSongCollectionsResponse\x128\n" +
+	"\vcollections\x18\x01 \x03(\v2\x16.protos.SongCollectionR\vcollections\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\xc1\x01\n" +
+	"\x0eSongCollection\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x04 \x01(\tR\tcreatedBy\x12\"\n" +
+	"\x05songs\x18\x05 \x03(\v2\f.protos.SongR\x05songs\x12&\n" +
+	"\x0fis_under_review\x18\x06 \x01(\bR\risUnderReview\"~\n" +
+	"\x1bUpdateSongCollectionRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x19\n" +
+	"\bsong_ids\x18\x04 \x03(\tR\asongIds\"=\n" +
+	"\x1cUpdateSongCollectionResponse\x12\x1d\n" +
+	"\n" +
+	"is_success\x18\x01 \x01(\bR\tisSuccess\"\xbb\x01\n" +
+	"\x1bCreateSongCollectionRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x03 \x01(\tR\tcreatedBy\x12,\n" +
+	"\x12size_of_collection\x18\x04 \x01(\tR\x10sizeOfCollection\x12\x19\n" +
+	"\bsong_ids\x18\x05 \x03(\tR\asongIds\".\n" +
+	"\x1cCreateSongCollectionResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"-\n" +
+	"\x1bDeleteSongCollectionRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"=\n" +
+	"\x1cDeleteSongCollectionResponse\x12\x1d\n" +
+	"\n" +
+	"is_success\x18\x01 \x01(\bR\tisSuccess\"8\n" +
+	"\x12CreateSongsRequest\x12\"\n" +
+	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\"4\n" +
+	"\x13CreateSongsResponse\x12\x1d\n" +
+	"\n" +
+	"is_success\x18\x01 \x01(\bR\tisSuccess\"\xac\x01\n" +
 	"\x15GetRandomSongsRequest\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12&\n" +
 	"\x0fhow_many_rounds\x18\x02 \x01(\x05R\rhowManyRounds\x12\x1e\n" +
 	"\n" +
 	"difficulty\x18\x03 \x01(\tR\n" +
-	"difficulty\"<\n" +
+	"difficulty\x12\x12\n" +
+	"\x04page\x18\x04 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x05 \x01(\x05R\bpageSize\"\x9e\x01\n" +
 	"\x16GetRandomSongsResponse\x12\"\n" +
-	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\"5\n" +
+	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12\x19\n" +
+	"\bhas_more\x18\x05 \x01(\bR\ahasMore\"q\n" +
 	"\x11CreateSongRequest\x12 \n" +
-	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\"6\n" +
+	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\x12(\n" +
+	"\rcollection_id\x18\x02 \x01(\tH\x00R\fcollectionId\x88\x01\x01B\x10\n" +
+	"\x0e_collection_id\"6\n" +
 	"\x12CreateSongResponse\x12 \n" +
 	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\" \n" +
 	"\x0eGetSongRequest\x12\x0e\n" +
@@ -883,9 +1774,11 @@ const file_guessthatsong_proto_rawDesc = "" +
 	"\x14GetRandomSongRequest\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\"9\n" +
 	"\x15GetRandomSongResponse\x12 \n" +
-	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\"5\n" +
+	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\"q\n" +
 	"\x11UpdateSongRequest\x12 \n" +
-	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\"6\n" +
+	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\x12(\n" +
+	"\rcollection_id\x18\x02 \x01(\tH\x00R\fcollectionId\x88\x01\x01B\x10\n" +
+	"\x0e_collection_id\"6\n" +
 	"\x12UpdateSongResponse\x12 \n" +
 	"\x04song\x18\x01 \x01(\v2\f.protos.SongR\x04song\"#\n" +
 	"\x11DeleteSongRequest\x12\x0e\n" +
@@ -895,7 +1788,7 @@ const file_guessthatsong_proto_rawDesc = "" +
 	"\x11SearchSongRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\"8\n" +
 	"\x12SearchSongResponse\x12\"\n" +
-	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs2\x93\x04\n" +
+	"\x05songs\x18\x01 \x03(\v2\f.protos.SongR\x05songs2\xe2\a\n" +
 	"\x14GuessThatSongService\x12E\n" +
 	"\n" +
 	"CreateSong\x12\x19.protos.CreateSongRequest\x1a\x1a.protos.CreateSongResponse\"\x00\x12<\n" +
@@ -907,7 +1800,12 @@ const file_guessthatsong_proto_rawDesc = "" +
 	"\n" +
 	"DeleteSong\x12\x19.protos.DeleteSongRequest\x1a\x1a.protos.DeleteSongResponse\"\x00\x12E\n" +
 	"\n" +
-	"SearchSong\x12\x19.protos.SearchSongRequest\x1a\x1a.protos.SearchSongResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
+	"SearchSong\x12\x19.protos.SearchSongRequest\x1a\x1a.protos.SearchSongResponse\"\x00\x12c\n" +
+	"\x14CreateSongCollection\x12#.protos.CreateSongCollectionRequest\x1a$.protos.CreateSongCollectionResponse\"\x00\x12c\n" +
+	"\x14DeleteSongCollection\x12#.protos.DeleteSongCollectionRequest\x1a$.protos.DeleteSongCollectionResponse\"\x00\x12c\n" +
+	"\x14UpdateSongCollection\x12#.protos.UpdateSongCollectionRequest\x1a$.protos.UpdateSongCollectionResponse\"\x00\x12]\n" +
+	"\x12GetSongCollections\x12!.protos.GetSongCollectionsRequest\x1a\".protos.GetSongCollectionsResponse\"\x00\x12?\n" +
+	"\bGetSongs\x12\x17.protos.GetSongsRequest\x1a\x18.protos.GetSongsResponse\"\x00B\x1dZ\x1bsonic-trivia/backend/protosb\x06proto3"
 
 var (
 	file_guessthatsong_proto_rawDescOnce sync.Once
@@ -921,54 +1819,81 @@ func file_guessthatsong_proto_rawDescGZIP() []byte {
 	return file_guessthatsong_proto_rawDescData
 }
 
-var file_guessthatsong_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_guessthatsong_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_guessthatsong_proto_goTypes = []any{
-	(*SongHint)(nil),               // 0: protos.SongHint
-	(*Song)(nil),                   // 1: protos.Song
-	(*GetRandomSongsRequest)(nil),  // 2: protos.GetRandomSongsRequest
-	(*GetRandomSongsResponse)(nil), // 3: protos.GetRandomSongsResponse
-	(*CreateSongRequest)(nil),      // 4: protos.CreateSongRequest
-	(*CreateSongResponse)(nil),     // 5: protos.CreateSongResponse
-	(*GetSongRequest)(nil),         // 6: protos.GetSongRequest
-	(*GetSongResponse)(nil),        // 7: protos.GetSongResponse
-	(*GetRandomSongRequest)(nil),   // 8: protos.GetRandomSongRequest
-	(*GetRandomSongResponse)(nil),  // 9: protos.GetRandomSongResponse
-	(*UpdateSongRequest)(nil),      // 10: protos.UpdateSongRequest
-	(*UpdateSongResponse)(nil),     // 11: protos.UpdateSongResponse
-	(*DeleteSongRequest)(nil),      // 12: protos.DeleteSongRequest
-	(*DeleteSongResponse)(nil),     // 13: protos.DeleteSongResponse
-	(*SearchSongRequest)(nil),      // 14: protos.SearchSongRequest
-	(*SearchSongResponse)(nil),     // 15: protos.SearchSongResponse
+	(*SongHint)(nil),                     // 0: protos.SongHint
+	(*Song)(nil),                         // 1: protos.Song
+	(*GetSongsRequest)(nil),              // 2: protos.GetSongsRequest
+	(*GetSongsResponse)(nil),             // 3: protos.GetSongsResponse
+	(*GetSongCollectionsRequest)(nil),    // 4: protos.GetSongCollectionsRequest
+	(*GetSongCollectionsResponse)(nil),   // 5: protos.GetSongCollectionsResponse
+	(*SongCollection)(nil),               // 6: protos.SongCollection
+	(*UpdateSongCollectionRequest)(nil),  // 7: protos.UpdateSongCollectionRequest
+	(*UpdateSongCollectionResponse)(nil), // 8: protos.UpdateSongCollectionResponse
+	(*CreateSongCollectionRequest)(nil),  // 9: protos.CreateSongCollectionRequest
+	(*CreateSongCollectionResponse)(nil), // 10: protos.CreateSongCollectionResponse
+	(*DeleteSongCollectionRequest)(nil),  // 11: protos.DeleteSongCollectionRequest
+	(*DeleteSongCollectionResponse)(nil), // 12: protos.DeleteSongCollectionResponse
+	(*CreateSongsRequest)(nil),           // 13: protos.CreateSongsRequest
+	(*CreateSongsResponse)(nil),          // 14: protos.CreateSongsResponse
+	(*GetRandomSongsRequest)(nil),        // 15: protos.GetRandomSongsRequest
+	(*GetRandomSongsResponse)(nil),       // 16: protos.GetRandomSongsResponse
+	(*CreateSongRequest)(nil),            // 17: protos.CreateSongRequest
+	(*CreateSongResponse)(nil),           // 18: protos.CreateSongResponse
+	(*GetSongRequest)(nil),               // 19: protos.GetSongRequest
+	(*GetSongResponse)(nil),              // 20: protos.GetSongResponse
+	(*GetRandomSongRequest)(nil),         // 21: protos.GetRandomSongRequest
+	(*GetRandomSongResponse)(nil),        // 22: protos.GetRandomSongResponse
+	(*UpdateSongRequest)(nil),            // 23: protos.UpdateSongRequest
+	(*UpdateSongResponse)(nil),           // 24: protos.UpdateSongResponse
+	(*DeleteSongRequest)(nil),            // 25: protos.DeleteSongRequest
+	(*DeleteSongResponse)(nil),           // 26: protos.DeleteSongResponse
+	(*SearchSongRequest)(nil),            // 27: protos.SearchSongRequest
+	(*SearchSongResponse)(nil),           // 28: protos.SearchSongResponse
 }
 var file_guessthatsong_proto_depIdxs = []int32{
 	0,  // 0: protos.Song.hints:type_name -> protos.SongHint
-	1,  // 1: protos.GetRandomSongsResponse.songs:type_name -> protos.Song
-	1,  // 2: protos.CreateSongRequest.song:type_name -> protos.Song
-	1,  // 3: protos.CreateSongResponse.song:type_name -> protos.Song
-	1,  // 4: protos.GetSongResponse.song:type_name -> protos.Song
-	1,  // 5: protos.GetRandomSongResponse.song:type_name -> protos.Song
-	1,  // 6: protos.UpdateSongRequest.song:type_name -> protos.Song
-	1,  // 7: protos.UpdateSongResponse.song:type_name -> protos.Song
-	1,  // 8: protos.SearchSongResponse.songs:type_name -> protos.Song
-	4,  // 9: protos.GuessThatSongService.CreateSong:input_type -> protos.CreateSongRequest
-	6,  // 10: protos.GuessThatSongService.GetSong:input_type -> protos.GetSongRequest
-	8,  // 11: protos.GuessThatSongService.GetRandomSong:input_type -> protos.GetRandomSongRequest
-	2,  // 12: protos.GuessThatSongService.GetRandomSongs:input_type -> protos.GetRandomSongsRequest
-	10, // 13: protos.GuessThatSongService.UpdateSong:input_type -> protos.UpdateSongRequest
-	12, // 14: protos.GuessThatSongService.DeleteSong:input_type -> protos.DeleteSongRequest
-	14, // 15: protos.GuessThatSongService.SearchSong:input_type -> protos.SearchSongRequest
-	5,  // 16: protos.GuessThatSongService.CreateSong:output_type -> protos.CreateSongResponse
-	7,  // 17: protos.GuessThatSongService.GetSong:output_type -> protos.GetSongResponse
-	9,  // 18: protos.GuessThatSongService.GetRandomSong:output_type -> protos.GetRandomSongResponse
-	3,  // 19: protos.GuessThatSongService.GetRandomSongs:output_type -> protos.GetRandomSongsResponse
-	11, // 20: protos.GuessThatSongService.UpdateSong:output_type -> protos.UpdateSongResponse
-	13, // 21: protos.GuessThatSongService.DeleteSong:output_type -> protos.DeleteSongResponse
-	15, // 22: protos.GuessThatSongService.SearchSong:output_type -> protos.SearchSongResponse
-	16, // [16:23] is the sub-list for method output_type
-	9,  // [9:16] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	1,  // 1: protos.GetSongsResponse.songs:type_name -> protos.Song
+	6,  // 2: protos.GetSongCollectionsResponse.collections:type_name -> protos.SongCollection
+	1,  // 3: protos.SongCollection.songs:type_name -> protos.Song
+	1,  // 4: protos.CreateSongsRequest.songs:type_name -> protos.Song
+	1,  // 5: protos.GetRandomSongsResponse.songs:type_name -> protos.Song
+	1,  // 6: protos.CreateSongRequest.song:type_name -> protos.Song
+	1,  // 7: protos.CreateSongResponse.song:type_name -> protos.Song
+	1,  // 8: protos.GetSongResponse.song:type_name -> protos.Song
+	1,  // 9: protos.GetRandomSongResponse.song:type_name -> protos.Song
+	1,  // 10: protos.UpdateSongRequest.song:type_name -> protos.Song
+	1,  // 11: protos.UpdateSongResponse.song:type_name -> protos.Song
+	1,  // 12: protos.SearchSongResponse.songs:type_name -> protos.Song
+	17, // 13: protos.GuessThatSongService.CreateSong:input_type -> protos.CreateSongRequest
+	19, // 14: protos.GuessThatSongService.GetSong:input_type -> protos.GetSongRequest
+	21, // 15: protos.GuessThatSongService.GetRandomSong:input_type -> protos.GetRandomSongRequest
+	15, // 16: protos.GuessThatSongService.GetRandomSongs:input_type -> protos.GetRandomSongsRequest
+	23, // 17: protos.GuessThatSongService.UpdateSong:input_type -> protos.UpdateSongRequest
+	25, // 18: protos.GuessThatSongService.DeleteSong:input_type -> protos.DeleteSongRequest
+	27, // 19: protos.GuessThatSongService.SearchSong:input_type -> protos.SearchSongRequest
+	9,  // 20: protos.GuessThatSongService.CreateSongCollection:input_type -> protos.CreateSongCollectionRequest
+	11, // 21: protos.GuessThatSongService.DeleteSongCollection:input_type -> protos.DeleteSongCollectionRequest
+	7,  // 22: protos.GuessThatSongService.UpdateSongCollection:input_type -> protos.UpdateSongCollectionRequest
+	4,  // 23: protos.GuessThatSongService.GetSongCollections:input_type -> protos.GetSongCollectionsRequest
+	2,  // 24: protos.GuessThatSongService.GetSongs:input_type -> protos.GetSongsRequest
+	18, // 25: protos.GuessThatSongService.CreateSong:output_type -> protos.CreateSongResponse
+	20, // 26: protos.GuessThatSongService.GetSong:output_type -> protos.GetSongResponse
+	22, // 27: protos.GuessThatSongService.GetRandomSong:output_type -> protos.GetRandomSongResponse
+	16, // 28: protos.GuessThatSongService.GetRandomSongs:output_type -> protos.GetRandomSongsResponse
+	24, // 29: protos.GuessThatSongService.UpdateSong:output_type -> protos.UpdateSongResponse
+	26, // 30: protos.GuessThatSongService.DeleteSong:output_type -> protos.DeleteSongResponse
+	28, // 31: protos.GuessThatSongService.SearchSong:output_type -> protos.SearchSongResponse
+	10, // 32: protos.GuessThatSongService.CreateSongCollection:output_type -> protos.CreateSongCollectionResponse
+	12, // 33: protos.GuessThatSongService.DeleteSongCollection:output_type -> protos.DeleteSongCollectionResponse
+	8,  // 34: protos.GuessThatSongService.UpdateSongCollection:output_type -> protos.UpdateSongCollectionResponse
+	5,  // 35: protos.GuessThatSongService.GetSongCollections:output_type -> protos.GetSongCollectionsResponse
+	3,  // 36: protos.GuessThatSongService.GetSongs:output_type -> protos.GetSongsResponse
+	25, // [25:37] is the sub-list for method output_type
+	13, // [13:25] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_guessthatsong_proto_init() }
@@ -977,13 +1902,15 @@ func file_guessthatsong_proto_init() {
 		return
 	}
 	file_guessthatsong_proto_msgTypes[1].OneofWrappers = []any{}
+	file_guessthatsong_proto_msgTypes[17].OneofWrappers = []any{}
+	file_guessthatsong_proto_msgTypes[23].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_guessthatsong_proto_rawDesc), len(file_guessthatsong_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

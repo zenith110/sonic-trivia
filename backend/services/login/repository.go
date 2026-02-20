@@ -199,7 +199,7 @@ func (r *Repository) UpdateUserScore(ctx context.Context, userID string, scoreTo
 
 // RecordAnswer records a player's answer to a question
 func (r *Repository) RecordAnswer(ctx context.Context, userID, questionID, answerID string, isCorrect bool, pointsEarned int32) error {
-	userAnswer := &database.PlayerAnswer{
+	userAnswer := &database.PlayerTriviaAnswer{
 		PlayerID:     userID,
 		QuestionID:   questionID,
 		AnswerID:     answerID,

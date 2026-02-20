@@ -1,0 +1,52 @@
+{
+    "name": "sonic-trivia-devcontainer",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "installOhMyZshConfig": true,
+            "upgradePackages": true,
+            "username": "automatic",
+            "userUid": "automatic",
+            "userGid": "automatic"
+        },
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+            "moby": true,
+            "installDockerBuildx": true,
+            "version": "latest",
+            "dockerDashComposeVersion": "v2"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "latest",
+            "installBun": true
+        },
+        "ghcr.io/roul/devcontainer-features/mise-bun:1": {},
+        "ghcr.io/devcontainers/features/python:1": {
+            "installedTools": true,
+            "version": "latest"
+        },
+        "ghcr.io/roul/devcontainer-features/mise-golang:1": {},
+        "ghcr.io/mrsimonemms/devcontainers/buf:1": {},
+        "ghcr.io/jungaretti/features/make:1": {}
+    },
+    "overrideFeatureInstallOrder": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/docker-outside-of-docker",
+        "ghcr.io/devcontainers/features/python"
+    ],
+    "customizations": {
+        "vscode": {
+            "extentions": [
+                "mads-hartmann.bash-ide-vscode",
+                "dbaeumer.vscode-eslint",
+                "EditorConfig.EditorConfig",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "DavidAnson.vscode-markdownlint"
+            ]
+        }
+    }
+}

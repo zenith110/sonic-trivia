@@ -1,37 +1,51 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
 import { Trophy, Zap, Target, Award, Coins } from "lucide-react";
 import { usePlayer } from "@/hooks/usePlayer";
-import { toNumber } from "@/lib/protobuf-utils";
+import { usePlayerStats } from "@/hooks/usePlayerStats";
 
 export function PlayerProfile() {
-  const { player, unlockedCharacters } = usePlayer();
+  const { unlockedCharacters } = usePlayer();
+  const {
+    totalPoints,
+    totalRings,
+    totalAnswers,
+    totalCorrectAnswers,
+    accuracyRate,
+    isLoading,
+    error,
+  } = usePlayerStats();
 
-  if (!player) return null;
+  if (isLoading)
+    return <div className="text-center py-8">Loading stats...</div>;
+  if (error)
+    return (
+      <div className="text-center py-8 text-red-500">Error loading stats</div>
+    );
 
   const stats = [
     {
       icon: Trophy,
       label: "Total Score",
-      value: toNumber(player.totalPoints),
+      value: totalPoints,
       color: "text-yellow-500",
     },
     {
       icon: Coins,
       label: "Total Rings",
-      value: toNumber(player.totalRings),
+      value: totalRings,
       color: "text-yellow-600",
     },
     {
       icon: Target,
       label: "Questions Answered",
-      value: toNumber(player.totalAnswers),
+      value: totalAnswers,
       color: "text-blue-500",
     },
     {
       icon: Award,
       label: "Correct Answers",
-      value: toNumber(player.totalSuccessfulAnswers),
+      value: totalCorrectAnswers,
       color: "text-green-500",
     },
     {
@@ -41,11 +55,6 @@ export function PlayerProfile() {
       color: "text-purple-500",
     },
   ];
-
-  const totalAnswers = toNumber(player.totalAnswers);
-  const totalSuccessful = toNumber(player.totalSuccessfulAnswers);
-  const accuracy =
-    totalAnswers > 0 ? Math.round((totalSuccessful / totalAnswers) * 100) : 0;
 
   return (
     <Card>
@@ -61,7 +70,7 @@ export function PlayerProfile() {
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-lg">
             <div className="text-center">
               <p className="text-sm opacity-90">Accuracy Rate</p>
-              <p className="text-3xl font-bold">{accuracy}%</p>
+              <p className="text-3xl font-bold">{accuracyRate}%</p>
             </div>
           </div>
 

@@ -1,0 +1,5 @@
+{
+  "name": "sonic-trivia-devcontainer",
+  "image": "zenith110/sonic-trivia-devcontainer",
+  "initializeCommand": "docker pull zenith110/sonic-trivia-devcontainer && make install-deps && make export-protos",
+}
